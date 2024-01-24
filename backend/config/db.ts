@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
@@ -25,14 +26,37 @@ async function connectDB() {
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    //await new Promise(resolve => setTimeout(resolve, 1000));
   } 
-  finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-    console.log("MongoDB connection closed.");
+  catch (err) {
+    console.log(err);
   }
+  // finally {
+  //   // Ensures that the client will close when you finish/error
+  //   await client.close();
+  //   console.log("MongoDB connection closed.");
+  // }
 }
-connectDB().catch(console.dir);
 
-export default connectDB;
+// https://stackoverflow.com/questions/36979146/is-a-connection-to-mongodb-automatically-closed-on-process-exit
+// Create a function to terminate your app gracefully:
+function gracefulShutdown(){
+  // First argument is [force], see mongoose doc.
+  mongoose.connection.close(false);
+  console.log('MongoDb connection closed.');
+};
+
+function handleDisconnectDB() {
+  // This will handle process.exit():
+  process.on('exit', gracefulShutdown);
+
+  // This will handle kill commands, such as CTRL+C:
+  process.on('SIGINT', gracefulShutdown);
+  process.on('SIGTERM', gracefulShutdown);
+  process.on('SIGKILL', gracefulShutdown);
+
+  // This will prevent dirty exit on code-fault crashes:
+  process.on('uncaughtException', gracefulShutdown);
+}
+
+export { connectDB, handleDisconnectDB };

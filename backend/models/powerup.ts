@@ -32,6 +32,7 @@ const PowerupSchema = new Schema<Powerup>({
   code: {
     type: String,
     required: true,
+    unique: true,
   }
 });
 

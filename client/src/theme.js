@@ -21,7 +21,7 @@ export const theme = createTheme({
             light: "#c9d1e7"
         },
 
-        // frosted background
+        // frost background
         frost: {
             main: "#b3b3b3",
         },
@@ -48,7 +48,7 @@ export const theme = createTheme({
             fontWeight: "600"
         },
 
-        // topbar subtitle
+        // topbar subtitle / timer
         h4: {
             fontFamily: "Poppins",
             fontWeight: "400"

@@ -1,75 +1,83 @@
-// This is the theme for the entire app.
-
 import { createTheme } from "@mui/material/styles";
 
+// This is the theme for the entire app.
+
 export const theme = createTheme({
-    palette: {
-        // buttons
-        primary: {
-            main: "#2c3e6b",
-        },
-        secondary: {
-            main: "#640b25",
+	palette: {
+		// buttons
+		primary: {
+			contrastText: "#e5ebff",
+			main: "#2c3e6b",
+		},
+		secondary: {
+			contrastText: "#e5ebff",
+			main: "#640b25",
 
-            // disabled
-            light: "#ffc1d3"
-        },
-        major: {
-            main: "#009fac",
+			// disabled
+			light: "#ffc1d3"
+		},
+		major: {
+			contrastText: "#e5ebff",
+			main: "#009fac",
 
-            // disabled
-            light: "#c9d1e7"
-        },
+			// disabled
+			light: "#c9d1e7"
+		},
 
-        // frost background
-        frost: {
-            main: "#b3b3b3",
-        },
-        
-        // text
-        general: {
-            main: "#212226",
-        },
-        columns: {
-            main: "#707070",
-        },
-        tableHover: {
-            main: "#ededed",
-        },
-        white: {
-            main: "#ffffff"
-        },
+		// glass background
+		glass: {
+			main: "#b3b3b3",
+		},
+		
+		// text
+		general: {
+			main: "#212226",
+		},
+		columns: {
+			main: "#707070",
+		},
+		tableHover: {
+			main: "#ededed",
+		},
+		white: {
+			main: "#e5ebff"
+		},
 	},
 
-    typography: {
-        // topbar header
-        h2: {
-            fontFamily: "Poppins",
-            fontWeight: "600"
-        },
+	typography: {
+		// topbar header
+		h2: {
+			color: "#e5ebff",
+			fontFamily: "Poppins",
+			fontWeight: "600"
+		},
 
-        // topbar subtitle / timer
-        h4: {
-            fontFamily: "Poppins",
-            fontWeight: "400"
-        },
+		// topbar subtitle / timer
+		h4: {
+			color: "#e5ebff",
+			fontFamily: "Poppins",
+			fontWeight: "400"
+		},
 
-        // buttons/other titles
-        h5: {
-            fontFamily: "Poppins",
-            fontWeight: "500",
-        },
+		// buttons/other titles
+		h5: {
+			color: "#e5ebff",
+			fontFamily: "Poppins",
+			fontWeight: "500",
+		},
 
-        // column names
-        h6: {
-            fontFamily: "Inter",
-            fontWeight: "600",
-        },
+		// column names
+		h6: {
+			color: "#707070",
+			fontFamily: "Inter",
+			fontWeight: "600",
+		},
 
-        // general text
-        body1: {
-            fontFamily: "Inter",
-            fontWeight: "400"
-        }
+		// general text
+		body1: {
+			color: "#212226",
+			fontFamily: "Inter",
+			fontWeight: "400"
+		}
 	},
 });

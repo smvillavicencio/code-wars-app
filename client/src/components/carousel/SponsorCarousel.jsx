@@ -2,7 +2,6 @@ import Carousel from 'react-material-ui-carousel'
 import Item from './Item'
 import placeholder from "../../assets/UPLB COSS.png";
 
-
 // placeholder for company logos
 var logos = [
   {
@@ -34,10 +33,10 @@ const SponsorCarousel = () => {
         justifyContent: "center",
         height: "200px",
         maxWidth: "350px",
-        backgroundColor: "rgba(255,255,255,0.25)",
-        backdropFilter: "blur(40)px",
+        backgroundColor: "rgba(179,179,179,0.25)",
         boxShadow: "10px 10px 10px rgba(30,30,30,.1)",
         borderRadius: "15px",
+        backdropFilter: "blur(4px)",
       }}
 
       // make prev and next buttons always visible

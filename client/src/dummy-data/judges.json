@@ -1,0 +1,8 @@
+{
+  "_id":{
+    "$oid":"65b3bcf8f1b97b7835471288"
+  },
+  "judge_name":"Judge1",
+  "password":"$2b$10$udCqpDj82./Fb.hB3n7KJuBuRa4vV88hs93HEoL5tfEgSitEF1MMK",
+  "__v":0
+}

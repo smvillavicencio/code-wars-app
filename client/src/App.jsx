@@ -1,9 +1,9 @@
 import { ThemeProvider } from "@emotion/react";
 import { Box } from "@mui/material";
-// import { theme } from "./theme/index.js";
-import { theme } from "./theme.js";
 
+import { theme } from "./theme.js";
 import bg1 from "./assets/bg1.png";
+
 
 function App() {
   return (

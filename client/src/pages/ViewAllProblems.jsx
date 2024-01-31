@@ -1,0 +1,127 @@
+import {
+	Button,
+  Box,
+  Stack,
+	Tooltip,
+	Typography
+} from "@mui/material";
+import { SponsorCarousel, ProblemListTable, TopBar } from "../components/index";
+
+// dummy data
+const columns = [
+	{
+		field: "id",
+		headerName: "#",
+    minWidth: 60,
+    maxWidth: 100,
+    headerAlign: "center",
+    align: "center",
+		flex: 1,
+	},
+	{
+		field: "problemTitle",
+		headerName: "Problem Title",
+    minWidth: 400,
+    // maxWidth: 500,
+		flex: 1,
+	},
+	{
+		field: "status",
+		headerName: "Status",
+		minWidth: 150,
+    // maxWidth: 200,
+		flex: 1,
+	},
+	{
+		field: "score",
+		headerName: "Score",
+    minWidth: 100,
+    maxWidth: 200,
+    headerAlign: "left",
+    align: "left",
+		flex: 1,
+	},
+	{
+		field: "checkedBy",
+		headerName: "Checked By",
+    minWidth: 200,
+    // maxWidth: 250,
+    flex: 1,
+	},
+];
+
+// dummy data
+const rows = [
+  { id: 1, problemTitle: 'Special Calculator', status: 'Unopened', score: 0/200, checkedBy: 'Sir Hermocilla'},
+  { id: 2, problemTitle: 'Listing All Addends', status: 'Submitted', score: 0/400, checkedBy: 'Sir Isungga'},
+  { id: 3, problemTitle: 'BINGO', status: 'Under Review', score: 0/400, checkedBy: 'Sir Doria'},
+  { id: 4, problemTitle: 'Hamming distance, interleavings, and isomorphic', status: 'Unopened', score: 500/500, checkedBy: 'Sir Hermocilla'},
+  { id: 5, problemTitle: 'The "Without" Problems', status: 'Done', score: 300/700, checkedBy: 'Sir Isungga' },
+  { id: 6, problemTitle: 'Figuring Patterns', status: 'Done', score: 0/1000, checkedBy: 'Sir Doria' },
+  { id: 7, problemTitle: 'Recursive Shifting', status: 'Submitted', score: 0/2800, checkedBy: 'Sir Hermocilla'},
+  { id: 8, problemTitle: 'Sudoku Validator', status: 'Unopened', score: 0/5500, checkedBy: 'Sir Isungga'},
+	{ id: 9, problemTitle: 'Figure Output Pattern', status: 'Unopened', score: 0/600, checkedBy: 'Sir Doria' },
+	{ id: 10, problemTitle: 'Roman Numeral Calculator', status: 'Unopened', score: 0/700, checkedBy: 'Sir Hermocilla'},
+];
+
+
+const ViewAllProblemsPage = () => {
+  return (
+    // for the top bar and other components
+    <Stack>
+      <TopBar />
+
+      {/* Other components */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+        }}
+      >
+        {/* left column is for timer, leaderboard, sponsors' carousel */}
+        <Stack spacing={5} sx={{mt: 10, mx: 8}}>
+          <SponsorCarousel />
+          <SponsorCarousel />
+        </Stack>
+
+        {/* right column is for round buttons and table */}
+        <Stack
+          spacing={5}
+          sx={{
+            mt: 8,
+            width: "68%",
+          }}
+        >
+          
+          {/* container round buttons */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <Typography
+              noWrap
+              variant="h3"
+              component="div"
+            >
+              <Button
+                variant="contained"
+                // startIcon={<Add />}
+                sx={{
+                  borderRadius: "10px",
+                }}
+              >
+                EASY
+              </Button>
+            </Typography>
+          </Box>
+
+          <ProblemListTable rows={rows} columns={columns} />
+        </Stack>
+      </Box>
+    </Stack>
+  )
+};
+
+export default ViewAllProblemsPage;

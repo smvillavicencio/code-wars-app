@@ -32,7 +32,7 @@ const SponsorCarousel = () => {
         alignContent: "center",
         justifyContent: "center",
         height: "200px",
-        maxWidth: "350px",
+        minWidth: "350px",
         backgroundColor: "rgba(179,179,179,0.25)",
         boxShadow: "10px 10px 10px rgba(30,30,30,.1)",
         borderRadius: "15px",

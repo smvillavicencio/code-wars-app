@@ -1,12 +1,11 @@
 import {
 	Button,
-	Box,
+  Box,
+  Stack,
 	Tooltip,
 	Typography
 } from "@mui/material";
-
-import ProblemListTable from "../components/data-table/ProblemListTable";
-
+import { SponsorCarousel, ProblemListTable, TopBar } from "../components/index";
 
 // dummy data
 const columns = [
@@ -67,32 +66,61 @@ const rows = [
 
 
 const ViewAllProblemsPage = () => {
-	return (
-    <Box
-      sx={{
-        // display: "flex",
-        // flexDirection: "column",
-        ml: "500px",
-        width: "68%",
-      }}>
-      <Typography
-        noWrap
-        variant="h3"
-        component="div"
+  return (
+    // for the top bar and other components
+    <Stack>
+      <TopBar />
+
+      {/* Other components */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+        }}
       >
-        <Button
-          variant="contained"
-          // startIcon={<Add />}
+        {/* left column is for timer, leaderboard, sponsors' carousel */}
+        <Stack spacing={5} sx={{mt: 10, mx: 8}}>
+          <SponsorCarousel />
+          <SponsorCarousel />
+        </Stack>
+
+        {/* right column is for round buttons and table */}
+        <Stack
+          spacing={5}
           sx={{
-            borderRadius: "10px",
+            mt: 8,
+            width: "68%",
           }}
         >
-          EASY
-        </Button>
-      </Typography>
+          
+          {/* container round buttons */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <Typography
+              noWrap
+              variant="h3"
+              component="div"
+            >
+              <Button
+                variant="contained"
+                // startIcon={<Add />}
+                sx={{
+                  borderRadius: "10px",
+                }}
+              >
+                EASY
+              </Button>
+            </Typography>
+          </Box>
 
-      <ProblemListTable rows={rows} columns={columns} />
-    </Box>
+          <ProblemListTable rows={rows} columns={columns} />
+        </Stack>
+      </Box>
+    </Stack>
   )
 };
 

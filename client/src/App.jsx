@@ -4,6 +4,8 @@ import { Box } from "@mui/material";
 import { theme } from "./theme.js";
 import bg1 from "./assets/bg1.png";
 
+import SubmitModal from "./components/submit-modal/submit-modal.jsx";
+import LogIn from "./pages/login.jsx";
 
 function App() {
   return (
@@ -16,7 +18,9 @@ function App() {
           height: "100vh",
           color: "#f5f5f5"
       }}>
-        {/* insert component being tested here */}
+        {
+          <SubmitModal></SubmitModal>
+        }
       </Box>
     </ThemeProvider>
   );

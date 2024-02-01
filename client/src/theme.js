@@ -45,6 +45,13 @@ export const theme = createTheme({
 	},
 
 	typography: {
+		// timer countdown
+		h2: {
+			color: "#e5ebff",
+			fontFamily: "Inter",
+			fontWeight: 400,
+		},
+
 		// topbar header
 		h4: {
 			color: "#e5ebff",
@@ -52,7 +59,7 @@ export const theme = createTheme({
 			fontWeight: "600"
 		},
 
-		// topbar subtitle / timer / buttons / other titles
+		// topbar subtitle / timer title / buttons / other titles
 		h5: {
 			color: "#e5ebff",
 			fontFamily: "Poppins",

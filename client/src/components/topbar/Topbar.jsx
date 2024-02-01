@@ -1,45 +1,60 @@
-/* Material UI */
 import {
 	AppBar,
-	Container,
+	Box,
+	Button,
 	Toolbar,
 	Typography,
 } from "@mui/material";
+import seal from "../../assets/UPLB COSS.png";
 
 
-/**
- * Explain what the component is for
- */
+
 const TopBar = () => {
 	return (
 		<AppBar
-			component="nav"
 			color="glass"
 			sx={{
 				backgroundColor: "rgba(179,179,179,0.25)",
-        boxShadow: "10px 10px 10px rgba(30,30,30,.1)",
+				boxShadow: "10px 10px 10px rgba(30,30,30,.1)",
 				backdropFilter: "blur(4px)",
-				position:"static",
+				position: "static",
 			}}
 		>
-			<Container maxWidth="xl">
-				<Toolbar disableGutters>
-					{/* App Name */}
-					<Typography
-						// noWrap
-						variant="h4"
-					>
-						Name
-					</Typography>
-					{/* Subtitle */}
-					<Typography
-						// noWrap
-						variant="h5"
-					>
-						Subtitle
-					</Typography>
-				</Toolbar>
-			</Container>
+			<Toolbar sx={{ justifyContent: "space-between" }}>
+				<Box
+					sx={{
+						display: 'flex',
+						flexDirection: 'row',
+						py: 1,
+						gap: 3,
+					}}
+				>
+					<img
+						src={seal}
+						alt="UPLB COSS Seal"
+						style={{
+							maxWidth: "75px",
+							maxHeight: "75px",
+						}}
+					/>
+					<Box>
+						<Typography noWrap variant="h4">
+							<span>Code Wars</span>
+						</Typography>
+						<Typography noWrap variant="h5">
+							<span>UPLB Computer Science Society</span>
+						</Typography>
+					</Box>
+				</Box>
+
+				<Button
+					variant="contained"
+					color="primary"
+					size="large"
+				>
+					BUY POWER-UP
+				</Button>
+			</Toolbar>
 		</AppBar>
 	);
 };

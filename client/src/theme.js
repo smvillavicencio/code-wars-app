@@ -28,7 +28,7 @@ export const theme = createTheme({
 		glass: {
 			main: "#b3b3b3",
 		},
-		
+
 		// text
 		general: {
 			main: "#212226",
@@ -46,24 +46,17 @@ export const theme = createTheme({
 
 	typography: {
 		// topbar header
-		h2: {
+		h4: {
 			color: "#e5ebff",
 			fontFamily: "Poppins",
 			fontWeight: "600"
 		},
 
-		// topbar subtitle / timer
-		h4: {
-			color: "#e5ebff",
-			fontFamily: "Poppins",
-			fontWeight: "400"
-		},
-
-		// buttons/other titles
+		// topbar subtitle / timer / buttons / other titles
 		h5: {
 			color: "#e5ebff",
 			fontFamily: "Poppins",
-			fontWeight: "500",
+			fontWeight: "400",
 		},
 
 		// column names

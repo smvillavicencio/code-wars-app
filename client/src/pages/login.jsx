@@ -138,8 +138,7 @@ const LogIn = () => {
             
             {/* Sponsor carousel in LogIn Page */}
             <Box sx={{
-                width: 470, 
-                height: 220, 
+                width: 480, 
             }}>
                 <SponsorCarousel />
 

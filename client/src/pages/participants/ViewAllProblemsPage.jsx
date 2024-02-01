@@ -4,7 +4,7 @@ import {
   SponsorCarousel,
   Timer,
   TopBar
-} from "../components/index";
+} from "../../components/index";
 
 import {
 	Button,

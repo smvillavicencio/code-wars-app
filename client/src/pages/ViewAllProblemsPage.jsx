@@ -1,11 +1,18 @@
+import LockIcon from '@mui/icons-material/Lock';
+import {
+  ProblemListTable,
+  SponsorCarousel,
+  Timer,
+  TopBar
+} from "../components/index";
+
 import {
 	Button,
   Box,
   Stack,
 	Tooltip,
-	Typography
 } from "@mui/material";
-import { SponsorCarousel, ProblemListTable, TopBar } from "../components/index";
+
 
 // dummy data
 const columns = [
@@ -79,7 +86,15 @@ const ViewAllProblemsPage = () => {
         }}
       >
         {/* left column is for timer, leaderboard, sponsors' carousel */}
-        <Stack spacing={5} sx={{mt: 10, mx: 8}}>
+        <Stack
+          spacing={5}
+          sx={{
+            mt: 5,
+            mx: 8,
+            minWidth: 350,
+          }}
+        >
+          <Timer />
           <SponsorCarousel />
           <SponsorCarousel />
         </Stack>
@@ -94,27 +109,74 @@ const ViewAllProblemsPage = () => {
         >
           
           {/* container round buttons */}
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <Typography
-              noWrap
-              variant="h3"
-              component="div"
+          <Box sx={{ display: 'flex', gap: 3 }}>
+            <Button
+              variant="contained"
+              startIcon={<LockIcon />}
+              size="large"
+              sx={{
+                borderRadius: "10px",
+                minWidth: 125,
+                gap: 0.5,
+                '&:hover': {
+                  bgcolor: "major.light", // Background color on hover
+                  color: "general.main",
+                }
+              }}
             >
-              <Button
-                variant="contained"
-                // startIcon={<Add />}
-                sx={{
-                  borderRadius: "10px",
-                }}
-              >
-                EASY
-              </Button>
-            </Typography>
+              EASY
+            </Button>
+
+            <Button
+              variant="contained"
+              startIcon={<LockIcon />}
+              size="large"
+              sx={{
+                borderRadius: "10px",
+                minWidth: 125,
+                gap: 0.5,
+                '&:hover': {
+                  bgcolor: "major.light", // Background color on hover
+                  color: "general.main",
+                }
+              }}
+            >
+              MEDIUM
+            </Button>
+
+            <Button
+              variant="contained"
+              startIcon={<LockIcon />}
+              size="large"
+              sx={{
+                borderRadius: "10px",
+                minWidth: 125,
+                gap: 0.5,
+                '&:hover': {
+                  bgcolor: "major.light", // Background color on hover
+                  color: "general.main",
+                }
+              }}
+            >
+              WAGER
+            </Button>
+
+            <Button
+              variant="contained"
+              startIcon={<LockIcon />}
+              size="large"
+              sx={{
+                borderRadius: "10px",
+                minWidth: 125,
+                gap: 0.5,
+                '&:hover': {
+                  bgcolor: "major.light", // Background color on hover
+                  color: "general.main",
+                }
+              }}
+            >
+              HARD
+            </Button>
           </Box>
 
           <ProblemListTable rows={rows} columns={columns} />

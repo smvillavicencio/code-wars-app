@@ -27,20 +27,26 @@ const SponsorCarousel = () => {
   return (
     <Carousel
       sx={{
-        paddingTop: 5,
+        paddingY: 3,
         alignItems: "center",
         alignContent: "center",
         justifyContent: "center",
-        height: "200px",
-        minWidth: "350px",
-        backgroundColor: "rgba(179,179,179,0.25)",
-        boxShadow: "10px 10px 10px rgba(30,30,30,.1)",
+        bgcolor: "rgba(255, 255, 255, 0.1)",
+        boxShadow: "0px 0px 10px 5px rgba(0, 0, 0, 0.5)",
         borderRadius: "15px",
-        backdropFilter: "blur(4px)",
+        backdropFilter: "blur(10px)",
       }}
 
       // make prev and next buttons always visible
       navButtonsAlwaysVisible={true}
+
+      // adjust marginX for navigation buttons
+      navButtonsWrapperProps={{
+        style: {
+          marginLeft: 5,
+          marginRight: 5,
+        }
+      }} 
 
       // modify color for active indicator
       activeIndicatorIconButtonProps={{
@@ -59,7 +65,8 @@ const SponsorCarousel = () => {
       // adjust padding for indicator buttons
       indicatorIconButtonProps={{
         style: {
-          margin: '10px',
+          marginLeft: 8,
+          marginRight: 8,
         }
       }}
     >

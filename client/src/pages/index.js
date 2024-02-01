@@ -1,5 +1,5 @@
 import LogIn from "./login";
-import ViewAllProblemsPage from "./ViewAllProblemsPage";
+import ViewAllProblemsPage from "./participants/ViewAllProblemsPage";
 
 export {
   LogIn,

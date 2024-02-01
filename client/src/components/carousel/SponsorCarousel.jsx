@@ -28,6 +28,7 @@ const SponsorCarousel = () => {
     <Carousel
       sx={{
         paddingY: 3,
+        minWidth: 350,
         alignItems: "center",
         alignContent: "center",
         justifyContent: "center",

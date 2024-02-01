@@ -51,6 +51,12 @@ const TopBar = () => {
 					variant="contained"
 					color="primary"
 					size="large"
+					sx={{
+						'&:hover': {
+							bgcolor: "major.light", // Background color on hover
+							color: "general.main",
+						}
+					}}
 				>
 					BUY POWER-UP
 				</Button>

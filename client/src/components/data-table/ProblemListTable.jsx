@@ -22,12 +22,11 @@ const ProblemListTable = ({ rows, columns }) => {
       rows={currRows}
       columns={columns}
       pageSizeOptions={[5, 10]}
-      autoPageSize
       disableColumnSelector
       disableColumnFilter
       hideFooterSelectedRowCount
-      autoHeight
       onRowClick={handleRowClick}
+      autoPageSize={false}
     
       sx={{
         // modify column header typography

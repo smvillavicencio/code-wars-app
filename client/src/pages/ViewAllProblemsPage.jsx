@@ -115,7 +115,6 @@ const ViewAllProblemsPage = () => {
               startIcon={<LockIcon />}
               size="large"
               sx={{
-                borderRadius: "10px",
                 minWidth: 125,
                 gap: 0.5,
                 '&:hover': {
@@ -132,7 +131,6 @@ const ViewAllProblemsPage = () => {
               startIcon={<LockIcon />}
               size="large"
               sx={{
-                borderRadius: "10px",
                 minWidth: 125,
                 gap: 0.5,
                 '&:hover': {
@@ -149,7 +147,6 @@ const ViewAllProblemsPage = () => {
               startIcon={<LockIcon />}
               size="large"
               sx={{
-                borderRadius: "10px",
                 minWidth: 125,
                 gap: 0.5,
                 '&:hover': {
@@ -166,7 +163,6 @@ const ViewAllProblemsPage = () => {
               startIcon={<LockIcon />}
               size="large"
               sx={{
-                borderRadius: "10px",
                 minWidth: 125,
                 gap: 0.5,
                 '&:hover': {

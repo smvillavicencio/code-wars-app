@@ -1,8 +1,7 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 
 // This is the theme for the entire app.
-
-export const theme = createTheme({
+let customTheme = createTheme({
 	palette: {
 		// buttons
 		primary: {
@@ -81,3 +80,5 @@ export const theme = createTheme({
 		}
 	},
 });
+
+export const theme = responsiveFontSizes(customTheme);

@@ -125,8 +125,9 @@ const ViewAllProblemsPage = () => {
               sx={{
                 minWidth: 125,
                 gap: 0.5,
+                bgcolor: 'major.main',
                 '&:hover': {
-                  bgcolor: "major.light", // Background color on hover
+                  bgcolor: "major.light",
                   color: "general.main",
                 }
               }}
@@ -141,8 +142,9 @@ const ViewAllProblemsPage = () => {
               sx={{
                 minWidth: 125,
                 gap: 0.5,
+                bgcolor: 'major.main',
                 '&:hover': {
-                  bgcolor: "major.light", // Background color on hover
+                  bgcolor: "major.light",
                   color: "general.main",
                 }
               }}
@@ -157,8 +159,9 @@ const ViewAllProblemsPage = () => {
               sx={{
                 minWidth: 125,
                 gap: 0.5,
+                bgcolor: 'major.main',
                 '&:hover': {
-                  bgcolor: "major.light", // Background color on hover
+                  bgcolor: "major.light",
                   color: "general.main",
                 }
               }}
@@ -173,8 +176,9 @@ const ViewAllProblemsPage = () => {
               sx={{
                 minWidth: 125,
                 gap: 0.5,
+                bgcolor: 'major.main',
                 '&:hover': {
-                  bgcolor: "major.light", // Background color on hover
+                  bgcolor: "major.light",
                   color: "general.main",
                 }
               }}

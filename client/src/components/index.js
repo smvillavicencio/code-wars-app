@@ -1,3 +1,4 @@
+import DropdownSelect from "./select/DropdownSelect";
 import OverallLeaderboard from "./leaderboard/OverallLeaderboard";
 import SponsorCarousel from "./carousel/SponsorCarousel";
 import ProblemListTable from "./tables/ProblemListTable";
@@ -7,6 +8,7 @@ import SubmissionsTable from "./tables/SubmissionsTable";
 
 
 export { 
+	DropdownSelect,
 	OverallLeaderboard,
 	ProblemListTable,
 	SponsorCarousel,

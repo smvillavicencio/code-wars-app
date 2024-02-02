@@ -1,10 +1,11 @@
+import seal from "../../assets/UPLB COSS.png";
 import LockIcon from '@mui/icons-material/Lock';
 import {
   ProblemListTable,
   SponsorCarousel,
   Timer,
   TopBar
-} from "../components/index";
+} from "../../components/index";
 
 import {
 	Button,
@@ -76,7 +77,14 @@ const ViewAllProblemsPage = () => {
   return (
     // for the top bar and other components
     <Stack>
-      <TopBar />
+      <TopBar
+        isImg={true}
+        icon={seal}
+        title="Code Wars"
+        subtitle="UPLB Computer Science Society"
+        buttonText="BUY POWER-UP"
+        // handleButton={}
+      />
 
       {/* Other components */}
       <Box

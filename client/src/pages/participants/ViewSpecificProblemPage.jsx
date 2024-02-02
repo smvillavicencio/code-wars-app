@@ -153,18 +153,42 @@ const ViewSpecificProblemPage = ({
             <Box
               sx={{
                 display: 'flex',
-                flexDirection: 'row',
                 backgroundColor: '#fff',
-                minHeight: 50,
+                minHeight: 200,
                 borderRadius: 4,
               }}
             >
-              <Box>
-                <div>Sample Inputs</div>
+              <Box sx={{ width: "50%", borderRight: 2,}}>
+                <Typography
+                  color="primary.contrastText"
+                  sx={{
+                    borderTopLeftRadius: 10,
+                    bgcolor: "primary.main",
+                    fontFamily: "Inter",
+                    fontWeight: 400,
+                    fontSize: "1.10rem",
+                    padding: 1,
+                  }}
+                >
+                  Sample Inputs
+                </Typography>
                 <div></div>
               </Box>
-              <Box>
-                <div>Sample Outputs</div>
+
+              <Box sx={{ width: "50%" }}>
+                <Typography
+                  color="primary.contrastText"
+                  sx={{
+                    borderTopRightRadius: 10,
+                    bgcolor: "primary.main",
+                    fontFamily: "Inter",
+                    fontWeight: 400,
+                    fontSize: "1.10rem",
+                    padding: 1,
+                  }}
+                >
+                  Sample Outputs
+                </Typography>
                 <div></div>
               </Box>
             </Box>

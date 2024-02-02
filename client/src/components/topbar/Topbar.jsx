@@ -78,7 +78,7 @@ const TopBar = ({
 
 				<Button
 					variant="contained"
-					color="major.main"
+					color="major"
 					size="large"
 					startIcon={ startIcon? <>{startIcon}</> : <></> }
 					sx={{

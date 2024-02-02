@@ -1,3 +1,5 @@
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useState, useEffect } from 'react';
 import {
 	AppBar,
 	Box,
@@ -5,17 +7,31 @@ import {
 	Toolbar,
 	Typography,
 } from "@mui/material";
-import seal from "../../assets/UPLB COSS.png";
 
 
 
-const TopBar = () => {
+const TopBar = ({
+	isImg,
+	icon,
+	title,
+	subtitle,
+	buttonText,
+	startIcon,
+	handleButton
+}) => {
+	const [image, setImage] = useState(true)
+
+	// set image upon component mount
+	useEffect(() => { 
+		setImage(isImg);	
+	}, []);
+
 	return (
 		<AppBar
 			color="glass"
 			sx={{
 				backgroundColor: "rgba(179,179,179,0.25)",
-				boxShadow: "10px 10px 10px rgba(30,30,30,.1)",
+				boxShadow: "0px 0px 10px 5px rgba(0, 0, 0, 0.5)",
 				backdropFilter: "blur(4px)",
 				position: "static",
 			}}
@@ -29,20 +45,33 @@ const TopBar = () => {
 						gap: 3,
 					}}
 				>
-					<img
-						src={seal}
-						alt="UPLB COSS Seal"
+					{/* override default attributes of figure tag */}
+					<figure
 						style={{
-							maxWidth: "75px",
-							maxHeight: "75px",
+							padding: 0,
+							margin: 0,
+							border: 0,
+							margin: 'auto',
 						}}
-					/>
+					>
+						{image ? 
+							<img
+								src={icon}
+								style={{
+									maxWidth: "75px",
+									maxHeight: "75px",
+								}}
+							/> :
+							<div style={{ fontSize:"50", color: "white" }}>{icon}</div>
+						}
+					</figure>
+					
 					<Box>
 						<Typography noWrap variant="h4">
-							<span>Code Wars</span>
+							<span>{title}</span>
 						</Typography>
 						<Typography noWrap variant="h5">
-							<span>UPLB Computer Science Society</span>
+							<span>{subtitle}</span>
 						</Typography>
 					</Box>
 				</Box>
@@ -51,14 +80,16 @@ const TopBar = () => {
 					variant="contained"
 					color="primary"
 					size="large"
+					startIcon={ startIcon? <>{startIcon}</> : <></> }
 					sx={{
+						minWidth: 30,
 						'&:hover': {
-							bgcolor: "major.light", // Background color on hover
+							bgcolor: "major.light",
 							color: "general.main",
 						}
 					}}
 				>
-					BUY POWER-UP
+					{buttonText}
 				</Button>
 			</Toolbar>
 		</AppBar>

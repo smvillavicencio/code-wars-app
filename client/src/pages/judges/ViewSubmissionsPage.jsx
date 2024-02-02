@@ -1,4 +1,5 @@
 import {
+	DropdownSelect,
 	SubmissionsTable,
 	TopBar
 } from '../../components/index.js';
@@ -6,6 +7,7 @@ import seal from "../../assets/UPLB COSS.png";
 import ViewListIcon from '@mui/icons-material/ViewList';
 
 import {
+	Box,
 	Stack
 } from '@mui/material';
 
@@ -76,9 +78,37 @@ const rows = [
 	{ id: 9,teamName: 'Team Seven', problemTitle: 'Roman Numeral Calculator', submittedAt: '09:00:15', latestFile: 0/700, results: '', checkedBy: 'Sir Hermocilla'},
 ];
 
+const optionsTeam = [
+	'Team Yeah Yeah',
+	'Team Wiwzzz',
+	'Team Ooohh',
+	'Team One',
+	'Team Two',
+	'Team Three',
+	'Team Four',
+	'Team Five',
+	'Team Six',
+	'Team Seven',
+];
+
+const optionsProblem = [
+	'Special Calculator',
+	'Listing All Addends',
+	'BINGO',
+	'Hamming distance, interleavings, and isomorphic',
+	'The "Without" Problems',
+	'Figuring Patterns',
+	'Recursive Shifting',
+	'Sudoku Validator',
+	'Figure Output Pattern',
+	'Roman Numeral Calculator',
+];
+
 const ViewSubmissionsPage = () => {
+	
+
   return (
-		<Stack>
+		<Box>
 			<TopBar
         isImg={true}
         icon={seal}
@@ -87,9 +117,35 @@ const ViewSubmissionsPage = () => {
 				buttonText="VIEW LEADERBOARD"
 				startIcon={<ViewListIcon />}
         // handleButton={}
-      />
-			<SubmissionsTable columns={columns} rows={rows} />
-		</Stack>
+			/>
+			
+			<Stack spacing={5} sx={{ mt: 5, mx: 15 }}>
+				
+				{/* dropdown selects */}
+				<Box sx={{
+					display: 'flex',
+					flexDirection: 'row',
+					gap: 5,
+				}}>
+					<DropdownSelect
+						isDisabled={false}
+						label="Team Name"
+						minWidth="20%"
+						options={optionsTeam}
+					/>
+					<DropdownSelect
+						isDisabled={false}
+						minWidth="35%"
+						label="Problem Title"
+						options={optionsProblem}
+					/>
+				</Box>
+
+				{/* table */}
+				<SubmissionsTable columns={columns} rows={rows} />
+			</Stack>
+				
+		</Box>
   )
 };
 

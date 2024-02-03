@@ -37,21 +37,23 @@ function Layout() {
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Router>
-        <Routes>
-          {/* Login page has a different background image */}
-          <Route index element={<LoginPage />} />
+      <UserDetailsProvider>
+        <Router>
+          <Routes>
+            {/* Login page has a different background image */}
+            <Route index element={<LoginPage />} />
 
-          {/* Pages with same backgrounds */}
-          <Route path="/" element={<Layout />}>
-            <Route path="participant/view-all-problems" element={<ViewAllProblemsPage />} />
-            <Route path="participant/view-specific-problem" element={<ViewSpecificProblemPage />} />
-            <Route path="judge/submissions" element={<ViewSubmissionsPage />} />
-            <Route path="admin/general" element={<GeneralOptionsPage />} />
-            <Route path="admin/logs" element={<PowerUpLogs />} />
-          </Route>
-        </Routes>
-      </Router>
+            {/* Pages with same backgrounds */}
+            <Route path="/" element={<Layout />}>
+              <Route path="participant/view-all-problems" element={<ViewAllProblemsPage />} />
+              <Route path="participant/view-specific-problem" element={<ViewSpecificProblemPage />} />
+              <Route path="judge/submissions" element={<ViewSubmissionsPage />} />
+              <Route path="admin/general" element={<GeneralOptionsPage />} />
+              <Route path="admin/logs" element={<PowerUpLogs />} />
+            </Route>
+          </Routes>
+        </Router>
+      </UserDetailsProvider>
     </ThemeProvider>
   );
 }

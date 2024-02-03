@@ -10,7 +10,7 @@ const Timer = () => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        minWidth: "350px",
+        minWidth: "325px",
         alignItems: "center",
       }}
     >

@@ -1,11 +1,50 @@
 import { Box, TextField, Button, Typography } from "@mui/material";
 import { SponsorCarousel } from "../../components/index.js";
-
+import { useNavigate } from "react-router-dom";
+import { userDetailsContext } from "../../utils/UserDetailsProvider";
+import { useContext, useState } from "react";
 import LoginBackground from "../../assets/LoginBackground.png";
 import PersonIcon from '@mui/icons-material/Person';
 import KeyIcon from '@mui/icons-material/Key';
 
+
+
 const LoginPage = () => {
+    const [userDetails, setUserDetails] = useContext(userDetailsContext);
+    const [username, SetUsername] = useState('');
+
+    // Navigation
+    const navigate = useNavigate();
+
+    const handleLogin = (username) => {
+        console.log(username);
+
+        if (username == 'participant') {
+            setUserDetails({
+                user: "Team Yeah Yeah",
+                role: "participant",
+            });
+            navigate("/participant/view-all-problems");
+
+        } else if (username == 'judge') {
+            setUserDetails({
+                user: "Sir Name",
+                role: "Judge",
+            });
+            navigate("/judge/submissions");
+
+        } else if (username == 'admin') {
+            setUserDetails({
+                user: "Code Wars Admin",
+                role: "admin",
+            });
+            navigate("/admin/general");
+
+        } else {
+            alert("Failed");
+        }
+    }
+
 
     return (
         <Box
@@ -57,6 +96,9 @@ const LoginPage = () => {
                             id="filled-basic"
                             label="Username"
                             variant="filled"
+                            onChange={e => {
+                                SetUsername(e.target.value)
+                            }}
                             sx={{
                                 bgcolor: "rgba(255, 255, 255, 0.15)",
                                 borderTopLeftRadius: "5px",
@@ -130,6 +172,8 @@ const LoginPage = () => {
 
                     {/* Sign In Button */}
                     <Button 
+                        type="submit"
+                        onClick={() => { handleLogin(username) }}
                         variant="contained" 
                         sx={{
                             width: "320px",

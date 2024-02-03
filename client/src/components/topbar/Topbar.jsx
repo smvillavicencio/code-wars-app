@@ -66,7 +66,13 @@ const TopBar = ({
 						}
 					</figure>
 					
-					<Box>
+					<Box
+						sx={{
+							display: 'flex',
+							flexDirection: 'column',
+							justifyContent: 'center',
+						}}
+					>
 						<Typography noWrap variant="h4">
 							<span>{title}</span>
 						</Typography>

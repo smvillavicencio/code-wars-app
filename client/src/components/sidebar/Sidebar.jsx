@@ -27,10 +27,15 @@ const Sidebar = () => {
   const [userDetails, setUserDetails] = useContext(userDetailsContext);
   const navigate = useNavigate();
 
-  const handleLogout = () => { 
+  const handleLogout = () => {
     setUserDetails(null);
     navigate("/");
-  }
+  };
+
+  const isDisabled = () => {
+    // if 
+    return false
+  };
 
   return (
     <Box>
@@ -63,7 +68,7 @@ const Sidebar = () => {
             variant="contained"
             color="major"
             size="large"
-            onClick={navigate("admin/general")}
+            onClick={() => { navigate("/admin/general") }}
             startIcon={<SettingsIcon />}
             sx={{
               width: "85%",
@@ -80,7 +85,7 @@ const Sidebar = () => {
             variant="contained"
             color="major"
             size="large"
-            onClick={navigate("admin/logs")}
+            onClick={() => { navigate("/admin/logs") }}
             startIcon={<BoltIcon />}
             sx={{
               marginTop: "2em",

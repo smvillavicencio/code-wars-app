@@ -82,7 +82,7 @@ let customTheme = createTheme({
 
 	typography: {
 		// timer countdown
-		h2: {
+		h3: {
 			color: "#e5ebff",
 			fontFamily: "Inter",
 			fontWeight: 400,

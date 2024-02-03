@@ -20,7 +20,7 @@ const Timer = () => {
         sx={{
           fontFamily: "Poppins",
           fontWeight: 600,
-          fontSize: "1.5rem",
+          fontSize: "1.4rem",
           alignItems: "center",
           alignContent: "center",
           justifyContent: "center",
@@ -29,7 +29,7 @@ const Timer = () => {
         <span>TIMER</span>
       </Typography>
 
-      <Typography noWrap variant="h2">
+      <Typography noWrap variant="h3">
         <span>00:00:00</span>
       </Typography>
     </Box>

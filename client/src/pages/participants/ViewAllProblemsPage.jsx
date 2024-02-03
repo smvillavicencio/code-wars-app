@@ -150,9 +150,9 @@ const ViewAllProblemsPage = () => {
       >
         {/* left column is for timer, leaderboard, sponsors' carousel */}
         <Stack
-          spacing={4}
+          spacing={3}
           sx={{
-            mt: 5,
+            mt: 4,
             mx: 8,
             minWidth: 325,
           }}

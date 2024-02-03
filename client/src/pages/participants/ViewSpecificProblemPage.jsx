@@ -1,7 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-
 import {
   Modal,
   ParticipantsLeaderboard,
@@ -10,10 +10,9 @@ import {
   Timer,
   TopBar
 } from "../../components/index";
-
 import {
-	Button,
   Box,
+  IconButton,
   Stack,
 	Tooltip,
   Typography,
@@ -86,24 +85,32 @@ const ViewSpecificProblemPage = ({
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
-	const handleClose = () => setOpen(false);
+  const handleClose = () => setOpen(false);
+  
+  const navigate = useNavigate();
 
-
+  const handleReturn = () => {
+    navigate("/participant/view-all-problems");
+  }
   return (
     // for the top bar and other components
     <Stack>
       <TopBar
         isImg={false}
-        icon={<ArrowBackIcon
-          sx={{
-            cursor: 'pointer',
-            fontSize: '3.5em',
-            borderRadius: 2,
-            '&:hover': {
-              backgroundColor: "rgba(201, 209, 231, 0.1)",
-              color: "general.main",
-            }
-          }} />
+        icon={
+          <IconButton sx={{ color: '#fff' }} onClick={handleReturn}>
+            <ArrowBackIcon
+              sx={{
+                cursor: 'pointer',
+                fontSize: '3em',
+                borderRadius: 2,
+                '&:hover': {
+                  backgroundColor: "rgba(201, 209, 231, 0.1)",
+                  color: "major.main",
+                }
+              }}
+            />
+          </IconButton>
         }
         title={problemTitle}
         subtitle={problemSubtitle}

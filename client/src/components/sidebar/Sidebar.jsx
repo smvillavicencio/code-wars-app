@@ -6,7 +6,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import {
   Box,
   Button,
-  Drawer,
   List,
   ListItem,
   ListItemButton,
@@ -17,26 +16,24 @@ import {
 } from "@mui/material"
 
 
-const drawerWidth = 240;
+const drawerWidth = 250;
 
 const Sidebar = () => {
   return (
     <Box>
-      <Drawer
-        variant="permanent"
+      <Box
         anchor="left"
         sx={{
           width: drawerWidth,
           flexShrink: 0,
+          height: "100vh",
 
           // modify background styling
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-            backgroundColor: "rgba(179,179,179,0.25)",
-            boxShadow: "0px 0px 10px 5px rgba(0, 0, 0, 0.5)",
-            backdropFilter: "blur(10px)",
-          },
+          width: drawerWidth,
+          boxSizing: 'border-box',
+          backgroundColor: "rgba(179,179,179,0.25)",
+          boxShadow: "0px 0px 10px 5px rgba(0, 0, 0, 0.5)",
+          backdropFilter: "blur(10px)",
         }}
       >
         {/* Sidebar Header */}
@@ -55,7 +52,7 @@ const Sidebar = () => {
             size="large"
             startIcon={<SettingsIcon />}
             sx={{
-              width: "90%",
+              width: "85%",
               '&:hover': {
                 bgcolor: "major.light",
                 color: "general.main",
@@ -72,7 +69,7 @@ const Sidebar = () => {
             startIcon={<BoltIcon />}
             sx={{
               marginTop: "2em",
-              width: "90%",
+              width: "85%",
               '&:hover': {
                 bgcolor: "major.light",
                 color: "general.main",
@@ -108,7 +105,7 @@ const Sidebar = () => {
           </ListItem>
         </List>
 
-      </Drawer>
+      </Box>
     </Box>
   )
 };

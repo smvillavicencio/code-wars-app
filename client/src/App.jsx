@@ -21,18 +21,18 @@ import {
  */
 function Layout() {
 	return (
-		<>
 			<Box
         style={{
           backgroundImage: `url(${GeneralBackground})`,
           backgroundSize: "cover",
           height: "100vh",
         }}
-      />
-			<Outlet />
-		</>
+      >
+        <Outlet />
+      </Box>
 	);
 }
+
 
 function App() {
   return (

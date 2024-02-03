@@ -4,12 +4,12 @@ import { createContext, useState } from 'react';
 export const userDetailsContext = createContext();
 
 export const UserDetailsProvider = (props) => {
-    // state that will be implemented globally
-    const [userDetails, setUserDetails] = useState();
+	// state that will be implemented globally
+	const [userDetails, setUserDetails] = useState();
 
-    return (
-        <userDetailsContext.Provider value={[userDetails, setUserDetails]}>
-            {props.children}
-        </userDetailsContext.Provider>
-    );
+	return (
+		<userDetailsContext.Provider value={[userDetails, setUserDetails]}>
+			{props.children}
+		</userDetailsContext.Provider>
+	);
 };

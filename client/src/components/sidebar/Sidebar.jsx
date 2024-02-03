@@ -1,8 +1,5 @@
-// Icons
-import SettingsIcon from '@mui/icons-material/Settings';
-import BoltIcon from '@mui/icons-material/Bolt';
-import LogoutIcon from '@mui/icons-material/Logout';
-
+import { useContext } from 'react';
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -15,10 +12,26 @@ import {
   Typography
 } from "@mui/material"
 
+import { userDetailsContext } from '../../utils/UserDetailsProvider';
+
+// Icons
+import SettingsIcon from '@mui/icons-material/Settings';
+import BoltIcon from '@mui/icons-material/Bolt';
+import LogoutIcon from '@mui/icons-material/Logout';
+
 
 const drawerWidth = 250;
 
+
 const Sidebar = () => {
+  const [userDetails, setUserDetails] = useContext(userDetailsContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => { 
+    setUserDetails(null);
+    navigate("/");
+  }
+
   return (
     <Box>
       <Box
@@ -50,6 +63,7 @@ const Sidebar = () => {
             variant="contained"
             color="major"
             size="large"
+            onClick={navigate("admin/general")}
             startIcon={<SettingsIcon />}
             sx={{
               width: "85%",
@@ -66,6 +80,7 @@ const Sidebar = () => {
             variant="contained"
             color="major"
             size="large"
+            onClick={navigate("admin/logs")}
             startIcon={<BoltIcon />}
             sx={{
               marginTop: "2em",
@@ -82,6 +97,7 @@ const Sidebar = () => {
 
         {/* Logout Button */}
         <List
+          onClick={handleLogout}
           sx={{
             position: "absolute",
             bottom: "0",

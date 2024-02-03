@@ -16,6 +16,24 @@ import {
 } from "./pages/index.js";
 
 
+/**
+ * This will set the common background for all pages (except login page)
+ */
+function Layout() {
+	return (
+		<>
+			<Box
+        style={{
+          backgroundImage: `url(${GeneralBackground})`,
+          backgroundSize: "cover",
+          height: "100vh",
+        }}
+      />
+			<Outlet />
+		</>
+	);
+}
+
 function App() {
   return (
     <ThemeProvider theme={theme}>

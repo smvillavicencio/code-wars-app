@@ -1,4 +1,4 @@
-import LogIn from "./login";
+import LoginPage from "./general/LoginPage";
 import GeneralOptionsPage from "./admin/GeneralOptionsPage";
 import PowerUpLogs from "./admin/PowerUpLogs";
 import ViewAllProblemsPage from "./participants/ViewAllProblemsPage";
@@ -7,7 +7,7 @@ import ViewSubmissionsPage from "./judges/ViewSubmissionsPage";
 
 
 export {
-  LogIn,
+  LoginPage,
   GeneralOptionsPage,
   PowerUpLogs,
   ViewAllProblemsPage,

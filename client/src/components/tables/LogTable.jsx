@@ -26,7 +26,16 @@ const LogTable = ({ rows, columns }) => {
       hideFooterSelectedRowCount
       onRowClick={handleRowClick}
       autoPageSize={false}
-    
+      autoHeight
+
+      initialState={{
+        columns: {
+          columnVisibilityModel: {
+            // Hide id column
+            id: false,
+          },
+        },
+      }}
       sx={{
         // modify column header typography
         '& .MuiDataGrid-columnHeader': {

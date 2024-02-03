@@ -13,7 +13,8 @@ import {
 	Button,
   Box,
   Stack,
-	Tooltip,
+  Toolbar,
+  Tooltip,
 } from "@mui/material";
 
 
@@ -242,6 +243,7 @@ const ViewAllProblemsPage = () => {
           </Box>
 
           <ProblemListTable rows={rows1} columns={columns1} />
+          <Toolbar />
         </Stack>
       </Box>
     </Stack>

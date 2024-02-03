@@ -1,3 +1,4 @@
+import BuyPowerUpsModal from "./modal/BuyPowerUpsModal";
 import DropdownSelect from "./select/DropdownSelect";
 import CustomModal from "./modal/CustomModal";
 import LogTable from "./tables/LogTable";
@@ -12,6 +13,7 @@ import TopBar from "./topbar/Topbar";
 
 
 export { 
+	BuyPowerUpsModal,
 	DropdownSelect,
 	CustomModal,
 	LogTable,

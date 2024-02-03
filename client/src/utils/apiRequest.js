@@ -1,6 +1,7 @@
-/**
+/*
 * This file is used to implement API calls.
 */
+
 /* HOW TO USE:
 
 GET REQUESTS
@@ -43,7 +44,7 @@ export async function getFetch(url, params) {
 	if (params) {
 		// reconstruct the query
 		const queryString = Object.entries(params).map(param => {
-			return `${param[0]}=${param[1]}`
+			return `${param[0]}=${param[1]}`;
 		}).join('&');
 
 		newURL = `${url}?${queryString}`;
@@ -53,13 +54,13 @@ export async function getFetch(url, params) {
 
 	// using the fetch function
 	return await fetch(newURL, {
-		method: "GET",
+		method: 'GET',
 		headers: {
-			"Content-Type": "application/json",
+			'Content-Type': 'application/json',
 		},
 			
 	}).then((res) => {
-		return res.json()
+		return res.json();
 
 	}).catch((err) => {
 		console.error(err);
@@ -74,9 +75,9 @@ export async function getFetch(url, params) {
 export async function postFetch(url, obj) {
 		
 	return fetch(url, {
-		method: "POST",
+		method: 'POST',
 		headers: {
-			"Content-Type": "application/json",
+			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify(obj)
 
@@ -93,9 +94,9 @@ export async function postFetch(url, obj) {
 export async function putFetch(url, obj) {
 
 	return fetch(url, {
-		method: "PUT",
+		method: 'PUT',
 		headers: {
-			"Content-Type": "application/json",
+			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify(obj)
 		
@@ -112,9 +113,9 @@ export async function putFetch(url, obj) {
 export async function deleteFetch(url, id) {
 
 	return fetch(`${url}${id}`, {
-		method: "DELETE",
+		method: 'DELETE',
 		headers: {
-			"Content-Type": "application/json",
+			'Content-Type': 'application/json',
 		}
 
 	}).then((res) => {

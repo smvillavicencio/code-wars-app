@@ -1,8 +1,0 @@
-{
-  "_id": {
-    "$oid":"65b3bcecf1b97b7835471283"
-  },
-  "admin_name":"Admin1",
-  "password":"$2b$10$E8BLUbHrKZ9Iz5PLEnQ9quvUnwSoLnhByxIU7QoUT3n03TtWfN0w2",
-  "__v":0
-}

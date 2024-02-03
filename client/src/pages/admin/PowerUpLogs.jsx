@@ -1,20 +1,11 @@
-import { DropdownSelect, Sidebar } from "../../components/index.js";
+import { Sidebar } from "../../components/index.js";
 import {
   Box,
-  Button,
   Stack,
-  Switch,
   Typography
 } from "@mui/material";
 
 
-const label = { inputProps: { 'aria-label': 'Switch demo' } };
-const optionsRounds = [
-  'Easy',
-  'Medium',
-  'Wager',
-  'Hard',
-]
 
 const PowerUpLogs = () => {
   return (

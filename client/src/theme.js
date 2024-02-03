@@ -2,6 +2,43 @@ import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 
 // This is the theme for the entire app.
 let customTheme = createTheme({
+	components: {
+		MuiSwitch: {
+			styleOverrides: {
+				root: {
+					paddingLeft: 0.5,
+					width: 65,
+					height: 40,
+				},
+				thumb: {
+					width: 23,
+					height: 23,
+				},
+				switchBase: {
+					// Controls default (unchecked) color and position for the thumb
+					color: "#fff",
+					transform: "translateX(-9px)",
+				},
+				colorPrimary: {
+					"&.Mui-checked": {
+						// Controls checked color and position for the thumb
+						color: "#ef346a",
+						transform: "translateX(25px)",
+					}
+				},
+				track: {
+					// Controls default (unchecked) color for the track
+					opacity: 0.5,
+					backgroundColor: "#fff",
+					".Mui-checked.Mui-checked + &": {
+						// Controls checked color for the track
+						opacity: 0.6,
+						backgroundColor: "#ffc1d3"
+					}
+				}
+			}
+		}
+	},
 	palette: {
 		// buttons
 		primary: {
@@ -65,11 +102,11 @@ let customTheme = createTheme({
 			fontWeight: "400",
 		},
 
-		// column names
+		// larger body of text
 		h6: {
-			color: "#707070",
+			color: "#e5ebff",
 			fontFamily: "Inter",
-			fontWeight: "600",
+			fontWeight: "500",
 		},
 
 		// general text
@@ -77,7 +114,7 @@ let customTheme = createTheme({
 			color: "#212226",
 			fontFamily: "Inter",
 			fontWeight: "400"
-		}
+		},
 	},
 });
 

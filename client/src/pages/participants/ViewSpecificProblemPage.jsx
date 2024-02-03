@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 import {
+  Modal,
+  ParticipantsLeaderboard,
   ProblemListTable,
   SponsorCarousel,
   Timer,
@@ -17,11 +20,15 @@ import {
 } from "@mui/material";
 
 
-// dummy data
+// dummy data for leaderboard
 const columns = [
+  {
+    field: "id",
+    headerName: "ID",
+  },
 	{
-		field: "id",
-		headerName: "#",
+		field: "rank",
+		headerName: "Rank",
     minWidth: 60,
     maxWidth: 100,
     headerAlign: "center",
@@ -29,50 +36,41 @@ const columns = [
 		flex: 1,
 	},
 	{
-		field: "problemTitle",
-		headerName: "Problem Title",
+		field: "teamName",
+		headerName: "Team Name",
     minWidth: 400,
     // maxWidth: 500,
 		flex: 1,
 	},
 	{
-		field: "status",
-		headerName: "Status",
+		field: "score",
+		headerName: "Score",
 		minWidth: 150,
     // maxWidth: 200,
 		flex: 1,
 	},
 	{
-		field: "score",
-		headerName: "Score",
+		field: "totalSpent",
+		headerName: "Total Spent",
     minWidth: 100,
     maxWidth: 200,
     headerAlign: "left",
     align: "left",
 		flex: 1,
 	},
-	{
-		field: "checkedBy",
-		headerName: "Checked By",
-    minWidth: 200,
-    // maxWidth: 250,
-    flex: 1,
-	},
 ];
 
-// dummy data
+// dummy data for leaderboard
 const rows = [
-  { id: 1, problemTitle: 'Special Calculator', status: 'Unopened', score: 0/200, checkedBy: 'Sir Hermocilla'},
-  { id: 2, problemTitle: 'Listing All Addends', status: 'Submitted', score: 0/400, checkedBy: 'Sir Isungga'},
-  { id: 3, problemTitle: 'BINGO', status: 'Under Review', score: 0/400, checkedBy: 'Sir Doria'},
-  { id: 4, problemTitle: 'Hamming distance, interleavings, and isomorphic', status: 'Unopened', score: 500/500, checkedBy: 'Sir Hermocilla'},
-  { id: 5, problemTitle: 'The "Without" Problems', status: 'Done', score: 300/700, checkedBy: 'Sir Isungga' },
-  { id: 6, problemTitle: 'Figuring Patterns', status: 'Done', score: 0/1000, checkedBy: 'Sir Doria' },
-  { id: 7, problemTitle: 'Recursive Shifting', status: 'Submitted', score: 0/2800, checkedBy: 'Sir Hermocilla'},
-  { id: 8, problemTitle: 'Sudoku Validator', status: 'Unopened', score: 0/5500, checkedBy: 'Sir Isungga'},
-	{ id: 9, problemTitle: 'Figure Output Pattern', status: 'Unopened', score: 0/600, checkedBy: 'Sir Doria' },
-	{ id: 10, problemTitle: 'Roman Numeral Calculator', status: 'Unopened', score: 0/700, checkedBy: 'Sir Hermocilla'},
+  { id: 1, rank: 1, teamName: 'Team One', score: 0/200, totalSpent: 1500},
+  { id: 2, rank: 2, teamName: 'Team Two', score: 0/400, totalSpent: 1300},
+  { id: 3, rank: 3, teamName: 'Team Three', score: 0/400, totalSpent: 1800},
+  { id: 4, rank: 4, teamName: 'Team Four', score: 500/500, totalSpent: 1000},
+  { id: 5, rank: 5, teamName: 'Team Five', score: 300/700, totalSpent: 650},
+  { id: 6, rank: 6, teamName: 'Team Six', score: 0/1000, totalSpent: 800},
+  { id: 7, rank: 7, teamName: 'Team Seven', score: 0/2800, totalSpent: 750},
 ];
+
 
 const problemTitle = "Hamming distance, interleavings, and isomorphic"
 const problemSubtitle = "UPLB Computer Science Society"
@@ -85,6 +83,12 @@ const ViewSpecificProblemPage = ({
   // problemDescription,
   samples
 }) => {
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => setOpen(true);
+	const handleClose = () => setOpen(false);
+
+
   return (
     // for the top bar and other components
     <Stack>
@@ -113,19 +117,20 @@ const ViewSpecificProblemPage = ({
         sx={{
           display: 'flex',
           flexDirection: 'row',
+          gap: 4,
         }}
       >
         {/* left column is for timer, leaderboard, sponsors' carousel */}
         <Stack
-          spacing={5}
+          spacing={4}
           sx={{
             mt: 5,
             mx: 8,
-            minWidth: 350,
+            minWidth: 325,
           }}
         >
           <Timer />
-          <SponsorCarousel />
+          <ParticipantsLeaderboard rows={rows} columns={columns} />
           <SponsorCarousel />
         </Stack>
 
@@ -139,7 +144,7 @@ const ViewSpecificProblemPage = ({
             }}
           >
             {/* Problem Description */}
-              <Box
+            <Box
               sx={{
                 backgroundColor: '#fff',
                 padding: 3,

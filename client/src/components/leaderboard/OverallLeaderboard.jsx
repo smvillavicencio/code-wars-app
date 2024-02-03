@@ -1,11 +1,5 @@
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-
+import { useEffect, useState } from "react";
+import { DataGrid } from "@mui/x-data-grid";
 
 const columns = [
 	{
@@ -20,8 +14,8 @@ const columns = [
 	{
 		field: "teamName",
 		headerName: "Team Name",
-    minWidth: 400,
-    // maxWidth: 500,
+    minWidth: 250,
+    maxWidth: 600,
 		flex: 1,
 	},
 	{
@@ -35,7 +29,7 @@ const columns = [
 		field: "totalSpent",
 		headerName: "Total Spent",
     minWidth: 100,
-    maxWidth: 200,
+    maxWidth: 150,
     headerAlign: "left",
     align: "left",
 		flex: 1,
@@ -44,43 +38,84 @@ const columns = [
 
 // dummy data
 const rows = [
-  { rank: 1, teamName: 'Team One', score: 0/200, totalSpent: 1500},
-  { rank: 2, teamName: 'Team Two', score: 0/400, totalSpent: 1300},
-  { rank: 3, teamName: 'Team Three', score: 0/400, totalSpent: 1800},
-  { rank: 4, teamName: 'Team Four', score: 500/500, totalSpent: 1000},
-  { rank: 5, teamName: 'Team Five', score: 300/700, totalSpent: 650},
-  { rank: 6, teamName: 'Team Six', score: 0/1000, totalSpent: 800},
-  { rank: 7, teamName: 'Team Seven', score: 0/2800, totalSpent: 750},
+  { id: 1, rank: 1, teamName: 'Team One', score: 0/200, totalSpent: 1500},
+  { id: 2, rank: 2, teamName: 'Team Two', score: 0/400, totalSpent: 1300},
+  { id: 3, rank: 3, teamName: 'Team Three', score: 0/400, totalSpent: 1800},
+  { id: 4, rank: 4, teamName: 'Team Four', score: 500/500, totalSpent: 1000},
+  { id: 5, rank: 5, teamName: 'Team Five', score: 300/700, totalSpent: 650},
+  { id: 6, rank: 6, teamName: 'Team Six', score: 0/1000, totalSpent: 800},
+  { id: 7, rank: 7, teamName: 'Team Seven', score: 0/2800, totalSpent: 750},
 ];
 
 const OverallLeaderboard = () => {
-  return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }}>
-        <TableHead>
-          <TableRow>
-            <TableCell align="right">Rank</TableCell>
-            <TableCell align="right">Team Name</TableCell>
-            <TableCell align="right">Score</TableCell>
-            <TableCell align="right">Total Spent</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell align="right">{row.rank}</TableCell>
-              <TableCell align="right">{row.teamName}</TableCell>
-              <TableCell align="right">{row.score}</TableCell>
-              <TableCell align="right">{row.totalSpent}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  );
+
+  const [currRows, setCurrRows] = useState([]);
+
+  useEffect(() => { 
+    setCurrRows(rows);
+	}, [])
+	
+  const handleRowClick = (
+    params,   // GridRowParams
+    event,    // MuiEvent<React.MouseEvent<HTMLElement>>
+    details,  // GridCallbackDetails
+  ) => {
+    console.log(params);
+  };
+  
+	return (
+    <DataGrid
+      rows={currRows}
+      columns={columns}
+      pageSizeOptions={[5, 10]}
+      disableColumnSelector
+      disableColumnFilter
+      hideFooterSelectedRowCount
+      onRowClick={handleRowClick}
+      autoPageSize={false}
+    
+      sx={{
+        // modify column header typography
+        '& .MuiDataGrid-columnHeader': {
+          fontSize: "h2",
+          bgcolor: "rgba(0, 0, 0, 0.1)",
+        },
+        // modify cell typography
+        '& .MuiDataGrid-cell': {
+          variant: "body1",
+          borderLeft: 'none',
+          borderRight: 'none', 
+          borderTop: 'none', 
+          borderBottom: '1px solid rgba(0, 0, 0, 0.07)'
+        },
+        // make column header separator invisible
+        '.MuiDataGrid-columnSeparator': {
+          display: 'none',
+        },
+        // remove cell focus on selection
+        '.MuiDataGrid-cell:focus': {
+          outline: 'none'
+        },
+        // pointer cursor on ll rows
+        '& .MuiDataGrid-row:hover': {
+          cursor: 'pointer',
+        },
+        '.MuiDataGrid-footerContainer': {
+          borderTop: 'none', // Change the color and width of the line
+        },
+
+        // truncate values if longer than column maxWidth
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+
+        //
+        bgcolor: 'transparent',
+        border: 'none',
+        p:2,
+      }}
+    />
+  )
 }
 
 export default OverallLeaderboard;

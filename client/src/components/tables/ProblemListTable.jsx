@@ -2,21 +2,30 @@ import { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 
 
+/*
+ * Purpose: Displays the table for View All Problems Page for participants.
+ * Params:
+ *    <Array> rows - receives rows to be displayed on the table.
+ *    <Array> columns - receives columns to be displayed on the table.
+ */
 const ProblemListTable = ({ rows, columns }) => {
+  // state for the rows displayed
 	const [currRows, setCurrRows] = useState([]);
 
+  // sets up the rows on component mount
 	useEffect(() => { 
     setCurrRows(rows);
 	}, [])
 	
-  const handleRowClick = (
-    params,   // GridRowParams
-    event,    // MuiEvent<React.MouseEvent<HTMLElement>>
-    details,  // GridCallbackDetails
-  ) => {
-    console.log(params);
+	/*
+   * Purpose: Handles routing to View Specific Problem Page upon clicking a row.
+   * Params: <Object> data - receives information of selected problem in the Problem List Table.
+   */
+  const handleRowClick = (data) => {
+    console.log(data);
   };
   
+
 	return (
     <DataGrid
       rows={currRows}

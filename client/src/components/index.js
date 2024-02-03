@@ -1,6 +1,6 @@
 import DropdownSelect from "./select/DropdownSelect";
-import LogTable from "./tables/LogTable";
 import CustomModal from "./modal/CustomModal";
+import LogTable from "./tables/LogTable";
 import OverallLeaderboard from "./leaderboard/OverallLeaderboard";
 import ParticipantsLeaderboard from "./leaderboard/ParticipantsLeaderboard";
 import ProblemListTable from "./tables/ProblemListTable";
@@ -13,8 +13,8 @@ import TopBar from "./topbar/Topbar";
 
 export { 
 	DropdownSelect,
-	LogTable,
 	CustomModal,
+	LogTable,
 	ParticipantsLeaderboard,
 	OverallLeaderboard,
 	ProblemListTable,

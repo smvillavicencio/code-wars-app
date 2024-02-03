@@ -1,9 +1,9 @@
 import { Box, TextField, Button, Typography } from "@mui/material";
-import SponsorCarousel from "../components/carousel/SponsorCarousel";
+import { SponsorCarousel } from "../../components/index.js";
 import PersonIcon from '@mui/icons-material/Person';
 import KeyIcon from '@mui/icons-material/Key';
 
-const LogIn = () => {
+const LoginPage = () => {
 
     return(
         <Box sx={{
@@ -149,4 +149,4 @@ const LogIn = () => {
     );
 }
 
-export default LogIn;
+export default LoginPage;

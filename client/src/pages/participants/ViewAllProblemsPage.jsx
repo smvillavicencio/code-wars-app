@@ -1,6 +1,8 @@
 import seal from "../../assets/UPLB COSS.png";
 import LockIcon from '@mui/icons-material/Lock';
 import {
+  Modal,
+  ParticipantsLeaderboard,
   ProblemListTable,
   SponsorCarousel,
   Timer,
@@ -15,8 +17,8 @@ import {
 } from "@mui/material";
 
 
-// dummy data
-const columns = [
+// dummy data for problems table
+const columns1 = [
 	{
 		field: "id",
 		headerName: "#",
@@ -58,8 +60,8 @@ const columns = [
 	},
 ];
 
-// dummy data
-const rows = [
+// dummy data for problems table
+const rows1 = [
   { id: 1, problemTitle: 'Special Calculator', status: 'Unopened', score: 0/200, checkedBy: 'Sir Hermocilla'},
   { id: 2, problemTitle: 'Listing All Addends', status: 'Submitted', score: 0/400, checkedBy: 'Sir Isungga'},
   { id: 3, problemTitle: 'BINGO', status: 'Under Review', score: 0/400, checkedBy: 'Sir Doria'},
@@ -72,6 +74,57 @@ const rows = [
 	{ id: 10, problemTitle: 'Roman Numeral Calculator', status: 'Unopened', score: 0/700, checkedBy: 'Sir Hermocilla'},
 ];
 
+
+// dummy data for leaderboard
+const columns2 = [
+  {
+    field: "id",
+    headerName: "ID",
+  },
+	{
+		field: "rank",
+		headerName: "Rank",
+    minWidth: 60,
+    maxWidth: 100,
+    headerAlign: "center",
+    align: "center",
+		flex: 1,
+	},
+	{
+		field: "teamName",
+		headerName: "Team Name",
+    minWidth: 400,
+    // maxWidth: 500,
+		flex: 1,
+	},
+	{
+		field: "score",
+		headerName: "Score",
+		minWidth: 150,
+    // maxWidth: 200,
+		flex: 1,
+	},
+	{
+		field: "totalSpent",
+		headerName: "Total Spent",
+    minWidth: 100,
+    maxWidth: 200,
+    headerAlign: "left",
+    align: "left",
+		flex: 1,
+	},
+];
+
+// dummy data for leaderboard
+const rows2 = [
+  { id: 1, rank: 1, teamName: 'Team One', score: 0/200, totalSpent: 1500},
+  { id: 2, rank: 2, teamName: 'Team Two', score: 0/400, totalSpent: 1300},
+  { id: 3, rank: 3, teamName: 'Team Three', score: 0/400, totalSpent: 1800},
+  { id: 4, rank: 4, teamName: 'Team Four', score: 500/500, totalSpent: 1000},
+  { id: 5, rank: 5, teamName: 'Team Five', score: 300/700, totalSpent: 650},
+  { id: 6, rank: 6, teamName: 'Team Six', score: 0/1000, totalSpent: 800},
+  { id: 7, rank: 7, teamName: 'Team Seven', score: 0/2800, totalSpent: 750},
+];
 
 const ViewAllProblemsPage = () => {
   return (
@@ -91,19 +144,20 @@ const ViewAllProblemsPage = () => {
         sx={{
           display: 'flex',
           flexDirection: 'row',
+          gap: 4,
         }}
       >
         {/* left column is for timer, leaderboard, sponsors' carousel */}
         <Stack
-          spacing={5}
+          spacing={4}
           sx={{
             mt: 5,
             mx: 8,
-            minWidth: 350,
+            minWidth: 325,
           }}
         >
           <Timer />
-          <SponsorCarousel />
+          <ParticipantsLeaderboard rows={rows2} columns={columns2} />
           <SponsorCarousel />
         </Stack>
 
@@ -187,7 +241,7 @@ const ViewAllProblemsPage = () => {
             </Button>
           </Box>
 
-          <ProblemListTable rows={rows} columns={columns} />
+          <ProblemListTable rows={rows1} columns={columns1} />
         </Stack>
       </Box>
     </Stack>

@@ -53,7 +53,6 @@ const Sidebar = () => {
 					height: '100vh',
 
 					// modify background styling
-					width: DRAWER_WIDTH,
 					boxSizing: 'border-box',
 					backgroundColor: 'rgba(179,179,179,0.25)',
 					boxShadow: '0px 0px 10px 5px rgba(0, 0, 0, 0.5)',

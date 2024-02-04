@@ -4,12 +4,12 @@ import {
 	Stack
 } from '@mui/material';
 
-import seal from '../../assets/UPLB COSS.png';
+import seal from 'assets/UPLB COSS.png';
 import {
 	DropdownSelect,
 	SubmissionsTable,
 	TopBar
-} from '../../components/index.js';
+} from 'components/';
 
 
 // dummy data

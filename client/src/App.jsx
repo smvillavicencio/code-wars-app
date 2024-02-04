@@ -3,7 +3,7 @@ import { ThemeProvider } from '@emotion/react';
 import { Box } from '@mui/material';
 import { Outlet, BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import GeneralBackground from './assets/GeneralBackground.png';
+import GeneralBackground from 'assets/GeneralBackground.png';
 import {
 	LoginPage,
 	GeneralOptionsPage,
@@ -11,9 +11,9 @@ import {
 	ViewAllProblemsPage,
 	ViewSpecificProblemPage,
 	ViewSubmissionsPage,
-} from './pages/index.js';
-import { theme } from './theme.js';
-import { UserDetailsProvider } from './utils/UserDetailsProvider.js';
+} from 'pages/';
+import { theme } from 'theme.js';
+import { UserDetailsProvider } from 'utils/UserDetailsProvider.js';
 
 
 /**

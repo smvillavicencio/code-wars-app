@@ -5,9 +5,9 @@ import PersonIcon from '@mui/icons-material/Person';
 import { Box, TextField, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import LoginBackground from '../../assets/LoginBackground.png';
-import { SponsorCarousel } from '../../components/index.js';
-import { userDetailsContext } from '../../utils/UserDetailsProvider';
+import LoginBackground from 'assets/LoginBackground.png';
+import { SponsorCarousel } from 'components/index.js';
+import { userDetailsContext } from 'utils/UserDetailsProvider';
 
 
 

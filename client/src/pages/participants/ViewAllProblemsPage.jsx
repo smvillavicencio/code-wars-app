@@ -7,7 +7,7 @@ import {
 	Tooltip,
 } from '@mui/material';
 
-import seal from '../../assets/UPLB COSS.png';
+import seal from 'assets/UPLB COSS.png';
 import {
 	Modal,
 	ParticipantsLeaderboard,
@@ -15,7 +15,7 @@ import {
 	SponsorCarousel,
 	Timer,
 	TopBar
-} from '../../components/index';
+} from 'components/';
 
 
 

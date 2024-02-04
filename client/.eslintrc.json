@@ -5,7 +5,8 @@
     },
     "extends": [
         "eslint:recommended",
-        "plugin:react/recommended"
+        "plugin:react/recommended",
+        "plugin:react/jsx-runtime"
     ],
     "parserOptions": {
         "ecmaVersion": "latest",
@@ -15,10 +16,26 @@
         "react",
         "import"
     ],
+    "settings": {
+      "react": {
+        "version": "detect"
+      },
+      "import/resolver": {
+        "node": {
+          "paths": ["src"]
+        }
+      }
+    },
     "rules": {
         "indent": [
             "error",
             "tab"
+        ],
+        "no-restricted-imports": [
+            "error", 
+            {
+                "patterns": ["@/features/*/*"]
+            }
         ],
         "linebreak-style": [
             "error",

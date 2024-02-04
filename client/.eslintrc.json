@@ -31,12 +31,6 @@
             "error",
             "tab"
         ],
-        "no-restricted-imports": [
-            "error", 
-            {
-                "patterns": ["@/features/*/*"]
-            }
-        ],
         "linebreak-style": [
             "error",
             "unix"

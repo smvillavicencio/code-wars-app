@@ -7,7 +7,7 @@ import {
 import {
 	LogTable,
 	Sidebar
-} from '../../components/index.js';
+} from 'components/';
 
 
 // dummy data

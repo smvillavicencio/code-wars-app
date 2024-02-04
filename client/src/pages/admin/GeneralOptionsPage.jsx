@@ -6,7 +6,7 @@ import {
 	Typography
 } from '@mui/material';
 
-import { DropdownSelect, Sidebar } from '../../components/index.js';
+import { DropdownSelect, Sidebar } from 'components/';
 
 
 // options for dropdown select

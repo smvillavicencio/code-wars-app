@@ -16,7 +16,7 @@ import {
 	SponsorCarousel,
 	Timer,
 	TopBar
-} from '../../components/index';
+} from 'components/';
 
 
 // dummy data for leaderboard

@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import { userDetailsContext } from '../../utils/UserDetailsProvider';
+import { userDetailsContext } from 'utils/UserDetailsProvider';
 
 
 

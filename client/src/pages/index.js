@@ -1,11 +1,16 @@
-import LogIn from "./login";
-import ViewAllProblemsPage from "./participants/ViewAllProblemsPage";
-import ViewSpecificProblemPage from "./participants/ViewSpecificProblemPage";
-import ViewSubmissionsPage from "./judges/ViewSubmissionsPage";
+import GeneralOptionsPage from './admin/GeneralOptionsPage';
+import PowerUpLogs from './admin/PowerUpLogs';
+import LoginPage from './general/LoginPage';
+import ViewSubmissionsPage from './judges/ViewSubmissionsPage';
+import ViewAllProblemsPage from './participants/ViewAllProblemsPage';
+import ViewSpecificProblemPage from './participants/ViewSpecificProblemPage';
+
 
 export {
-  LogIn,
-  ViewAllProblemsPage,
-  ViewSpecificProblemPage,
-  ViewSubmissionsPage,
+	LoginPage,
+	GeneralOptionsPage,
+	PowerUpLogs,
+	ViewAllProblemsPage,
+	ViewSpecificProblemPage,
+	ViewSubmissionsPage,
 };

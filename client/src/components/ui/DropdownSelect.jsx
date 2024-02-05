@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import { useState } from 'react';
 import {
   Box,
@@ -8,18 +9,34 @@ import {
 } from '@mui/material';
 
 
+/*
+ * Purpose: Displays a dropdown select component.
+ * Params:
+ *    <Boolean> isDisabled - tells whether the component should be disabled or not.
+ *    <String>  label - label for the select component.
+ *    <String>  minWidth - minimum width of the select component.
+ *    <Array>   options - options to display in the component's menu.
+ */
 const DropdownSelect = ({
   isDisabled,
   label,
   minWidth,
   options
 }) => {
+
+  // state for the selected option
   const [selected, setSelected] = useState('');
 
+  /*
+  * Purpose: Updates the state for easier retrieval of the value of selected option.
+  * Params:
+  *    <Event> e - triggers when an option is selected from the dropdown menu.
+  */
   const handleChange = (e) => {
     setSelected(e.target.value);
 	};
 
+  
   return (
     <Box sx={{ minWidth:`${minWidth}` }}>
       <FormControl
@@ -27,13 +44,14 @@ const DropdownSelect = ({
         variant="filled"
         disabled={isDisabled}
       >
-        <InputLabel id="demo-simple-select-label" sx={{
-          '.MuiInputLabel-root': {
-            color: '#fff',
-          }
-        }}>{label}</InputLabel>
+        {/* Label */}
+        <InputLabel sx={{ '.MuiInputLabel-root': { color: '#fff' } }}>
+          {label}
+        </InputLabel>
+        
+        {/* Actual Component */}
         <Select
-          // blurOnSelect
+          // this function is for blurOnSelect
           onClose={() => {
             setTimeout(() => {
               document.activeElement.blur();
@@ -44,6 +62,7 @@ const DropdownSelect = ({
           onChange={handleChange}
           style={{ backgroundColor: '#fff' }}
         >
+          {/* Menu popover options */}
           {options.map((option, idx) => 
             <MenuItem id={idx} value={option}>{option}</MenuItem>
           )}

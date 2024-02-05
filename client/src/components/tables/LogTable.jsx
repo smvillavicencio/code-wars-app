@@ -4,21 +4,21 @@ import { DataGrid } from '@mui/x-data-grid';
 
 
 /*
- * Purpose: Displays the table for View Submissions Page for judges.
+ * Purpose: Displays the table for Power-up Logs Page for admin.
  * Params:
  *    <Array> rows - receives rows to be displayed on the table.
  *    <Array> columns - receives columns to be displayed on the table.
  */
-const SubmissionsTable = ({ rows, columns }) => {
+const LogTable = ({ rows, columns }) => {
 	// state for the rows displayed
 	const [currRows, setCurrRows] = useState([]);
 
-	// sets up the rows on component mount
+	// sets up the state of rows on component mount
 	useEffect(() => { 
 		setCurrRows(rows);
 	}, []);
 	
-
+  
 	return (
 		<DataGrid
 			rows={currRows}
@@ -28,6 +28,7 @@ const SubmissionsTable = ({ rows, columns }) => {
 			disableColumnFilter
 			hideFooterSelectedRowCount
 			autoPageSize={false}
+			autoHeight
 
 			initialState={{
 				columns: {
@@ -37,7 +38,6 @@ const SubmissionsTable = ({ rows, columns }) => {
 					},
 				},
 			}}
-
 			sx={{
 				// modify column header typography
 				'& .MuiDataGrid-columnHeader': {
@@ -70,4 +70,5 @@ const SubmissionsTable = ({ rows, columns }) => {
 	);
 };
 
-export default SubmissionsTable;
+
+export default LogTable;

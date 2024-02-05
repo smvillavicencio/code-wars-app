@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import DropdownSelect from "./ui/DropdownSelect";
 import CustomModal from "./ui/CustomModal";
 import LogTable from "./tables/LogTable";

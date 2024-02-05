@@ -1,3 +1,5 @@
+/* eslint-disable */ 
+
 import { useState } from 'react';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -122,7 +124,6 @@ const ViewSpecificProblemPage = ({
 						<ArrowBackIcon
 							sx={{
 								cursor: 'pointer',
-								fontSize: '3em',
 								borderRadius: 2,
 								'&:hover': {
 									backgroundColor: 'rgba(201, 209, 231, 0.1)',

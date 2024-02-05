@@ -79,7 +79,6 @@ let customTheme = createTheme({
 			main: '#e5ebff'
 		},
 	},
-
 	typography: {
 		// timer countdown
 		h3: {

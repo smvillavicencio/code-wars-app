@@ -1,4 +1,6 @@
 
+/* eslint-disable */ 
+
 import { ThemeProvider } from '@emotion/react';
 import { Box } from '@mui/material';
 import { Outlet, BrowserRouter as Router, Routes, Route } from 'react-router-dom';

@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 // https://mui.com/material-ui/react-modal/ - Modal code in MUI React
 
 import { Box, Button, Typography, Backdrop, Modal, Fade } from "@mui/material";

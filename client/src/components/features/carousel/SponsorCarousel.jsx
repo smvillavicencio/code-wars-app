@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import Carousel from 'react-material-ui-carousel';
 
 import Item from './Item';

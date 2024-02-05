@@ -7,7 +7,7 @@ let team = { '_id': {'$oid':'65b3bc99f1b97b7835471279'},
             'team_name':'Team2',
             'password':'$2b$10$WdIMVgxu37P9RIu4yP99uuMPCByYailH5BNcPTeibULeHR1rHTjWa',
             'members':'Dim, En, Fin',
-            'score':180,
+            'score':1200,
             'total_points_used':0,
             'activated_buffs':['65b3bc80f1b97b783547b312'],
             'activated_own_debuffs':['65b3bc80f1b97b783547b312'],
@@ -114,7 +114,23 @@ export const get_available_powerups = async (req: Request, res: Response) => {
       const powerups: Powerup[] = await PowerupModel.find();
 
       // Get a list of powerups that can be afforded by the team
-      let availablePowerups: Powerup[] = powerups.filter((powerup: Powerup) => team.score >= powerup.cost);
+      let availablePowerups: Powerup[] = powerups.filter((powerup: Powerup) => {
+        // Check all tiers
+        for(const tierNo in powerup.tier){
+          if(powerup.tier.hasOwnProperty(tierNo)){
+            // If the team cannot afford the tier of the powerup, remove from the available tiers
+            if(team.score < powerup.tier[tierNo].cost){
+              delete powerup.tier[tierNo];
+            };
+          }
+        }
+        // If powerup.tier has at least an element, the team affords the powerup and return true.
+        if(Object.keys(powerup.tier).length > 0){
+          return true;
+        } else {
+          return false;
+        }
+      });
       
       // Check availability of Dispel and Immunity 4 (due to % costs)
       for (const powerup of availablePowerups) {
@@ -124,20 +140,27 @@ export const get_available_powerups = async (req: Request, res: Response) => {
           if (team.debuffs_afflicted.length === 0) {
             availablePowerups.splice(index, 1);
           } else {
+            let isScoreEnough = false;
+            
+            // Check if the points of the team is sufficient to buy Dispel (120% of the debuff's cost)
             for (const debuffId of team.debuffs_afflicted) {
-              const debuff = await PowerupModel.findById(debuffId).select('cost');
-              // Check if the points of the team is sufficient to buy Dispel (120% of the debuff's cost)
-              if (debuff && (1.2 * debuff.cost > team.score)) {
-                availablePowerups.splice(index, 1);
+              const debuff = await PowerupModel.findById(debuffId);
+              // NOTE: Currently, all debuffs available only have 1 tier. Update this when debuffs have multiple tiers
+              if (debuff && (1.2 * debuff.tier["1"].cost < team.score)) {
+                isScoreEnough = true;
                 break;
               }
             }
+            
+            // If the team cannot afford to dispel atleast one of the debuffs applied, remove from available powerups list
+            if(!isScoreEnough){
+              availablePowerups.splice(index, 1);
+            }
           }
-        } else if (powerup.code === 'immune4') {
+        } else if (powerup.code === 'immune' && powerup.tier["4"] !== undefined) { // If immunity 4 is in available powerups
           // Check if the points of the team is sufficient to buy Immunity IV (1000 + 10% team's score)
-          if (powerup.cost + 0.1 * team.score > team.score) {
-            const index = availablePowerups.indexOf(powerup);
-            availablePowerups.splice(index, 1);
+          if (powerup.tier["4"].cost + 0.1 * team.score > team.score) {
+            delete powerup.tier["4"];
           }
         }
       }
@@ -168,6 +191,7 @@ export const get_available_powerups = async (req: Request, res: Response) => {
  * Request body fields: {
  *                          team_id: String   (required)
  *                          powerup: Powerup  (required)
+ *                          tier_no: String (required)
  *                          target_id: String (if debuff)
  *                          debuff_to_dispel_id: String (if buff is dispel)
  *                      }
@@ -178,9 +202,7 @@ export const buy_powerup = async (req: Request, res: Response) => {
     // const team: Team | null = await TeamModel.findById(req.body.team_id); 
     if(team) {
       console.log(req.body.powerup.code);
-      if(req.body.powerup.type == 0) { // DEBUFF
-        // ASSUMPTION: Check possible targets was already done before sending the request for buy powerup
-        
+      if(req.body.powerup.type == 0) { // DEBUFF    
         // TO DO: Create constants for the arrays (buffs & debuffs) used in includes()
         // Check if it is really a debuff
         if(['stun', 'editor', 'frosty'].includes(req.body.powerup.code)) { 
@@ -198,9 +220,8 @@ export const buy_powerup = async (req: Request, res: Response) => {
             // Checker if target team has immunity
             let isTargetImmune: Boolean = false;
             for(const targetBuffId of target.activated_buffs){
-              console.log(targetBuffId);
               const targetBuff = await PowerupModel.findById(targetBuffId).select('code');
-              if(targetBuff && targetBuff.code.startsWith('immune')){
+              if(targetBuff && targetBuff.code === 'immune'){
                 isTargetImmune = true;
                 break;
               }
@@ -208,8 +229,9 @@ export const buy_powerup = async (req: Request, res: Response) => {
 
             // TO DO: Update this in the database using mongoose when teams are no longer hardcoded
             // Adjust total points used and score accordingly
-            team.total_points_used += req.body.powerup.cost;
-            team.score -= req.body.powerup.cost;
+            const tierNo = req.body.tier_no;
+            team.total_points_used += req.body.powerup.tier[tierNo].cost;
+            team.score -= req.body.powerup.tier[tierNo].cost;
 
             if(!isTargetImmune) { // Only add to target's debuffs_afflicted if target is not immune
               target.debuffs_afflicted.push(req.body.powerup._id);
@@ -246,17 +268,19 @@ export const buy_powerup = async (req: Request, res: Response) => {
       } else if(req.body.powerup.type == 1) { // BUFF
         if(req.body.powerup.code == 'dispel'){ // DISPEL
           // Retrieve the cost of the debuff to be dispelled
-          const debuffToDispel = await PowerupModel.findById(req.body.debuff_to_dispel_id).select('cost');
+          const debuffToDispelId = req.body.debuff_to_dispel_id;
+          const debuffToDispel = await PowerupModel.findById(debuffToDispelId);
           
+          console.log(debuffToDispel);
           if (debuffToDispel) {
             // TO DO: Update this in the database using mongoose when teams are no longer hardcoded
             
             // Adjust total points used and score accordingly
-            team.total_points_used += (1.2*debuffToDispel.cost);
-            team.score -= (1.2*debuffToDispel.cost);
+            // team.total_points_used += (1.2*debuffToDispel.cost);
+            // team.score -= (1.2*debuffToDispel.cost);
             
             // Remove the debuff from the team
-            const index = target.debuffs_afflicted.indexOf(req.body.debuff_to_dispel_id);
+            const index = target.debuffs_afflicted.indexOf(debuffToDispelId);
             team.debuffs_afflicted.splice(index, 1);
             team.debuffs_from.splice(index,1);
 
@@ -273,12 +297,13 @@ export const buy_powerup = async (req: Request, res: Response) => {
               message: 'Debuff to dispel not found',
             });
           }
-        } else if (['immune1', 'immune2', 'immune3', 'immune4', 'unchain'].includes(req.body.powerup.code)){ // Check if it is really a buff aside from dispel
+        } else if (['immune', 'unchain'].includes(req.body.powerup.code)){ // Check if it is really a buff aside from dispel
           // TO DO: Update this in the database using mongoose when teams are no longer hardcoded
 
           // Adjust total points used and score accordingly
-          team.total_points_used += req.body.powerup.cost;
-          team.score -= req.body.powerup.cost;
+          const tierNo = req.body.tier_no;
+          team.total_points_used += req.body.powerup.tier[tierNo].cost;
+          team.score -= req.body.powerup.tier[tierNo].cost;
 
           // Add to the list of activated buffs
           team.activated_buffs.push(req.body.powerup._id);

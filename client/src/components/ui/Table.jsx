@@ -3,16 +3,8 @@ import { useEffect } from "react";
 import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
 
 
-/**
- * Purpose: Displays the current overall leaderboard.
- * Params:
- *    <Array> rows - receives the rows for the leaderboard table
- *    <Array> columns - receives the columns for the leaderboard table
- *    <String> hideFields - receives the name of field/s to hide
- *    <Object> additionalStyles - contains additional styling for a particular component instance
- *    ...props - receives the rest of the props
- */
-const Table = ({
+
+const OverallLeaderboard = ({
   rows,
   columns,
   hideFields,
@@ -32,6 +24,7 @@ const Table = ({
       apiRef.current.setColumnVisibility(field, false)
     })
   }, []);
+
 
   /**
    * Define common styles for the DataGrid
@@ -73,21 +66,19 @@ const Table = ({
    */
   const gridStyles = { ...commonStyles, ...additionalStyles };
 
-
 	return (
     <DataGrid
-      apiRef={apiRef}               // Pass the apiRef to the DataGrid
+      apiRef={apiRef}
       rows={rows}
       columns={columns}
       // loading={!rows.length}     // Display loading indicator if rows has not yet loaded
       pageSizeOptions={[5, 10]}
       disableColumnSelector
       disableColumnFilter
-      
       sx={gridStyles}
-      {...props}
+      // {...props}
     />
   )
 }
 
-export default Table;
+export default OverallLeaderboard;

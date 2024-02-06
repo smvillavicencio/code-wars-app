@@ -2,7 +2,6 @@
 import DropdownSelect from "./ui/DropdownSelect";
 import CustomModal from "./ui/CustomModal";
 import LogTable from "./tables/LogTable";
-import OverallLeaderboard from "./features/leaderboard/OverallLeaderboard";
 import ParticipantsLeaderboard from "./features/leaderboard/ParticipantsLeaderboard";
 import Sidebar from './ui/Sidebar';
 import SponsorCarousel from "./features/carousel/SponsorCarousel";
@@ -16,7 +15,6 @@ export {
 	DropdownSelect,
 	CustomModal,
 	LogTable,
-	OverallLeaderboard,
 	ParticipantsLeaderboard,
 	Sidebar,
 	SponsorCarousel,

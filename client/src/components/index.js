@@ -4,7 +4,6 @@ import CustomModal from "./ui/CustomModal";
 import LogTable from "./tables/LogTable";
 import OverallLeaderboard from "./features/leaderboard/OverallLeaderboard";
 import ParticipantsLeaderboard from "./features/leaderboard/ParticipantsLeaderboard";
-import ProblemListTable from "./tables/ProblemListTable";
 import Sidebar from './ui/Sidebar';
 import SponsorCarousel from "./features/carousel/SponsorCarousel";
 import SubmissionsTable from "./tables/SubmissionsTable";
@@ -19,7 +18,6 @@ export {
 	LogTable,
 	OverallLeaderboard,
 	ParticipantsLeaderboard,
-	ProblemListTable,
 	Sidebar,
 	SponsorCarousel,
 	SubmissionsTable,

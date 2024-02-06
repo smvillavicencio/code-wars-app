@@ -12,8 +12,8 @@ import seal from 'assets/UPLB COSS.png';
 import {
 	Modal,
 	ParticipantsLeaderboard,
-	ProblemListTable,
 	SponsorCarousel,
+	Table,
 	Timer,
 	TopBar
 } from 'components/';
@@ -134,6 +134,19 @@ const rows2 = [
  * Params: None
  */
 const ViewAllProblemsPage = () => {
+
+	const additionalStyles = {
+		backgroundColor: '#fff',
+		'& .MuiDataGrid-columnHeader': {
+			fontSize: "h2",
+		},
+	};
+
+	const handleRowClick = () => {
+		return 0;
+	}
+
+
 	return (
 		<Stack>
 			{/* Topbar */}
@@ -254,7 +267,13 @@ const ViewAllProblemsPage = () => {
 					</Box>
 
 					{/* Problem List Table for the round */}
-					<ProblemListTable rows={rows1} columns={columns1} />
+					<Table
+						rows={rows1}
+						columns={columns1}
+						hideFields={[]}
+						onRowClick={handleRowClick}
+						additionalStyles={additionalStyles}
+					/>
 					<Toolbar />
 				</Stack>
 			</Box>

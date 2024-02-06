@@ -16,13 +16,13 @@ import {
  *    <Boolean> isOpen - tells whether the modal should be displayed or not.
  *    <Func>    setOpen - controls the opening and closing of the modal window.
  *    <String>  windowTitle - title of the modal window to display.
- *    <String>  primaryButtonText - text to display on the window's primary button.
+ *    <Props>   ...props - will receive the rest of the properties passed.
  */
 const CustomModal = ({
 	isOpen,
 	setOpen,
 	windowTitle,
-	primaryButtonText
+	...props
 }) => {
 
 	/*
@@ -73,8 +73,6 @@ const CustomModal = ({
 							display: 'flex',
 							justifyContent: 'space-between',
 							alignItems: 'center',
-							// px: 2,
-							// marginBottom: "25px"
 						}}
 					>
 						<Typography
@@ -96,9 +94,12 @@ const CustomModal = ({
 							onClick={handleClose}
 						/>
 					</Box>
+					
+					{/* Modal Body */}
+					{props.children}
 
 					{/* Primary Button */}
-					<Box sx={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
+					{/* <Box sx={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
 						<Button 
 							variant="contained" 
 							component="span"
@@ -113,10 +114,10 @@ const CustomModal = ({
 							}}
 						>
 							{primaryButtonText}
-						</Button>
+						</Button> */}
 
 						{/* Secondary Button */}
-						<Button 
+						{/* <Button 
 							variant="contained" 
 							component="span"
 							sx={{
@@ -131,7 +132,7 @@ const CustomModal = ({
 						>
               Cancel
 						</Button>
-					</Box>
+					</Box> */}
 				</Box>
 			</Fade>
 		</Modal>

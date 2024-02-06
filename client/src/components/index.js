@@ -8,6 +8,7 @@ import ProblemListTable from "./tables/ProblemListTable";
 import Sidebar from './ui/Sidebar';
 import SponsorCarousel from "./features/carousel/SponsorCarousel";
 import SubmissionsTable from "./tables/SubmissionsTable";
+import Table from "./ui/Table";
 import Timer from "./features/timer/Timer";
 import TopBar from "./ui/Topbar";
 
@@ -16,12 +17,13 @@ export {
 	DropdownSelect,
 	CustomModal,
 	LogTable,
-	ParticipantsLeaderboard,
 	OverallLeaderboard,
+	ParticipantsLeaderboard,
 	ProblemListTable,
 	Sidebar,
 	SponsorCarousel,
 	SubmissionsTable,
+	Table,
 	Timer,
 	TopBar,
 };

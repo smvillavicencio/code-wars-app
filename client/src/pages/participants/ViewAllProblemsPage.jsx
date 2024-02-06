@@ -7,10 +7,11 @@ import {
 	Toolbar,
 	Tooltip,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import seal from 'assets/UPLB COSS.png';
 import {
-	Modal,
+	CustomModal,
 	ParticipantsLeaderboard,
 	SponsorCarousel,
 	Table,
@@ -142,9 +143,17 @@ const ViewAllProblemsPage = () => {
 		},
 	};
 
+	// used for client-side routing to other pages
+	const navigate = useNavigate();
+
+	/**
+   * Purpose: Handles opening of leaderboard modal window upon clicking the ellipsis button.
+   * Params: <Object> receives information of selected problem in the Problem List Table.
+   */
 	const handleRowClick = () => {
 		return 0;
-	}
+		// navigate('/participant/view-specific-problem');
+	};
 
 
 	return (

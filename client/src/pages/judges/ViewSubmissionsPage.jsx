@@ -11,7 +11,6 @@ import seal from 'assets/UPLB COSS.png';
 import {
 	CustomModal,
 	DropdownSelect,
-	OverallLeaderboard,
 	SubmissionsTable,
 	Table,
 	TopBar

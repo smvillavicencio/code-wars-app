@@ -102,6 +102,7 @@ const TopBar = ({
 					variant="contained"
 					color="major"
 					size="large"
+					onClick={handleButton}
 					startIcon={ startIcon? <>{startIcon}</> : <></> }
 					sx={{
 						minWidth: 30,

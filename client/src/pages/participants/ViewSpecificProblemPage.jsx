@@ -13,12 +13,13 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import {
-	Modal,
+	CustomModal,
 	ParticipantsLeaderboard,
 	SponsorCarousel,
 	Timer,
 	TopBar
 } from 'components/';
+import SubmitModal from './modals/SubmitModal';
 
 
 // dummy data for leaderboard
@@ -97,14 +98,10 @@ const ViewSpecificProblemPage = ({
    * Purpose: Handles opening of the submit modal window
    * Params: None
    */ 
-	const handleOpen = () => setOpen(true);
+	const handleButton = () => {
+		setOpen(true);
+	}
 
-	/*
-   * Purpose: Handles closing of the submit modal window
-   * Params: None
-   */ 
-	const handleClose = () => setOpen(false);
-  
 	/*
    * Purpose: Handles on click event of return button and navigates to View All Problems Page
    * Params: None
@@ -137,7 +134,7 @@ const ViewSpecificProblemPage = ({
 				subtitle={problemSubtitle}
 				buttonText="UPLOAD FILE"
 				startIcon={<FileUploadIcon />}
-				// handleButton={}
+				handleButton={handleButton}
 			/>
 
 			{/* Other components */}
@@ -232,6 +229,12 @@ const ViewSpecificProblemPage = ({
 					</Stack>
 				</Typography>
 			</Box>
+			
+			{/* Submit Modal Window */}
+			<CustomModal isOpen={open} setOpen={setOpen} windowTitle="Upload your answer">
+				<SubmitModal />
+			</CustomModal>
+
 		</Stack>
 	);
 };

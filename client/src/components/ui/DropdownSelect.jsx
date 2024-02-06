@@ -64,7 +64,7 @@ const DropdownSelect = ({
         >
           {/* Menu popover options */}
           {options.map((option, idx) => 
-            <MenuItem id={idx} value={option}>{option}</MenuItem>
+            <MenuItem key={idx} value={option}>{option}</MenuItem>
           )}
         </Select>
       </FormControl>

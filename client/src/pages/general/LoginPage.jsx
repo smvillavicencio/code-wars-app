@@ -141,7 +141,7 @@ const LoginPage = () => {
 									borderTopLeftRadius: '5px',
 									borderTopRightRadius: '5px',
 									'& .MuiFormLabel-root': {
-										color: 'glass.main',
+										color: 'white.main',
 									},
 									'& .MuiFilledInput-root': {
 										color: 'rgba(255, 255, 255, 0.8)',                      // White with reduced opacity
@@ -162,9 +162,6 @@ const LoginPage = () => {
 										},
 										'&.Mui-focused:after': {
 											borderBottomColor: 'major.main',                    // Border color when focused and input is not empty
-										},
-										'&:focus::placeholder': {
-											color: 'white.main !important',
 										},
 									},
 								}}
@@ -197,7 +194,7 @@ const LoginPage = () => {
 									borderTopLeftRadius: '5px',
 									borderTopRightRadius: '5px',
 									'& .MuiFormLabel-root': {
-										color: 'glass.main',
+										color: 'white.main',
 									},
 									'& .MuiFilledInput-root': {
 										color: 'rgba(255, 255, 255, 0.8)',                      // White with reduced opacity
@@ -218,9 +215,6 @@ const LoginPage = () => {
 										},
 										'&.Mui-focused:after': {
 											borderBottomColor: 'major.main',                    // Border color when focused and input is not empty
-										},
-										'&:focus::placeholder': {
-											color: 'white.main !important',
 										},
 									},
 								}}

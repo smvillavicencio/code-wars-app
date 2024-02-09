@@ -19,7 +19,7 @@ import {
 	Timer,
 	TopBar
 } from 'components/';
-import SubmitModal from './modals/SubmitModal';
+import SubmitModal from './dialogs/SubmitModal';
 
 
 // dummy data for leaderboard

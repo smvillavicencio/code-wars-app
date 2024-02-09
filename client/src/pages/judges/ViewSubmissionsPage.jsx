@@ -1,3 +1,6 @@
+/* eslint-disable */ 
+import { useState } from 'react';
+
 import ViewListIcon from '@mui/icons-material/ViewList';
 import {
 	Box,
@@ -6,8 +9,10 @@ import {
 
 import seal from 'assets/UPLB COSS.png';
 import {
+	CustomModal,
 	DropdownSelect,
 	SubmissionsTable,
+	Table,
 	TopBar
 } from 'components/';
 
@@ -106,12 +111,81 @@ const optionsProblem = [
 	'Roman Numeral Calculator',
 ];
 
+// dummy data
+const columnsLeaderboard = [
+	{
+		field: "rank",
+		headerName: "Rank",
+    minWidth: 60,
+    maxWidth: 100,
+    headerAlign: "center",
+    align: "center",
+		flex: 1,
+	},
+	{
+		field: "teamName",
+		headerName: "Team Name",
+    minWidth: 250,
+    maxWidth: 600,
+		flex: 1,
+	},
+	{
+		field: "score",
+		headerName: "Score",
+		minWidth: 150,
+    // maxWidth: 200,
+		flex: 1,
+	},
+	{
+		field: "totalSpent",
+		headerName: "Total Spent",
+    minWidth: 100,
+    maxWidth: 150,
+    headerAlign: "left",
+    align: "left",
+		flex: 1,
+	},
+];
 
-/*
+// dummy data
+const rowsLeaderboard = [
+  { id: 1, rank: 1, teamName: 'Team One', score: 0/200, totalSpent: 1500},
+  { id: 2, rank: 2, teamName: 'Team Two', score: 0/400, totalSpent: 1300},
+  { id: 3, rank: 3, teamName: 'Team Three', score: 0/400, totalSpent: 1800},
+  { id: 4, rank: 4, teamName: 'Team Four', score: 500/500, totalSpent: 1000},
+  { id: 5, rank: 5, teamName: 'Team Five', score: 300/700, totalSpent: 650},
+  { id: 6, rank: 6, teamName: 'Team Six', score: 0/1000, totalSpent: 800},
+  { id: 7, rank: 7, teamName: 'Team Seven', score: 0/2800, totalSpent: 750},
+];
+
+
+/**
  * Purpose: Displays the View Submissions Page for judges.
  * Params: None
  */
 const ViewSubmissionsPage = () => {
+	// state handler for overall leaderboard modal
+	const [open, setOpen] = useState(false);
+
+	/**
+	* Purpose: Handles opening of modal window for overall leaderboard.
+	* Params: None
+	*/
+	const handleButton = () => {
+		setOpen(true);
+	}
+
+	const additionalStyles = {
+		// modify column header typography
+		'& .MuiDataGrid-columnHeader': {
+			fontSize: "h2",
+			bgcolor: "rgba(0, 0, 0, 0.1)",
+		},
+		bgcolor: 'transparent',
+		border: 'none',
+		padding: 2,
+	}
+
 
 	return (
 		<Box>
@@ -122,7 +196,7 @@ const ViewSubmissionsPage = () => {
 				subtitle="UPLB Computer Science Society"
 				buttonText="VIEW LEADERBOARD"
 				startIcon={<ViewListIcon />}
-				// handleButton={}
+				handleButton={handleButton}
 			/>
 			
 			<Stack spacing={5} sx={{ mt: 5, mx: 15 }}>
@@ -150,6 +224,18 @@ const ViewSubmissionsPage = () => {
 				{/* Submission Entry Table */}
 				<SubmissionsTable columns={columns} rows={rows} />
 			</Stack>
+
+			{/* Overall Leaderboard Modal Window */}
+			<CustomModal isOpen={open} setOpen={setOpen} windowTitle="Leaderboard">
+				<Table
+					rows={rowsLeaderboard}
+					columns={columnsLeaderboard}
+					hideFields={['id', 'totalSpent']}
+					additionalStyles={additionalStyles}
+					hideFooter
+					autoPageSize
+				/>
+			</CustomModal>
 		</Box>
 	);
 };

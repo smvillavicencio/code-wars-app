@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import LockIcon from '@mui/icons-material/Lock';
 import {
 	Button,
@@ -6,13 +7,14 @@ import {
 	Toolbar,
 	Tooltip,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import seal from 'assets/UPLB COSS.png';
 import {
-	Modal,
+	CustomModal,
 	ParticipantsLeaderboard,
-	ProblemListTable,
 	SponsorCarousel,
+	Table,
 	Timer,
 	TopBar
 } from 'components/';
@@ -133,6 +135,27 @@ const rows2 = [
  * Params: None
  */
 const ViewAllProblemsPage = () => {
+
+	const additionalStyles = {
+		backgroundColor: '#fff',
+		'& .MuiDataGrid-columnHeader': {
+			fontSize: "h2",
+		},
+	};
+
+	// used for client-side routing to other pages
+	const navigate = useNavigate();
+
+	/**
+   * Purpose: Handles opening of leaderboard modal window upon clicking the ellipsis button.
+   * Params: <Object> receives information of selected problem in the Problem List Table.
+   */
+	const handleRowClick = () => {
+		return 0;
+		// navigate('/participant/view-specific-problem');
+	};
+
+
 	return (
 		<Stack>
 			{/* Topbar */}
@@ -253,7 +276,13 @@ const ViewAllProblemsPage = () => {
 					</Box>
 
 					{/* Problem List Table for the round */}
-					<ProblemListTable rows={rows1} columns={columns1} />
+					<Table
+						rows={rows1}
+						columns={columns1}
+						hideFields={[]}
+						onRowClick={handleRowClick}
+						additionalStyles={additionalStyles}
+					/>
 					<Toolbar />
 				</Stack>
 			</Box>

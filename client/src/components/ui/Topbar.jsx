@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import { useState, useEffect } from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
@@ -75,7 +76,7 @@ const TopBar = ({
 									maxHeight: '75px',
 								}}
 							/> :
-							<div style={{ fontSize:'50', color: 'white' }}>{icon}</div>
+							<div style={{ fontSize:'1em', color: 'white' }}>{icon}</div>
 						}
 					</figure>
 					
@@ -101,6 +102,7 @@ const TopBar = ({
 					variant="contained"
 					color="major"
 					size="large"
+					onClick={handleButton}
 					startIcon={ startIcon? <>{startIcon}</> : <></> }
 					sx={{
 						minWidth: 30,

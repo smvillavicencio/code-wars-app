@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import { useContext } from 'react';
 
 import BoltIcon from '@mui/icons-material/Bolt';

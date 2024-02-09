@@ -10,6 +10,7 @@ import {
 	LoginPage,
 	GeneralOptionsPage,
 	PowerUpLogs,
+	TopTeamsPage,
 	ViewAllProblemsPage,
 	ViewSpecificProblemPage,
 	ViewSubmissionsPage,
@@ -53,6 +54,7 @@ function App() {
 							<Route path="judge/submissions" element={<ViewSubmissionsPage />} />
 							<Route path="admin/general" element={<GeneralOptionsPage />} />
 							<Route path="admin/logs" element={<PowerUpLogs />} />
+							<Route path="admin/podium" element={<TopTeamsPage />} />
 						</Route>
 					</Routes>
 				</Router>

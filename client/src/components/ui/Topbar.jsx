@@ -1,14 +1,14 @@
 /* eslint-disable */ 
 import { useState, useEffect } from 'react';
+
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
 	AppBar,
 	Box,
 	Button,
 	Toolbar,
-	Typography,
+	Typography
 } from '@mui/material';
-
 
 /*
  * Purpose: Displays the topbar component for the participant and judge-related pages.
@@ -28,14 +28,18 @@ const TopBar = ({
 	subtitle,
 	buttonText,
 	startIcon,
-	handleButton
+	handleButton,
 }) => {
-	// state for the element to be displayed before the title and subtitle.
+	/** 
+   * State handler for the element to be displayed before the title and subtitle.
+   */
 	const [image, setImage] = useState(true);
 
-	// sets image upon component mount
-	useEffect(() => { 
-		setImage(isImg);	
+	/**
+   * Sets image upon component mount
+   */
+	useEffect(() => {
+		setImage(isImg);
 	}, []);
 
 
@@ -49,7 +53,7 @@ const TopBar = ({
 				position: 'static',
 			}}
 		>
-			<Toolbar sx={{ justifyContent: 'space-between' }}>
+			<Toolbar sx={{ justifyContent: 'space-between', height: '10px' }}>
 				<Box
 					sx={{
 						display: 'flex',
@@ -68,18 +72,19 @@ const TopBar = ({
 						}}
 					>
 						{/* Displays either an image or an icon */}
-						{image ? 
+						{image ? (
 							<img
 								src={icon}
 								style={{
-									maxWidth: '75px',
-									maxHeight: '75px',
+									maxWidth: '50px',
+									maxHeight: '50px',
 								}}
-							/> :
-							<div style={{ fontSize:'1em', color: 'white' }}>{icon}</div>
-						}
+							/>
+						) : (
+							<div style={{ fontSize: '1em', color: 'white' }}>{icon}</div>
+						)}
 					</figure>
-					
+
 					{/* Title and subtitle */}
 					<Box
 						sx={{
@@ -88,10 +93,10 @@ const TopBar = ({
 							justifyContent: 'center',
 						}}
 					>
-						<Typography noWrap variant="h4">
+						<Typography noWrap variant="h5">
 							<span>{title}</span>
 						</Typography>
-						<Typography noWrap variant="h5">
+						<Typography noWrap variant="h6">
 							<span>{subtitle}</span>
 						</Typography>
 					</Box>
@@ -103,13 +108,13 @@ const TopBar = ({
 					color="major"
 					size="large"
 					onClick={handleButton}
-					startIcon={ startIcon? <>{startIcon}</> : <></> }
+					startIcon={startIcon ? <>{startIcon}</> : <></>}
 					sx={{
 						minWidth: 30,
 						'&:hover': {
 							bgcolor: 'major.light',
 							color: 'general.main',
-						}
+						},
 					}}
 				>
 					{buttonText}

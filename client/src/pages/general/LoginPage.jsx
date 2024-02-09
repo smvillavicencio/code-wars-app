@@ -21,6 +21,8 @@ const LoginPage = () => {
 	const [userDetails, setUserDetails] = useContext(userDetailsContext);
 	// state for the username textfield
 	const [username, SetUsername] = useState('');
+	// state for the password textfield
+	const [password, SetPassword] = useState('');
 
 	// used for client-side routing to other pages
 	const navigate = useNavigate();
@@ -111,120 +113,139 @@ const LoginPage = () => {
 					>
 						Log In
 					</Typography>
-                    
-					{/* Username */}
-					<Box>
-						<PersonIcon
-							sx={{
-								padding: 2,
-								width: '25px',
-								height: '25px',
-								marginRight: '10px',
-								borderRadius: '5px',
-								bgcolor: 'rgba(255, 255, 255, 0.15)',
-							}}
-						/>
 
-						<TextField
-							label="Username"
-							variant="filled"
-							onChange={e => {
-								SetUsername(e.target.value);
-							}}
-							sx={{
-								bgcolor: 'rgba(255, 255, 255, 0.15)',
-								borderTopLeftRadius: '5px',
-								borderTopRightRadius: '5px',
-								'& .MuiFormLabel-root': {
-									color: 'glass.main',
-								},
-								'& .MuiFilledInput-root': {
-									color: 'rgba(255, 255, 255, 0.8)',                      // White with reduced opacity
-									'&::placeholder': {
-										color: 'rgba(255, 255, 255, 0.5)',                  // Placeholder color with reduced opacity
-									},
-									'&:before': {
-										borderBottom: '1px solid rgba(255, 255, 255, 0.5)', // Underline color with reduced opacity
-									},
-									'&:hover:before': {
-										borderBottom: '2px solid rgba(255, 255, 255, 0.5)', // Underline on hover
-									},
-									'&.Mui-focused:before': {
-										borderBottomColor: 'white',                         // White color for the underline when focused
-									},
-									'&.Mui-focused:after': {
-										borderBottomColor: 'major.main',                    // Border color when focused and input is not empty
-									},
-								},
-							}}
-						/>
-					</Box>
-                    
-					{/* Password */}
-					<Box>
-						<KeyIcon
-							sx = {{
-								padding: 2,
-								width: '25px',
-								height: '25px',
-								marginRight: '10px',
-								borderRadius: '5px',
-								bgcolor: 'rgba(255, 255, 255, 0.15)',
-							}}
-						/>
-                        
-						<TextField
-							label="Password"
-							type="password"
-							autoComplete="current-password"
-							variant="filled"
-							sx = {{
-								bgcolor: 'rgba(255, 255, 255, 0.15)',
-								borderTopLeftRadius: '5px',
-								borderTopRightRadius: '5px',
-								'& .MuiFormLabel-root': {
-									color: 'glass.main',
-								},
-								'& .MuiFilledInput-root': {
-									color: 'rgba(255, 255, 255, 0.8)',                      // White with reduced opacity
-									'&::placeholder': {
-										color: 'rgba(255, 255, 255, 0.5)',                  // Placeholder color with reduced opacity
-									},
-									'&:before': {
-										borderBottom: '1px solid rgba(255, 255, 255, 0.5)', // Underline color with reduced opacity
-									},
-									'&:hover:before': {
-										borderBottom: '2px solid rgba(255, 255, 255, 0.5)', // Underline on hover
-									},
-									'&.Mui-focused:before': {
-										borderBottomColor: 'white',                         // White color for the underline when focused
-									},
-									'&.Mui-focused:after': {
-										borderBottomColor: 'major.main',                    // Border color when focused and input is not empty
-									},
-								},
-							}}
-						/>
-					</Box>
-
-					{/* Sign In Button */}
-					<Button 
-						type="submit"
-						onClick={() => { handleLogin(username); }}
-						variant="contained" 
-						sx={{
-							width: '320px',
-							height: '50px',
-							marginTop: '20px',
-							bgcolor: 'major.main',          // Initial background color
-							'&:hover': {
-								bgcolor: 'major.light',     // Background color on hover
-								color: 'general.main',
-							}
-						}}
+					<form 
+						// onSubmit={handleSubmit}
 					>
-						Sign In
-					</Button>
+						{/* Username */}
+						<Box>
+							<PersonIcon
+								sx={{
+									padding: 2,
+									width: '25px',
+									height: '25px',
+									marginRight: '10px',
+									borderRadius: '5px',
+									bgcolor: 'rgba(255, 255, 255, 0.15)',
+								}}
+							/>
+
+							<TextField
+								label="Username"
+								variant="filled"
+								onChange={e => {
+									SetUsername(e.target.value);
+								}}
+								sx={{
+									bgcolor: 'rgba(255, 255, 255, 0.15)',
+									borderTopLeftRadius: '5px',
+									borderTopRightRadius: '5px',
+									'& .MuiFormLabel-root': {
+										color: 'glass.main',
+									},
+									'& .MuiFilledInput-root': {
+										color: 'rgba(255, 255, 255, 0.8)',                      // White with reduced opacity
+										'&::placeholder': {
+											color: 'rgba(255, 255, 255, 0.5)',                  // Placeholder color with reduced opacity
+										},
+										'&:focus::placeholder': {
+											color: 'rgba(255, 255, 255, 1)',      
+										},
+										'&:before': {
+											borderBottom: '1px solid rgba(255, 255, 255, )', // Underline color with reduced opacity
+										},
+										'&:hover:before': {
+											borderBottom: '2px solid rgba(255, 255, 255, 1)', // Underline on hover
+										},
+										'&.Mui-focused:before': {
+											borderBottomColor: 'white',                         // White color for the underline when focused
+										},
+										'&.Mui-focused:after': {
+											borderBottomColor: 'major.main',                    // Border color when focused and input is not empty
+										},
+										'&:focus::placeholder': {
+											color: 'white.main !important',
+										},
+									},
+								}}
+							/>
+						</Box>
+						
+						{/* Password */}
+						<Box>
+							<KeyIcon
+								sx = {{
+									padding: 2,
+									width: '25px',
+									height: '25px',
+									marginRight: '10px',
+									borderRadius: '5px',
+									bgcolor: 'rgba(255, 255, 255, 0.15)',
+								}}
+							/>
+							
+							<TextField
+								label="Password"
+								type="password"
+								autoComplete="current-password"
+								variant="filled"
+								onChange={e => {
+									SetPassword(e.target.value);
+								}}
+								sx = {{
+									bgcolor: 'rgba(255, 255, 255, 0.15)',
+									borderTopLeftRadius: '5px',
+									borderTopRightRadius: '5px',
+									'& .MuiFormLabel-root': {
+										color: 'glass.main',
+									},
+									'& .MuiFilledInput-root': {
+										color: 'rgba(255, 255, 255, 0.8)',                      // White with reduced opacity
+										'&::placeholder': {
+											color: 'rgba(255, 255, 255, 0.5)',                  // Placeholder color with reduced opacity
+										},
+										'&:focus::placeholder': {
+											color: 'rgba(255, 255, 255, 1)',      
+										},
+										'&:before': {
+											borderBottom: '1px solid rgba(255, 255, 255, )', // Underline color with reduced opacity
+										},
+										'&:hover:before': {
+											borderBottom: '2px solid rgba(255, 255, 255, 1)', // Underline on hover
+										},
+										'&.Mui-focused:before': {
+											borderBottomColor: 'white',                         // White color for the underline when focused
+										},
+										'&.Mui-focused:after': {
+											borderBottomColor: 'major.main',                    // Border color when focused and input is not empty
+										},
+										'&:focus::placeholder': {
+											color: 'white.main !important',
+										},
+									},
+								}}
+							/>
+						</Box>
+
+						{/* Sign In Button */}
+						<Button 
+							type="submit"
+							onClick={() => { handleLogin(username); }}
+							variant="contained" 
+							sx={{
+								width: '320px',
+								height: '50px',
+								marginTop: '20px',
+								bgcolor: 'major.main',          // Initial background color
+								'&:hover': {
+									bgcolor: 'major.light',     // Background color on hover
+									color: 'general.main',
+								}
+							}}
+						>
+							Sign In
+						</Button>
+					</form>
 				</Box>
                 
 				{/* Sponsor carousel in LogIn Page */}

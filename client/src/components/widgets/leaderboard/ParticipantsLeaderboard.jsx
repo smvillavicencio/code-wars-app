@@ -123,6 +123,7 @@ const ParticipantsLeaderboard = ({ rows }) => {
 						idx < 4 ? 
 							// if row is in top 4, display this
 							<Typography
+								key={idx}
 								sx={{
 									gap: 5,
 									padding: 2,

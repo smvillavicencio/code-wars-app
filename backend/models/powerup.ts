@@ -1,9 +1,5 @@
 import { Schema, model, Document } from 'mongoose';
 
-interface Tier {
-  
-}
-
 export interface Powerup extends Document {
   name: string;
   type: number;
@@ -15,6 +11,18 @@ export interface Powerup extends Document {
       cost: number;
     };
   };
+}
+
+export interface PowerupInfo {
+  _id: string;
+  code: string;
+  type: number;
+  tier: string;
+  duration: string;
+  cost: string;
+  from?: string;
+  target?: string;
+  timestamp: Date;
 }
 
 const PowerupSchema = new Schema<Powerup>({

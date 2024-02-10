@@ -394,3 +394,53 @@ export const buy_powerup = async (req: Request, res: Response) => {
       });
   }
 };
+
+/*
+ * Purpose: Removes expired powerups from a team's actuve_buffs and debuffs_received
+ * Params: None
+ * Returns: None
+ */
+const remove_active_powerup = async (team_id : String) => {
+  try {
+    let team = await TeamModel.findById(team_id);
+    if (team) {
+      const currentTime = new Date();
+      // NOTE: ENSURE THAT active_buffs AND debuffs_received OF ALL TEAMS ARE CLEARED WHEN STARTING A ROUND
+      
+      //Filter out expired buffs
+      team.active_buffs = team.active_buffs.filter((buff) => {
+        if(buff.code == "immune" && buff.tier == "4") { // immunity tier 4 are immunity for the whole round.
+          return true;
+        } else {
+          const expirationTime = new Date(buff.timestamp.getTime() + buff.duration*1000);
+          return expirationTime > currentTime;
+        }
+      });
+
+      //Filter out expired debuffs
+      team.debuffs_received = team.debuffs_received.filter((debuff) => {
+        const expirationTime = new Date(debuff.timestamp.getTime() + debuff.duration*1000);
+        return expirationTime > currentTime;
+      });
+      
+      await team.save();
+    } else {
+      console.log("Team not found.");
+    }
+  } catch (error) {
+    // Handle errors here
+    console.error('Error removing expired powerups:', error);
+  }
+}
+
+// Run every 1 second
+setInterval(async () => {
+  try {
+    const teams = await TeamModel.find({});
+    for (const team of teams) {
+      await remove_active_powerup(team._id.toString());
+    }
+  } catch (error) {
+    console.error('Error checking for expired elements:', error);
+  }
+}, 1000);

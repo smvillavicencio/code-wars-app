@@ -18,8 +18,8 @@ export interface PowerupInfo {
   code: string;
   type: number;
   tier: string;
-  duration: string;
-  cost: string;
+  duration: number;
+  cost: number;
   from?: string;
   target?: string;
   timestamp: Date;

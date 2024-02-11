@@ -6,7 +6,6 @@ import {
 } from '@mui/material';
 
 import {
-	LogTable,
 	Sidebar,
 	Table
 } from 'components/';

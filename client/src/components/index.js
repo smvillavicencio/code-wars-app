@@ -1,7 +1,6 @@
 /* eslint-disable */ 
 import DropdownSelect from "./ui/DropdownSelect";
 import CustomModal from "./ui/CustomModal";
-import LogTable from "./tables/LogTable";
 import ParticipantsLeaderboard from "./features/leaderboard/ParticipantsLeaderboard";
 import Sidebar from './ui/Sidebar';
 import SponsorCarousel from "./features/carousel/SponsorCarousel";
@@ -14,7 +13,6 @@ import TopBar from "./ui/Topbar";
 export { 
 	DropdownSelect,
 	CustomModal,
-	LogTable,
 	ParticipantsLeaderboard,
 	Sidebar,
 	SponsorCarousel,

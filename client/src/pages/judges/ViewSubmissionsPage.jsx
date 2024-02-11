@@ -11,7 +11,6 @@ import seal from 'assets/UPLB COSS.png';
 import {
 	CustomModal,
 	DropdownSelect,
-	SubmissionsTable,
 	Table,
 	TopBar
 } from 'components/';
@@ -45,8 +44,8 @@ const columns = [
 		flex: 1,
 	},
 	{
-		field: 'latestFile',
-		headerName: 'Latest Uploaded File',
+		field: 'file',
+		headerName: 'Uploaded File',
 		minWidth: 100,
 		maxWidth: 200,
 		headerAlign: 'left',
@@ -54,8 +53,8 @@ const columns = [
 		flex: 1,
 	},
 	{
-		field: 'results',
-		headerName: 'Results',
+		field: 'evaluation',
+		headerName: 'Evaluation',
 		minWidth: 200,
 		// maxWidth: 250,
 		flex: 1,
@@ -71,16 +70,16 @@ const columns = [
 
 // dummy data
 const rows = [
-	{ id: 0,teamName: 'Team Yeah Yeah', problemTitle: 'Special Calculator', submittedAt: '09:55:01', latestFile: 0/200, results: '', checkedBy: 'Sir Hermocilla'},
-	{ id: 1,teamName: 'Team Wiwzzz', problemTitle: 'Listing All Addends', submittedAt: '09:48:55', latestFile: 0/400, results: '', checkedBy: 'Sir Isungga'},
-	{ id: 2,teamName: 'Team Ooohh', problemTitle: 'BINGO', submittedAt: '09:45:08', latestFile: 0/400, results: '', checkedBy: 'Sir Doria'},
-	{ id: 3,teamName: 'Team One', problemTitle: 'Hamming distance, interleavings, and isomorphic', submittedAt: '09:37:44', latestFile: 500/500, results: '', checkedBy: 'Sir Hermocilla'},
-	{ id: 4,teamName: 'Team Two', problemTitle: 'The "Without" Problems', submittedAt: '09:33:04', latestFile: 300/700, results: '', checkedBy: 'Sir Isungga' },
-	{ id: 5,teamName: 'Team Three', problemTitle: 'Figuring Patterns', submittedAt: '09:30:15', latestFile: 0/1000, results: '', checkedBy: 'Sir Doria' },
-	{ id: 6,teamName: 'Team Four', problemTitle: 'Recursive Shifting', submittedAt: '09:10:45', latestFile: 0/2800, results: '', checkedBy: 'Sir Hermocilla'},
-	{ id: 7,teamName: 'Team Five', problemTitle: 'Sudoku Validator', submittedAt: '09:10:45', latestFile: 0/5500, results: '', checkedBy: 'Sir Isungga'},
-	{ id: 8,teamName: 'Team Six', problemTitle: 'Figure Output Pattern', submittedAt: '09:00:27', latestFile: 0/600, results: '', checkedBy: 'Sir Doria' },
-	{ id: 9,teamName: 'Team Seven', problemTitle: 'Roman Numeral Calculator', submittedAt: '09:00:15', latestFile: 0/700, results: '', checkedBy: 'Sir Hermocilla'},
+	{ id: 0,teamName: 'Team Yeah Yeah', problemTitle: 'Special Calculator', submittedAt: '09:55:01', file: 0/200, results: '', checkedBy: 'Sir Hermocilla'},
+	{ id: 1,teamName: 'Team Wiwzzz', problemTitle: 'Listing All Addends', submittedAt: '09:48:55', file: 0/400, results: '', checkedBy: 'Sir Isungga'},
+	{ id: 2,teamName: 'Team Ooohh', problemTitle: 'BINGO', submittedAt: '09:45:08', file: 0/400, results: '', checkedBy: 'Sir Doria'},
+	{ id: 3,teamName: 'Team One', problemTitle: 'Hamming distance, interleavings, and isomorphic', submittedAt: '09:37:44', file: 500/500, results: '', checkedBy: 'Sir Hermocilla'},
+	{ id: 4,teamName: 'Team Two', problemTitle: 'The "Without" Problems', submittedAt: '09:33:04', file: 300/700, results: '', checkedBy: 'Sir Isungga' },
+	{ id: 5,teamName: 'Team Three', problemTitle: 'Figuring Patterns', submittedAt: '09:30:15', file: 0/1000, results: '', checkedBy: 'Sir Doria' },
+	{ id: 6,teamName: 'Team Four', problemTitle: 'Recursive Shifting', submittedAt: '09:10:45', file: 0/2800, results: '', checkedBy: 'Sir Hermocilla'},
+	{ id: 7,teamName: 'Team Five', problemTitle: 'Sudoku Validator', submittedAt: '09:10:45', file: 0/5500, results: '', checkedBy: 'Sir Isungga'},
+	{ id: 8,teamName: 'Team Six', problemTitle: 'Figure Output Pattern', submittedAt: '09:00:27', file: 0/600, results: '', checkedBy: 'Sir Doria' },
+	{ id: 9,teamName: 'Team Seven', problemTitle: 'Roman Numeral Calculator', submittedAt: '09:00:15', file: 0/700, results: '', checkedBy: 'Sir Hermocilla'},
 ];
 
 // dummy data
@@ -175,10 +174,9 @@ const ViewSubmissionsPage = () => {
 		setOpen(true);
 	}
 
-	const additionalStyles = {
+	const additionalStylesLeaderboard = {
 		// modify column header typography
 		'& .MuiDataGrid-columnHeader': {
-			fontSize: "h2",
 			bgcolor: "rgba(0, 0, 0, 0.1)",
 		},
 		bgcolor: 'transparent',
@@ -186,6 +184,10 @@ const ViewSubmissionsPage = () => {
 		padding: 2,
 	}
 
+	const additionalStylesSubmissions = {
+		backgroundColor: '#fff',
+		paddingX: 2,
+	}
 
 	return (
 		<Box>
@@ -222,7 +224,14 @@ const ViewSubmissionsPage = () => {
 				</Box>
 
 				{/* Submission Entry Table */}
-				<SubmissionsTable columns={columns} rows={rows} />
+				<Table
+					rows={rows}
+					columns={columns}
+					hideFields={[]}
+					additionalStyles={additionalStylesSubmissions}
+					// hideFooter
+					// autoPageSize
+				/>
 			</Stack>
 
 			{/* Overall Leaderboard Modal Window */}
@@ -231,7 +240,7 @@ const ViewSubmissionsPage = () => {
 					rows={rowsLeaderboard}
 					columns={columnsLeaderboard}
 					hideFields={['id', 'totalSpent']}
-					additionalStyles={additionalStyles}
+					additionalStyles={additionalStylesLeaderboard}
 					hideFooter
 					autoPageSize
 				/>

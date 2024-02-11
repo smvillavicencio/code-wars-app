@@ -1,6 +1,7 @@
 /* eslint-disable */ 
 import { useEffect } from "react";
 import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -9,13 +10,20 @@ const OverallLeaderboard = ({
   columns,
   hideFields,
   additionalStyles,
-  ...props
 }) => {
   /**
    * Create the apiRef to hide selected columns dynamically
    */
   const apiRef = useGridApiRef();
 
+  /**
+   * Used for client-side routing to other pages
+   */
+	const navigate = useNavigate();
+
+  /**
+   * Hide columns on component mount
+   */
   useEffect(() => {
     hideFields.forEach((field) => {
       /**
@@ -25,14 +33,25 @@ const OverallLeaderboard = ({
     })
   }, []);
 
+  /**
+   * receives information of selected problem in the Problem List Table.
+   */
+  const handleRowClick = (rowID) => {
+    console.log(rowID)
+    console.log(apiRef.current.getRowParams)
+    // navigate('/participant/view-specific-problem');
+  }
 
   /**
-   * Define common styles for the DataGrid
+   * Purpose: Define common styles for the DataGrid
    */
   const commonStyles = {
     // modify cell typography
-    '& .MuiDataGrid-cell': {
-      variant: "body1",
+    '.MuiDataGrid-cell': {
+      // variant: "body1 !important",
+      fontFamily: 'Inter',
+      fontSize: '1rem',
+      fontWeight: '400',
       borderLeft: 'none',
       borderRight: 'none', 
       borderTop: 'none', 
@@ -46,13 +65,20 @@ const OverallLeaderboard = ({
     '.MuiDataGrid-cell:focus': {
       outline: 'none'
     },
-    // pointer cursor on ll rows
-    '& .MuiDataGrid-row:hover': {
+    // make cursor a pointer on all rows
+    '.MuiDataGrid-row:hover': {
       cursor: 'pointer',
     },
+    // Change the color and width of the line
     '.MuiDataGrid-footerContainer': {
-      // Change the color and width of the line
       borderTop: 'none',
+    },
+    // Modify column header font styling
+    '.MuiDataGrid-columnHeaderTitle': { 
+      fontWeight: '700',
+      fontFamily: 'Poppins',
+      color: '#707070',
+      fontSize: '1rem'
     },
 
     // truncate values if longer than column maxWidth
@@ -75,6 +101,9 @@ const OverallLeaderboard = ({
       pageSizeOptions={[5, 10]}
       disableColumnSelector
       disableColumnFilter
+      // getRowId={(row) => row._id}
+      // onRowClick={() => {handleRowClick(params.row._id)}}   // only for navigating from view all problem to view specific problem page
+
       sx={gridStyles}
       // {...props}
     />

@@ -66,16 +66,16 @@ const columns1 = [
 
 // dummy data for problems table
 const rows1 = [
-	{ id: 1, problemTitle: 'Special Calculator', status: 'Unopened', score: 0/200, checkedBy: 'Sir Hermocilla'},
-	{ id: 2, problemTitle: 'Listing All Addends', status: 'Submitted', score: 0/400, checkedBy: 'Sir Isungga'},
-	{ id: 3, problemTitle: 'BINGO', status: 'Under Review', score: 0/400, checkedBy: 'Sir Doria'},
-	{ id: 4, problemTitle: 'Hamming distance, interleavings, and isomorphic', status: 'Unopened', score: 500/500, checkedBy: 'Sir Hermocilla'},
-	{ id: 5, problemTitle: 'The "Without" Problems', status: 'Done', score: 300/700, checkedBy: 'Sir Isungga' },
-	{ id: 6, problemTitle: 'Figuring Patterns', status: 'Done', score: 0/1000, checkedBy: 'Sir Doria' },
-	{ id: 7, problemTitle: 'Recursive Shifting', status: 'Submitted', score: 0/2800, checkedBy: 'Sir Hermocilla'},
-	{ id: 8, problemTitle: 'Sudoku Validator', status: 'Unopened', score: 0/5500, checkedBy: 'Sir Isungga'},
-	{ id: 9, problemTitle: 'Figure Output Pattern', status: 'Unopened', score: 0/600, checkedBy: 'Sir Doria' },
-	{ id: 10, problemTitle: 'Roman Numeral Calculator', status: 'Unopened', score: 0/700, checkedBy: 'Sir Hermocilla'},
+	{ id: 1, problemTitle: 'Special Calculator', status: 'Pending', score: 0/200, checkedBy: 'Sir Hermocilla'},
+	{ id: 2, problemTitle: 'Listing All Addends', status: 'Checked', score: 0/400, checkedBy: 'Sir Isungga'},
+	{ id: 3, problemTitle: 'BINGO', status: 'Checked', score: 0/400, checkedBy: 'Sir Doria'},
+	{ id: 4, problemTitle: 'Hamming distance, interleavings, and isomorphic', status: 'Pending', score: 500/500, checkedBy: 'Sir Hermocilla'},
+	{ id: 5, problemTitle: 'The "Without" Problems', status: 'Error', score: 300/700, checkedBy: 'Sir Isungga' },
+	{ id: 6, problemTitle: 'Figuring Patterns', status: 'Error', score: 0/1000, checkedBy: 'Sir Doria' },
+	{ id: 7, problemTitle: 'Recursive Shifting', status: 'Checked', score: 0/2800, checkedBy: 'Sir Hermocilla'},
+	{ id: 8, problemTitle: 'Sudoku Validator', status: 'Pending', score: 0/5500, checkedBy: 'Sir Isungga'},
+	{ id: 9, problemTitle: 'Figure Output Pattern', status: 'Pending', score: 0/600, checkedBy: 'Sir Doria' },
+	{ id: 10, problemTitle: 'Roman Numeral Calculator', status: 'Pending', score: 0/700, checkedBy: 'Sir Hermocilla'},
 ];
 
 // dummy data for leaderboard
@@ -138,9 +138,6 @@ const ViewAllProblemsPage = () => {
 
 	const additionalStyles = {
 		backgroundColor: '#fff',
-		'& .MuiDataGrid-columnHeader': {
-			fontSize: "h2",
-		},
 	};
 
 	// used for client-side routing to other pages
@@ -280,7 +277,7 @@ const ViewAllProblemsPage = () => {
 						rows={rows1}
 						columns={columns1}
 						hideFields={[]}
-						onRowClick={handleRowClick}
+						// onRowClick={handleRowClick}
 						additionalStyles={additionalStyles}
 					/>
 					<Toolbar />

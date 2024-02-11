@@ -138,9 +138,6 @@ const ViewAllProblemsPage = () => {
 
 	const additionalStyles = {
 		backgroundColor: '#fff',
-		'& .MuiDataGrid-columnHeader': {
-			fontSize: "h2",
-		},
 	};
 
 	// used for client-side routing to other pages

@@ -7,7 +7,8 @@ import {
 
 import {
 	LogTable,
-	Sidebar
+	Sidebar,
+	Table
 } from 'components/';
 
 
@@ -76,6 +77,11 @@ const rows = [
  * Params: None
  */
 const PowerUpLogs = () => {
+
+	const additionalStyles = {
+		backgroundColor: '#fff',
+	};
+
 	return (
 		<Box sx={{ display: 'flex' }}>
 			{/* Sidebar */}
@@ -92,7 +98,12 @@ const PowerUpLogs = () => {
 				{/* Table */}
 				<Box sx={{ display: 'flex', justifyContent: 'center' }}>
 					<Box sx={{ width: '80%' }}>
-						<LogTable rows={rows} columns={columns} />
+						<Table
+							rows={rows}
+							columns={columns}
+							hideFields={[]}
+							additionalStyles={additionalStyles}
+						/>
 					</Box>
 				</Box>
 			</Stack>

@@ -4,12 +4,21 @@ import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
 import { useNavigate } from 'react-router-dom';
 
 
-
-const OverallLeaderboard = ({
+/**
+ * Purpose: Displays data in table form using MUI DataGrid component.
+ * Params:
+ *    <Array>     rows - array of objects containing the table's rows
+ *    <Array>     columns - array of objects containing the table's columns
+ *    <Array>     hideFields - array containing column names to be hidden
+ *    <Object>    additionalStyles - object containing additional styling for table
+ *    <Function>  handleRowClick - function that will handle navigation
+ */
+const Table = ({
   rows,
   columns,
   hideFields,
   additionalStyles,
+  handleRowClick
 }) => {
   /**
    * Create the apiRef to hide selected columns dynamically
@@ -32,15 +41,6 @@ const OverallLeaderboard = ({
       apiRef.current.setColumnVisibility(field, false)
     })
   }, []);
-
-  /**
-   * receives information of selected problem in the Problem List Table.
-   */
-  const handleRowClick = (rowID) => {
-    console.log(rowID)
-    console.log(apiRef.current.getRowParams)
-    // navigate('/participant/view-specific-problem');
-  }
 
   /**
    * Purpose: Define common styles for the DataGrid
@@ -99,15 +99,14 @@ const OverallLeaderboard = ({
       columns={columns}
       // loading={!rows.length}     // Display loading indicator if rows has not yet loaded
       pageSizeOptions={[5, 10]}
+      autoPageSize
       disableColumnSelector
       disableColumnFilter
-      // getRowId={(row) => row._id}
-      // onRowClick={() => {handleRowClick(params.row._id)}}   // only for navigating from view all problem to view specific problem page
+      onRowClick={handleRowClick}
 
       sx={gridStyles}
-      // {...props}
     />
   )
 }
 
-export default OverallLeaderboard;
+export default Table;

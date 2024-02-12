@@ -7,11 +7,10 @@ import {
 	Toolbar,
 	Tooltip,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, createSearchParams } from 'react-router-dom';
 
 import seal from 'assets/UPLB COSS.png';
 import {
-	CustomModal,
 	ParticipantsLeaderboard,
 	SponsorCarousel,
 	Table,
@@ -45,9 +44,11 @@ const ViewAllProblemsPage = () => {
    * Purpose: Handles opening of leaderboard modal window upon clicking the ellipsis button.
    * Params: <Object> receives information of selected problem in the Problem List Table.
    */
-	const handleRowClick = () => {
-		return 0;
-		// navigate('/participant/view-specific-problem');
+	const handleRowClick = (params) => {
+		navigate({
+			pathname: '/participant/view-specific-problem',
+			search: createSearchParams(params.row).toString()
+		});
 	};
 
 	/**
@@ -181,7 +182,7 @@ const ViewAllProblemsPage = () => {
 						rows={rowsProblems}
 						columns={columnsProblems}
 						hideFields={[]}
-						// onRowClick={handleRowClick}
+						handleRowClick={handleRowClick}
 						additionalStyles={additionalStyles}
 					/>
 					<Toolbar />

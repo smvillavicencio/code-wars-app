@@ -9,7 +9,7 @@ import {
 	Stack,
 	Typography,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import {
 	CustomModal,
@@ -27,29 +27,28 @@ import SubmitModal from './modals/SubmitModal';
 
 
 
-// dummy data
-const problemTitle = 'Hamming distance, interleavings, and isomorphic';
-const problemSubtitle = 'UPLB Computer Science Society';
-const problemDescription = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mauris dolor, euismod nec commodo aliquam, porta vitae ante. Vivamus tincidunt egestas erat nec condimentum. Sed nec ex quis arcu lacinia laoreet. In interdum ipsum orci, ac gravida urna pharetra non. Etiam pretium, ipsum sed volutpat mollis, eros est hendrerit turpis, eget hendrerit libero dui ut eros. Donec sit amet dui sapien. Aliquam nec mi nec mauris placerat gravida. Cras egestas nisl semper semper mollis. Sed dictum augue congue porttitor ultricies. In accumsan, libero at suscipit aliquam, neque lorem eleifend velit, a vulputate lectus lorem in ante.\nMorbi non felis et lorem ultrices porttitor sit amet vitae est. Pellentesque magna urna, posuere a tincidunt a, vehicula sit amet ex. Vestibulum vehicula lectus eget consectetur imperdiet. Aenean interdum ante vel massa ultricies, a aliquet libero tempor. Mauris laoreet ipsum lacus, in iaculis nibh pharetra eget. Nunc eget purus egestas, elementum nulla eget, tincidunt nunc.';
-
 /*
  * Purpose: Displays the Specific Problem Page for participants.
- * Params:
- * 		<String> problemTitle - receives the title of the specific problem to be displayed.
- * 		<String> problemSubtitle - receives the subtitle of the specific problem to be displayed.
- * 		<String> problemDescription - receives the description of the specific problem to be displayed.
+ * Params: None
  */
-const ViewSpecificProblemPage = ({
-	// problemTitle,
-	// problemSubtitle,
-	// problemDescription,
-}) => {
+const ViewSpecificProblemPage = () => {
 	// state for the opening and closing of submit modal window
 	const [open, setOpen] = useState(false);
 
 	// used for client-side routing to other pages
 	const navigate = useNavigate();
+	// used for client-side routing from view all problems page
+	const location = useLocation();
+	// used to retrieve values of datagrid row
+	let params = new URLSearchParams(location.search);
+	// page values
+	const problemTitle = params.get('problemTitle')
+	// dummy values
+	const problemSubtitle = 'UPLB Computer Science Society';
+	const problemDescription = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mauris dolor, euismod nec commodo aliquam, porta vitae ante. Vivamus tincidunt egestas erat nec condimentum. Sed nec ex quis arcu lacinia laoreet. In interdum ipsum orci, ac gravida urna pharetra non. Etiam pretium, ipsum sed volutpat mollis, eros est hendrerit turpis, eget hendrerit libero dui ut eros. Donec sit amet dui sapien. Aliquam nec mi nec mauris placerat gravida. Cras egestas nisl semper semper mollis. Sed dictum augue congue porttitor ultricies. In accumsan, libero at suscipit aliquam, neque lorem eleifend velit, a vulputate lectus lorem in ante.\nMorbi non felis et lorem ultrices porttitor sit amet vitae est. Pellentesque magna urna, posuere a tincidunt a, vehicula sit amet ex. Vestibulum vehicula lectus eget consectetur imperdiet. Aenean interdum ante vel massa ultricies, a aliquet libero tempor. Mauris laoreet ipsum lacus, in iaculis nibh pharetra eget. Nunc eget purus egestas, elementum nulla eget, tincidunt nunc.';
 
+	
+	
 	/*
    * Purpose: Handles opening of the submit modal window
    * Params: None

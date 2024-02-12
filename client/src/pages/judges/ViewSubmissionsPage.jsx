@@ -4,11 +4,11 @@ import { useState } from 'react';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import {
 	Box,
-	Link,
 	MenuItem,
 	Stack,
 	Typography
 } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 import seal from 'assets/UPLB COSS.png';
 import {
@@ -71,6 +71,7 @@ const ViewSubmissionsPage = () => {
 			return {
 				...obj,
 				renderCell: (params) => {
+					console.log(params.row.uploadedFile)
 					return (
 						<DropdownSelect
 							isDisabled={true}
@@ -79,12 +80,28 @@ const ViewSubmissionsPage = () => {
 							options={optionsEval}
 							handleChange={handleEvaluation}
 							value={evaluation}
-							// style={{paddingY: 2}}
 						/>
 					);
 				}
 			};
-		} 
+		}
+		if (obj.field === 'uploadedFile') {
+			return {
+				...obj,
+				renderCell: (params) => {
+					return (
+						<Link
+							target="_blank"
+							download
+							// onClick={handleDownload}
+							// to={'/'}
+						>
+							{params.value}
+						</Link>
+					);
+				}
+			};
+		}
     return obj;
 	});
 

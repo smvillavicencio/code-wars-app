@@ -41,28 +41,55 @@ const GeneralOptionsPage = () => {
 	 * Default value is Easy.
 	 */
 	const [currRound, setCurrRound] = useState('Easy');
+	// State handler for toggle switch state
+	const [checked, setChecked] = useState(false);
 
 	/**
 	 * Purpose: Handler for toggle switch button. This will freeze the screens of all active sessions
 	 */
-	const handleFreeze = async () => {
-		await enterAdminPassword({ title:'Freeze all active sessions'})
-			.then((res) => {
-				// proceed to request for freeze all screens
+	const handleFreeze = async (e) => {
+		// for freezing all sessions
+		if (e.target.checked) {
+			await enterAdminPassword({ title: 'Freeze all active sessions' })
+				.then((res) => {
+					// proceed to request for freeze all screens
 
-				// temp confirmation windows
-				if (res == true) {
-					SuccessWindow.fire({
-						text: 'Successfully froze all active sessions!'
-					});
-				} else if (res == false) {
-					ErrorWindow.fire({
-						title: 'Invalid Password',
-						text: 'Password is incorrect.'
-					});
-				}
-			});
-	};
+					// temp confirmation windows
+					if (res == true) {
+						SuccessWindow.fire({
+							text: 'Successfully froze all active sessions!'
+						});
+						setChecked(true);
+
+					} else if (res == false) {
+						ErrorWindow.fire({
+							title: 'Invalid Password',
+							text: 'Password is incorrect.'
+						});
+					}
+				});
+		// for unfreezing all sessions
+		} else {
+			await enterAdminPassword({ title: 'Freeze all active sessions' })
+				.then((res) => {
+					// proceed to request to unfreeze all screens
+
+					// temp confirmation windows
+					if (res == true) {
+						SuccessWindow.fire({
+							text: 'Successfully disabled freeze for all active sessions!'
+						});
+						setChecked(false);
+
+					} else if (res == false) {
+						ErrorWindow.fire({
+							title: 'Invalid Password',
+							text: 'Password is incorrect.'
+						});
+					}
+				});
+		};
+	}
 
 	/**
 	 * Purpose: Handler for the apply button. This will terminate all active sessions.
@@ -143,7 +170,7 @@ const GeneralOptionsPage = () => {
 						<Stack spacing={3} sx={{ width: '15%' }}>
 
 							{/* Toggle Switch */}
-							<Switch onClick={handleFreeze} />
+							<Switch checked={checked} onChange={(e) => handleFreeze(e)} />
 
 							{/* Apply Button */}
 							<Button

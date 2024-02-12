@@ -4,6 +4,8 @@ import { useState } from 'react';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import {
 	Box,
+	Link,
+	MenuItem,
 	Stack,
 	Typography
 } from '@mui/material';
@@ -82,7 +84,7 @@ const ViewSubmissionsPage = () => {
 					);
 				}
 			};
-    }
+		} 
     return obj;
 	});
 
@@ -197,7 +199,12 @@ const ViewSubmissionsPage = () => {
 						options={optionsTeam}
 						handleChange={handleTeams}
 						value={selectedTeam}
-					/>
+					>
+						{/* Empty Value */}
+						<MenuItem value="">
+							<em>All</em>
+						</MenuItem>
+					</DropdownSelect>
 					<DropdownSelect
 						isDisabled={false}
 						minWidth="35%"
@@ -205,7 +212,12 @@ const ViewSubmissionsPage = () => {
 						options={optionsProblems}
 						handleChange={handleProblems}
 						value={selectedProblem}
-					/>
+					>
+						{/* Empty Value */}
+						<MenuItem value="">
+							<em>All</em>
+						</MenuItem>
+					</DropdownSelect>
 				</Box>
 
 				{/* Submission Entry Table */}

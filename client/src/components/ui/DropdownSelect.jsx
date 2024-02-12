@@ -18,7 +18,7 @@ import {
  *    <Array>     options - options to display in the component's menu.
  *    <String>    initial - sets default value for the select component
  *    <Function>  handleChange - handles change event for the component
- *    <String>    selected - holds current selected value
+ *    <String>    value - holds current selected value
  */
 const DropdownSelect = ({
   isDisabled,
@@ -26,9 +26,9 @@ const DropdownSelect = ({
   minWidth,
   options,
   handleChange,
-  value
+  value,
+  ...props
 }) => {
-
 
   return (
     <Box sx={{ minWidth:`${minWidth}` }}>
@@ -55,10 +55,7 @@ const DropdownSelect = ({
           onChange={handleChange}
           style={{ backgroundColor: '#fff' }}
         >
-          {/* Empty Value */}
-          <MenuItem value="">
-            <em>All</em>
-          </MenuItem>
+          {props.children}
 
           {/* Menu popover options */}
           {options.map((option, idx) => 

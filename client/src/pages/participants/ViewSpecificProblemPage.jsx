@@ -89,7 +89,7 @@ const ViewSpecificProblemPage = () => {
 				}
 				title={problemTitle}
 				subtitle={problemSubtitle}
-				buttonText="UPLOAD FILE"
+				buttonText="UPLOAD SUBMISSION"
 				startIcon={<FileUploadIcon />}
 				handleButton={handleButton}
 			/>

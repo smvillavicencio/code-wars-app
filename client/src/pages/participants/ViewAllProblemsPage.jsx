@@ -105,6 +105,7 @@ const ViewAllProblemsPage = () => {
 					sx={{
 						mt: 8,
 						width: '68%',
+						height: '100%'
 					}}
 				>
           
@@ -143,10 +144,15 @@ const ViewAllProblemsPage = () => {
 						rows={rowsProblems}
 						columns={columnsProblems}
 						hideFields={[]}
-						handleRowClick={handleRowClick}
 						additionalStyles={additionalStyles}
+						onRowClick={handleRowClick}
+						pageSizeOptions={[5, 10]}
+						autoHeight={true}
+						pageSize={10}
+						initialState={{
+							pagination: { paginationModel: { pageSize: 10 } },
+						}}
 					/>
-					<Toolbar />
 				</Stack>
 			</Box>
 		</Stack>

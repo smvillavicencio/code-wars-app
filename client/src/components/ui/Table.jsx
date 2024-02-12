@@ -1,7 +1,6 @@
 /* eslint-disable */ 
 import { useEffect } from "react";
 import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
-import { useNavigate } from 'react-router-dom';
 
 
 /**
@@ -11,24 +10,18 @@ import { useNavigate } from 'react-router-dom';
  *    <Array>     columns - array of objects containing the table's columns
  *    <Array>     hideFields - array containing column names to be hidden
  *    <Object>    additionalStyles - object containing additional styling for table
- *    <Function>  handleRowClick - function that will handle navigation
  */
 const Table = ({
   rows,
   columns,
   hideFields,
   additionalStyles,
-  handleRowClick
+  ...props
 }) => {
   /**
    * Create the apiRef to hide selected columns dynamically
    */
   const apiRef = useGridApiRef();
-
-  /**
-   * Used for client-side routing to other pages
-   */
-	const navigate = useNavigate();
 
   /**
    * Hide columns on component mount
@@ -98,15 +91,12 @@ const Table = ({
       rows={rows}
       columns={columns}
       // loading={!rows.length}     // Display loading indicator if rows has not yet loaded
-      pageSizeOptions={[5, 10]}
+
       disableColumnSelector
       disableColumnFilter
-      onRowClick={handleRowClick}
-      initialState={{
-        pagination: { paginationModel: { pageSize: 10 } },
-      }}
-
       sx={gridStyles}
+    
+      {...props}
     />
   )
 }

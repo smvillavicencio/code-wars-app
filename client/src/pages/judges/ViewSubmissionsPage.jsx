@@ -4,7 +4,8 @@ import { useState } from 'react';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import {
 	Box,
-	Stack
+	Stack,
+	Typography
 } from '@mui/material';
 
 import seal from 'assets/UPLB COSS.png';
@@ -18,6 +19,7 @@ import {
 import {
 	columnsSubmissions,
 	columnsLeaderboard,
+	optionsEval,
 	optionsTeam,
 	optionsProblems,
 	rowsSubmissions,
@@ -43,6 +45,7 @@ const additionalStylesSubmissions = {
 }
 
 
+
 /**
  * Purpose: Displays the View Submissions Page for judges.
  * Params: None
@@ -56,6 +59,32 @@ const ViewSubmissionsPage = () => {
 	const [selectedTeam, setSelectedTeam] = useState('');
 	// state handler for problem dropdown select
 	const [selectedProblem, setSelectedProblem] = useState('');
+	// state handler for evaluation dropdown select
+	const [evaluation, setEvaluation] = useState('');
+
+
+	// adding dropdown selects for evaluation column of submission table
+	const modifiedSubmissionColumns = columnsSubmissions.map((obj) => {
+    if (obj.field === 'evaluation') {
+			return {
+				...obj,
+				renderCell: (params) => {
+					return (
+						<DropdownSelect
+							isDisabled={true}
+							minWidth="100%"
+							label="Evaluation"
+							options={optionsEval}
+							handleChange={handleEvaluation}
+							value={evaluation}
+							// style={{paddingY: 2}}
+						/>
+					);
+				}
+			};
+    }
+    return obj;
+	});
 
 	/**
 	* Purpose: Handles opening of modal window for overall leaderboard.
@@ -77,7 +106,13 @@ const ViewSubmissionsPage = () => {
 	const handleProblems = (e) => {
 		setSelectedProblem(e.target.value);
 	}
-
+	
+	/**
+	* Purpose: Sets state of selectedEvaluation.
+	*/
+	const handleEvaluation = (e) => {
+		setEvaluation(e.target.value);
+	}
 
 	/**
 	* Purpose: Client-side filtering based on values from the dropdown selects.
@@ -116,7 +151,8 @@ const ViewSubmissionsPage = () => {
 					}
 				})
 				return temp2;
-
+			
+			// if there is no selected team
 			} else {
 				rowsSubmissions.filter((row) => {
 					// if problemTitle matches selectedProblem
@@ -146,7 +182,7 @@ const ViewSubmissionsPage = () => {
 				handleButton={handleButton}
 			/>
 			
-			<Stack spacing={5} sx={{ mt: 5, mx: 15 }}>
+			<Stack spacing={5} sx={{ mt: 5, mx: 15 }} >
 				
 				{/* Dropdown selects for team name and problem title */}
 				<Box sx={{
@@ -175,9 +211,24 @@ const ViewSubmissionsPage = () => {
 				{/* Submission Entry Table */}
 				<Table
 					rows={getFilteredRows(rowsSubmissions)}
-					columns={columnsSubmissions}
+					columns={modifiedSubmissionColumns}
 					hideFields={[]}
 					additionalStyles={additionalStylesSubmissions}
+					density={"comfortable"}
+					columnHeaderHeight={45}
+					pageSizeOptions={[5, 8]}
+					autoHeight
+					initialState={{
+						pagination: { paginationModel: { pageSize: 8 } },
+					}}
+					// if there are no submission entries yet
+					slots={{
+						noRowsOverlay: () => (
+							<Stack height="100%" alignItems="center" justifyContent="center">
+								<Typography><em>No records to display.</em></Typography>
+							</Stack>
+						)
+					}}
 				/>
 			</Stack>
 
@@ -188,8 +239,10 @@ const ViewSubmissionsPage = () => {
 					columns={columnsLeaderboard}
 					hideFields={['id', 'totalSpent']}
 					additionalStyles={additionalStylesLeaderboard}
-					hideFooter
-					autoPageSize
+					pageSize={5}
+					initialState={{
+						pagination: { paginationModel: { pageSize: 5 } },
+					}}
 				/>
 			</CustomModal>
 		</Box>

@@ -94,10 +94,25 @@ export const rowsProblems = [
 	{ id: 8, problemTitle: 'Sudoku Validator', status: 'Pending', score: 0/5500, checkedBy: 'Sir Isungga'},
 	{ id: 9, problemTitle: 'Figure Output Pattern', status: 'Pending', score: 0/600, checkedBy: 'Sir Doria' },
 	{ id: 10, problemTitle: 'Roman Numeral Calculator', status: 'Pending', score: 0/700, checkedBy: 'Sir Hermocilla'},
+
+	{ id: 11, problemTitle: 'Special Calculator', status: 'Pending', score: 0/200, checkedBy: 'Sir Hermocilla'},
+	{ id: 12, problemTitle: 'Listing All Addends', status: 'Checked', score: 0/400, checkedBy: 'Sir Isungga'},
+	{ id: 13, problemTitle: 'BINGO', status: 'Checked', score: 0/400, checkedBy: 'Sir Doria'},
+	{ id: 14, problemTitle: 'Hamming distance, interleavings, and isomorphic', status: 'Pending', score: 500/500, checkedBy: 'Sir Hermocilla'},
+	{ id: 15, problemTitle: 'The "Without" Problems', status: 'Error', score: 300/700, checkedBy: 'Sir Isungga' },
+	{ id: 16, problemTitle: 'Figuring Patterns', status: 'Error', score: 0/1000, checkedBy: 'Sir Doria' },
+	{ id: 17, problemTitle: 'Recursive Shifting', status: 'Checked', score: 0/2800, checkedBy: 'Sir Hermocilla'},
 ];
 
+// options for evaluation of judges
+// used in judges - view submissions page
+export const optionsEval = [
+	'Correct',
+	'Partially Correct',
+	'Incorrect Solution'
+];
 
-// submission entries columns
+// columns for submissions table
 // used in judges - view submissions page
 export const columnsSubmissions = [
 	{
@@ -212,5 +227,73 @@ export const rowsLeaderboard = [
 	{ id: 4, rank: 4, teamName: 'Team Four', score: 500/500, totalSpent: 1000},
 	{ id: 5, rank: 5, teamName: 'Team Five', score: 300/700, totalSpent: 650},
 	{ id: 6, rank: 6, teamName: 'Team Six', score: 0/1000, totalSpent: 800},
-	{ id: 7, rank: 7, teamName: 'Team Seven', score: 0/2800, totalSpent: 750},
+	{ id: 7, rank: 7, teamName: 'Team Seven', score: 0 / 2800, totalSpent: 750 },
+	{ id: 8, rank: 8, teamName: 'Team Five', score: 300/700, totalSpent: 650},
+	{ id: 9, rank: 9, teamName: 'Team Six', score: 0/1000, totalSpent: 800},
+	{ id: 10, rank: 10, teamName: 'Team Seven', score: 0/2800, totalSpent: 750},
+];
+
+
+// columns for power-up logs
+// used in admin - power-up logs page
+export const columnsPowerUpLog = [
+	{
+		field: 'id',
+		headerName: 'ID',
+		minWidth: 60,
+		maxWidth: 100,
+		headerAlign: 'center',
+		align: 'center',
+		flex: 1,
+	},
+	{
+		field: 'teamName',
+		headerName: 'Team Name',
+		minWidth: 300,
+		flex: 1,
+	},
+	{
+		field: 'type',
+		headerName: 'Type',
+		minWidth: 75,
+		flex: 1,
+	},
+	{
+		field: 'powerup',
+		headerName: 'Power-Up',
+		minWidth: 150,
+		// maxWidth: 200,
+		flex: 1,
+	},
+	{
+		field: 'timestamp',
+		headerName: 'Timestamp',
+		minWidth: 100,
+		maxWidth: 200,
+		headerAlign: 'left',
+		align: 'left',
+		flex: 1,
+	},
+	{
+		field: 'recipient',
+		headerName: 'Recipient',
+		minWidth: 200,
+		// maxWidth: 250,
+		flex: 1,
+	}
+];
+
+// rows for power-up logs
+// used in admin - power-up logs page
+export const rowsPowerUpLog = [
+	{ id: 0,teamName: 'Team Yeah Yeah', type: 'Buff', powerup:'Dispel', timestamp: '09:55:01', recipient: 'Team One'},
+	{ id: 1,teamName: 'Team Wiwzzz', type: 'Buff', powerup:'Immunity', timestamp: '09:48:55', recipient: 'Team Two'},
+	{ id: 2,teamName: 'Team Ooohh', type: 'Debuff', powerup:'Stun', timestamp: '09:45:08', recipient: 'Team One'},
+	{ id: 3,teamName: 'Team One', type: 'Buff', powerup:'Dispel', timestamp: '09:37:44', recipient: 'Team Three'},
+	{ id: 4,teamName: 'Team Two', type: 'Debuff', powerup:'Stun', timestamp: '09:33:04', recipient: 'Team Seven'},
+	{ id: 5,teamName: 'Team Three', type: 'Debuff', powerup:'Stun', timestamp: '09:30:15', recipient: 'Team Five'},
+	{ id: 6,teamName: 'Team Four', type: 'Debuff', powerup:'Editor', timestamp: '09:10:45', recipient: 'Team Ten'},
+	{ id: 7,teamName: 'Team Five', type: 'Buff', powerup:'Dispel', timestamp: '09:10:45', recipient: 'Team Ten'},
+	{ id: 8,teamName: 'Team Six', type: 'Buff', powerup:'Stun', timestamp: '09:00:27', recipient: 'Team Nine'},
+	{ id: 9,teamName: 'Team Seven', type: 'Debuff', powerup:'Editor', timestamp: '09:00:15', recipient: 'Team Four'},
 ];

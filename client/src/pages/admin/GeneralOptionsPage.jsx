@@ -183,6 +183,12 @@ const GeneralOptionsPage = () => {
 								columns={columnsLeaderboard}
 								hideFields={['id']}
 								additionalStyles={additionalStyles}
+								pageSizeOptions={[5, 7]}
+								pageSize={7}
+								autoHeight
+								initialState={{
+									pagination: { paginationModel: { pageSize: 7 } },
+								}}
 							/>
 						</Box>
 					</Box>

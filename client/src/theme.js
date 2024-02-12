@@ -43,11 +43,11 @@ let customTheme = createTheme({
 		// buttons
 		primary: {
 			contrastText: '#e5ebff',
-			main: '#2c3e6b',
+			main: '#395395',
 		},
 		secondary: {
 			contrastText: '#e5ebff',
-			main: '#640b25',
+			main: '#8d2544',
 
 			// disabled
 			light: '#ffc1d3'

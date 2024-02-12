@@ -37,6 +37,66 @@ export const optionsProblems = [
 	'Roman Numeral Calculator',
 ];
 
+// problem list columns
+// used in participants - view all problems page
+const columnsProblems = [
+	{
+		field: 'id',
+		headerName: '#',
+		minWidth: 60,
+		maxWidth: 100,
+		headerAlign: 'center',
+		align: 'center',
+		flex: 1,
+	},
+	{
+		field: 'problemTitle',
+		headerName: 'Problem Title',
+		minWidth: 400,
+		// maxWidth: 500,
+		flex: 1,
+	},
+	{
+		field: 'status',
+		headerName: 'Status',
+		minWidth: 150,
+		// maxWidth: 200,
+		flex: 1,
+	},
+	{
+		field: 'score',
+		headerName: 'Score',
+		minWidth: 100,
+		maxWidth: 200,
+		headerAlign: 'left',
+		align: 'left',
+		flex: 1,
+	},
+	{
+		field: 'checkedBy',
+		headerName: 'Checked By',
+		minWidth: 200,
+		// maxWidth: 250,
+		flex: 1,
+	},
+];
+
+// problem list rows
+// used in participants - view all problems page
+const rowsProblems = [
+	{ id: 1, problemTitle: 'Special Calculator', status: 'Pending', score: 0/200, checkedBy: 'Sir Hermocilla'},
+	{ id: 2, problemTitle: 'Listing All Addends', status: 'Checked', score: 0/400, checkedBy: 'Sir Isungga'},
+	{ id: 3, problemTitle: 'BINGO', status: 'Checked', score: 0/400, checkedBy: 'Sir Doria'},
+	{ id: 4, problemTitle: 'Hamming distance, interleavings, and isomorphic', status: 'Pending', score: 500/500, checkedBy: 'Sir Hermocilla'},
+	{ id: 5, problemTitle: 'The "Without" Problems', status: 'Error', score: 300/700, checkedBy: 'Sir Isungga' },
+	{ id: 6, problemTitle: 'Figuring Patterns', status: 'Error', score: 0/1000, checkedBy: 'Sir Doria' },
+	{ id: 7, problemTitle: 'Recursive Shifting', status: 'Checked', score: 0/2800, checkedBy: 'Sir Hermocilla'},
+	{ id: 8, problemTitle: 'Sudoku Validator', status: 'Pending', score: 0/5500, checkedBy: 'Sir Isungga'},
+	{ id: 9, problemTitle: 'Figure Output Pattern', status: 'Pending', score: 0/600, checkedBy: 'Sir Doria' },
+	{ id: 10, problemTitle: 'Roman Numeral Calculator', status: 'Pending', score: 0/700, checkedBy: 'Sir Hermocilla'},
+];
+
+
 // submission entries columns
 // used in judges - view submissions page
 export const columnsSubmissions = [

@@ -9,32 +9,38 @@ import {
 } from '@mui/material';
 
 
-/*
+/**
  * Purpose: Displays a dropdown select component.
  * Params:
- *    <Boolean> isDisabled - tells whether the component should be disabled or not.
- *    <String>  label - label for the select component.
- *    <String>  minWidth - minimum width of the select component.
- *    <Array>   options - options to display in the component's menu.
+ *    <Boolean>   isDisabled - tells whether the component should be disabled or not.
+ *    <String>    label - label for the select component.
+ *    <String>    minWidth - minimum width of the select component.
+ *    <Array>     options - options to display in the component's menu.
+ *    <String>    initial - sets default value for the select component
+ *    <Function>  handleChange - handles change event for the component
+ *    <String>    selected - holds current selected value
  */
 const DropdownSelect = ({
   isDisabled,
   label,
   minWidth,
-  options
+  options,
+  handleChange,
+  selected
 }) => {
 
   // state for the selected option
-  const [selected, setSelected] = useState('');
+  // const [selected, setSelected] = useState(initial);
 
   /*
   * Purpose: Updates the state for easier retrieval of the value of selected option.
   * Params:
   *    <Event> e - triggers when an option is selected from the dropdown menu.
   */
-  const handleChange = (e) => {
-    setSelected(e.target.value);
-	};
+  // const handleChange = (e) => {
+  //   handleSelect();
+  //   setSelected(e.target.value);
+	// };
 
   
   return (

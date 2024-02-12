@@ -167,7 +167,7 @@ const GeneralOptionsPage = () => {
 								minWidth="100px"
 								options={optionsRounds}
 								handleChange={(e) => handleRounds(e.target.value)}
-								selected={currRound}
+								value={currRound}
 							/>
 						</Stack>
 					</Typography>

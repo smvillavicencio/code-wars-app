@@ -1,5 +1,5 @@
 /* eslint-disable */ 
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import {
@@ -116,48 +116,45 @@ const ParticipantsLeaderboard = ({ rows }) => {
 				<Typography variant="h5">Leaderboard</Typography>
 
 				{/* Rankings */}
-<Box sx={{ marginTop: 2, width: '100%' }}>
-  {rows.map((row, idx) => (
-    // check if row belongs to top 4
-    idx < 4 ? (
-      // if row is in top 4, display this
-      <Typography
-        sx={{
-          gap: 5,
-          padding: 2,
-          marginY: 1,
-          display: 'flex',
-          borderRadius: '5px',
-          background: 'rgba(255, 255, 255)',
-        }}
-      >
-        {/* Circle with color based on rank */}
-        <span
-          style={{
-            width: '20px',
-            height: '20px',
-            borderRadius: '50%',
-            background:
-              row.rank === 1
-                ? '#C64343'
-                : row.rank === 2
-                ? '#30C136'
-                : row.rank === 3
-                ? '#2C64A6'
-                : row.rank === 4
-                ? '#C825CB'
-                : 'transparent',
-          }}
-        ></span>
-        <span>{row.teamName}</span>
-      </Typography>
-    ) : (
-      // current row does not belong to top 4
-      <></>
-    )
-  ))}
-</Box>
-
+				<Box sx={{ marginTop: 2, width: '100%' }}>
+					{rows.map((row, idx) => (
+						// check if row belongs to top 4
+						idx < 4 ? (
+							// if row is in top 4, display this
+							<Typography
+								key={idx}
+								sx={{
+									gap: 5,
+									padding: 2,
+									marginY: 1,
+									display: 'flex',
+									borderRadius: '5px',
+									background: 'rgba(255, 255, 255)',
+								}}
+							>
+								{/* Circle with color based on rank */}
+								<span
+									style={{
+										width: '20px',
+										height: '20px',
+										borderRadius: '50%',
+										background:
+											row.rank === 1
+												? '#C64343'
+												: row.rank === 2
+												? '#30C136'
+												: row.rank === 3
+												? '#2C64A6'
+												: row.rank === 4
+												? '#C825CB'
+												: 'transparent',
+									}}
+								/>
+								<span>{row.teamName}</span>
+							</Typography>
+						) : <Fragment key={idx}></Fragment>
+					))}
+				</Box>
 
 				{/* Ellipsis menu */}
 				<IconButton onClick={handleButton}>

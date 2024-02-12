@@ -57,7 +57,7 @@ const DropdownSelect = ({
         >
           {/* Empty Value */}
           <MenuItem value="">
-            <em>None</em>
+            <em>All</em>
           </MenuItem>
 
           {/* Menu popover options */}

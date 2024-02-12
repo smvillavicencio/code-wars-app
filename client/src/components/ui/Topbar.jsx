@@ -81,7 +81,7 @@ const TopBar = ({
 								}}
 							/>
 						) : (
-							<div style={{ fontSize: '1em', color: 'white' }}>{icon}</div>
+							<div style={{ color: 'white' }}>{icon}</div>
 						)}
 					</figure>
 

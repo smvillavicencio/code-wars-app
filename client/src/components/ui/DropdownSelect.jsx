@@ -26,23 +26,10 @@ const DropdownSelect = ({
   minWidth,
   options,
   handleChange,
-  selected
+  value
 }) => {
 
-  // state for the selected option
-  // const [selected, setSelected] = useState(initial);
 
-  /*
-  * Purpose: Updates the state for easier retrieval of the value of selected option.
-  * Params:
-  *    <Event> e - triggers when an option is selected from the dropdown menu.
-  */
-  // const handleChange = (e) => {
-  //   handleSelect();
-  //   setSelected(e.target.value);
-	// };
-
-  
   return (
     <Box sx={{ minWidth:`${minWidth}` }}>
       <FormControl
@@ -63,11 +50,16 @@ const DropdownSelect = ({
               document.activeElement.blur();
             }, 0);
           }}
-          value={selected}
+          value={value}
           label={label}
           onChange={handleChange}
           style={{ backgroundColor: '#fff' }}
         >
+          {/* Empty Value */}
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+
           {/* Menu popover options */}
           {options.map((option, idx) => 
             <MenuItem key={idx} value={option}>{option}</MenuItem>

@@ -1,5 +1,6 @@
 /* eslint-disable */ 
 import DropdownSelect from "./ui/DropdownSelect";
+import ConfirmWindow from "./ui/ConfirmWindow";
 import CustomModal from "./ui/CustomModal";
 import ErrorWindow from "./ui/ErrorWindow";
 import ParticipantsLeaderboard from "./features/leaderboard/ParticipantsLeaderboard";
@@ -13,6 +14,7 @@ import TopBar from "./ui/Topbar";
 
 export { 
 	DropdownSelect,
+	ConfirmWindow,
 	CustomModal,
 	ErrorWindow,
 	ParticipantsLeaderboard,

@@ -1,7 +1,6 @@
 /* eslint-disable */ 
 import { useState, useEffect } from 'react';
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
 	AppBar,
 	Box,

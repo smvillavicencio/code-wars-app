@@ -99,10 +99,12 @@ const Table = ({
       columns={columns}
       // loading={!rows.length}     // Display loading indicator if rows has not yet loaded
       pageSizeOptions={[5, 10]}
-      autoPageSize
       disableColumnSelector
       disableColumnFilter
       onRowClick={handleRowClick}
+      initialState={{
+        pagination: { paginationModel: { pageSize: 10 } },
+      }}
 
       sx={gridStyles}
     />

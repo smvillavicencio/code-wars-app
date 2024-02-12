@@ -178,8 +178,8 @@ const ViewAllProblemsPage = () => {
 
 					{/* Problem List Table for the round */}
 					<Table
-						rows={rows1}
-						columns={columns1}
+						rows={rowsProblems}
+						columns={columnsProblems}
 						hideFields={[]}
 						// onRowClick={handleRowClick}
 						additionalStyles={additionalStyles}

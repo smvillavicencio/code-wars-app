@@ -39,7 +39,7 @@ export const optionsProblems = [
 
 // problem list columns
 // used in participants - view all problems page
-const columnsProblems = [
+export const columnsProblems = [
 	{
 		field: 'id',
 		headerName: '#',
@@ -83,7 +83,7 @@ const columnsProblems = [
 
 // problem list rows
 // used in participants - view all problems page
-const rowsProblems = [
+export const rowsProblems = [
 	{ id: 1, problemTitle: 'Special Calculator', status: 'Pending', score: 0/200, checkedBy: 'Sir Hermocilla'},
 	{ id: 2, problemTitle: 'Listing All Addends', status: 'Checked', score: 0/400, checkedBy: 'Sir Isungga'},
 	{ id: 3, problemTitle: 'BINGO', status: 'Checked', score: 0/400, checkedBy: 'Sir Doria'},

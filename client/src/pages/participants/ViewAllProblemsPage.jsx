@@ -1,5 +1,8 @@
 /* eslint-disable */ 
+import { useState } from 'react';
+
 import LockIcon from '@mui/icons-material/Lock';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 import {
 	Button,
 	Box,
@@ -25,13 +28,17 @@ import {
 } from 'utils/dummyData';
 
 
-
 /*
  * Purpose: Displays the View All Problems Page for participants.
  * Params: None
  */
 const ViewAllProblemsPage = () => {
+	// State handler for current round
+	const [currRound, setCurrRound] = useState('EASY');
 
+	const rounds = ['EASY', 'MEDIUM', 'WAGER', 'HARD']
+
+	
 	// Styling for the problem list table
 	const additionalStyles = {
 		backgroundColor: '#fff',
@@ -103,78 +110,32 @@ const ViewAllProblemsPage = () => {
           
 					{/* Container for round buttons */}
 					<Box sx={{ display: 'flex', gap: 3 }}>
-
-						{/* Easy round */}
-						<Button
-							variant="contained"
-							startIcon={<LockIcon />}
-							size="large"
-							sx={{
-								minWidth: 125,
-								gap: 0.5,
-								bgcolor: 'major.main',
-								'&:hover': {
-									bgcolor: 'major.light',
-									color: 'general.main',
-								}
-							}}
-						>
-              EASY
-						</Button>
-
-						{/* Medium round */}
-						<Button
-							variant="contained"
-							startIcon={<LockIcon />}
-							size="large"
-							sx={{
-								minWidth: 125,
-								gap: 0.5,
-								bgcolor: 'major.main',
-								'&:hover': {
-									bgcolor: 'major.light',
-									color: 'general.main',
-								}
-							}}
-						>
-              MEDIUM
-						</Button>
-
-						{/* Wager round */}
-						<Button
-							variant="contained"
-							startIcon={<LockIcon />}
-							size="large"
-							sx={{
-								minWidth: 125,
-								gap: 0.5,
-								bgcolor: 'major.main',
-								'&:hover': {
-									bgcolor: 'major.light',
-									color: 'general.main',
-								}
-							}}
-						>
-              WAGER
-						</Button>
-
-						{/* Hard round */}
-						<Button
-							variant="contained"
-							startIcon={<LockIcon />}
-							size="large"
-							sx={{
-								minWidth: 125,
-								gap: 0.5,
-								bgcolor: 'major.main',
-								'&:hover': {
-									bgcolor: 'major.light',
-									color: 'general.main',
-								}
-							}}
-						>
-              HARD
-						</Button>
+						{rounds.map((round, idx) => 
+							<Button
+								key={idx}
+								variant="contained"
+								startIcon={currRound === round ? <LockOpenIcon/> : <LockIcon />}
+								disabled={currRound === round ? false : true}
+								size="large"
+								sx={{
+									fontFamily: 'Poppins',
+									fontWeight: '600',
+									minWidth: 125,
+									gap: 0.5,
+									bgcolor: 'major.main',
+									'&:hover': {
+										bgcolor: 'major.light',
+										color: 'general.main',
+									},
+									'&:disabled': {
+										bgcolor: 'major.light',
+										color: '#fff'
+									}
+								}}
+							>
+								{round}
+							</Button>
+						)}
 					</Box>
 
 					{/* Problem List Table for the round */}

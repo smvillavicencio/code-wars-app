@@ -78,6 +78,7 @@ const ViewSpecificProblemPage = ({
 							sx={{
 								fontSize: '2rem',
 								cursor: 'pointer',
+								padding: 1.5,
 								borderRadius: 2,
 								'&:hover': {
 									backgroundColor: 'rgba(201, 209, 231, 0.1)',

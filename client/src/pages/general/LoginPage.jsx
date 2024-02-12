@@ -3,13 +3,18 @@ import { useContext, useState } from 'react';
 
 import KeyIcon from '@mui/icons-material/Key';
 import PersonIcon from '@mui/icons-material/Person';
-import { Box, TextField, Button, Typography } from '@mui/material';
+import {
+	Box,
+	TextField,
+	Button,
+	Typography
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 import LoginBackground from 'assets/LoginBackground.png';
 import { SponsorCarousel } from 'components/index.js';
 import { userDetailsContext } from 'utils/UserDetailsProvider';
-
 
 
 /*
@@ -27,10 +32,10 @@ const LoginPage = () => {
 	// used for client-side routing to other pages
 	const navigate = useNavigate();
 
-	/*
-     * Purpose: Handles click event on login button, sets user role based on username, and navigates to index page of user role.
-     * Params: <String> username - receives username input.
-     */
+	/**
+	 * Purpose: Handles click event on login button, sets user role based on username, and navigates to index page of user role.
+	 * Params: <String> username - receives username input.
+	 */
 	const handleLogin = (username) => {
 		if (username == 'participant') {
 			setUserDetails({

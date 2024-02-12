@@ -1,9 +1,11 @@
 import Swal from 'sweetalert2';
 
+/**
+ * Purpose: Displays a popup window showing an error message/that the action is invalid
+ * Params: None
+ */
 const ErrorWindow = Swal.mixin({
 	icon: 'error',
-	title: 'Invalid Password',
-	text: 'Password is incorrect',
 	background: '#fff',
 	showCloseButton: true,
 	showConfirmButton: false,

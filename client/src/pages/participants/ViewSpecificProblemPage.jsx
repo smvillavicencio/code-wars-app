@@ -133,7 +133,7 @@ const ViewSpecificProblemPage = () => {
 								borderRadius: 4,
 							}}
 						>
-							{problemDescription}
+							<Typography paragraph>{problemDescription}</Typography>
 						</Box>
             
 						{/* Sample Inputs and Outputs */}

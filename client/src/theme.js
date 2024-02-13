@@ -39,6 +39,15 @@ let customTheme = createTheme({
 			}
 		}
 	},
+	breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
+    },
+  },
 	palette: {
 		// buttons
 		primary: {
@@ -85,13 +94,31 @@ let customTheme = createTheme({
 			color: '#e5ebff',
 			fontFamily: 'Inter',
 			fontWeight: 400,
+			fontSize: "3rem",
+      "@media (max-width:960px)": {
+        fontSize: "2.4rem",
+      },
+      
+      "@media (max-width:662px)": {
+        fontSize: "2rem",
+      },
+      "@media (max-width:414px)": {
+        fontSize: "1.7rem",
+      },
 		},
 
 		// topbar header
 		h4: {
 			color: '#e5ebff',
 			fontFamily: 'Poppins',
-			fontWeight: '600'
+			fontWeight: '600',
+			fontSize: "2.125rem",
+      "@media (max-width:960px)": {
+        fontSize: "1.5rem",
+      },
+      "@media (max-width:600px)": {
+        fontSize: "1.25rem",
+      },
 		},
 
 		// topbar subtitle / timer title / buttons / other titles
@@ -99,6 +126,13 @@ let customTheme = createTheme({
 			color: '#e5ebff',
 			fontFamily: 'Poppins',
 			fontWeight: '400',
+			fontSize: "1.5rem",
+      "@media (max-width:960px)": {
+        fontSize: "1.25rem",
+      },
+      "@media (max-width:600px)": {
+        fontSize: "1.1rem",
+      },
 		},
 
 		// larger body of text
@@ -106,14 +140,41 @@ let customTheme = createTheme({
 			color: '#e5ebff',
 			fontFamily: 'Inter',
 			fontWeight: '500',
+			fontSize: "1.25rem",
+      "@media (max-width:960px)": {
+        fontSize: "1.1rem",
+      },
+      "@media (max-width:600px)": {
+        fontSize: "1rem",
+      },
 		},
 
 		// general text
 		body1: {
 			color: '#212226',
 			fontFamily: 'Inter',
-			fontWeight: '400'
+			fontWeight: '400',
+			fontSize: "1rem",
+      "@media (max-width:960px)": {
+        fontSize: "1rem",
+      },
+      "@media (max-width:600px)": {
+        fontSize: ".9rem",
+      },
 		},
+
+		body2: {
+      fontSize: "1rem",
+      "@media (max-width:960px)": {
+        fontSize: "1rem",
+      },
+      "@media (max-width:600px)": {
+        fontSize: "1rem",
+      },
+      "@media (max-width:480px)": {
+        fontSize: ".97rem",
+      },
+    },
 	},
 });
 

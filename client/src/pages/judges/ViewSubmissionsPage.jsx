@@ -1,5 +1,5 @@
 /* eslint-disable */ 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import ViewListIcon from '@mui/icons-material/ViewList';
 import {
@@ -67,24 +67,24 @@ const ViewSubmissionsPage = () => {
 
 	// adding dropdown selects for evaluation column of submission table
 	const modifiedSubmissionColumns = columnsSubmissions.map((obj) => {
-    if (obj.field === 'evaluation') {
-			return {
-				...obj,
-				renderCell: (params) => {
-					console.log(params.row.uploadedFile)
-					return (
-						<DropdownSelect
-							isDisabled={true}
-							minWidth="100%"
-							label="Evaluation"
-							options={optionsEval}
-							handleChange={handleEvaluation}
-							value={evaluation}
-						/>
-					);
-				}
-			};
-		}
+		// if (obj.field === 'evaluation') {
+		// 	return {
+		// 		...obj,
+		// 		renderCell: (params) => {
+		// 			console.log(params.row.uploadedFile)
+		// 			return (
+		// 				<DropdownSelect
+		// 					isDisabled={true}
+		// 					minWidth="100%"
+		// 					label="Evaluation"
+		// 					options={optionsEval}
+		// 					handleChange={handleEvaluation}
+		// 					value={evaluation}
+		// 				/>
+		// 			);
+		// 		}
+		// 	};
+		// }
 		if (obj.field === 'uploadedFile') {
 			return {
 				...obj,
@@ -239,8 +239,8 @@ const ViewSubmissionsPage = () => {
 
 				{/* Submission Entry Table */}
 				<Table
-					rows={getFilteredRows(rowsSubmissions)}
-					columns={modifiedSubmissionColumns}
+					rows={useMemo(() => {return getFilteredRows(rowsSubmissions)}, [selectedTeam, selectedProblem] )}
+					columns={useMemo(() => {return modifiedSubmissionColumns}, [] )}
 					hideFields={[]}
 					additionalStyles={additionalStylesSubmissions}
 					density={"comfortable"}

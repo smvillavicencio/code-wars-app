@@ -141,7 +141,7 @@ export const columnsSubmissions = [
 		flex: 1,
 	},
 	{
-		field: 'file',
+		field: 'uploadedFile',
 		headerName: 'Uploaded File',
 		minWidth: 100,
 		maxWidth: 200,
@@ -155,6 +155,11 @@ export const columnsSubmissions = [
 		minWidth: 200,
 		// maxWidth: 250,
 		flex: 1,
+
+		type: 'singleSelect',
+		width: 120,
+		editable: true,
+		valueOptions: optionsEval
 	},
 	{
 		field: 'checkedBy',
@@ -167,16 +172,16 @@ export const columnsSubmissions = [
 
 // submission entries rows
 export const rowsSubmissions = [
-	{ id: 0,teamName: 'Team Yeah Yeah', problemTitle: 'Special Calculator', submittedAt: '09:55:01', file: 0/200, results: '', checkedBy: 'Sir Hermocilla'},
-	{ id: 1,teamName: 'Team Wiwzzz', problemTitle: 'Listing All Addends', submittedAt: '09:48:55', file: 0/400, results: '', checkedBy: 'Sir Isungga'},
-	{ id: 2,teamName: 'Team Ooohh', problemTitle: 'BINGO', submittedAt: '09:45:08', file: 0/400, results: '', checkedBy: 'Sir Doria'},
-	{ id: 3,teamName: 'Team One', problemTitle: 'Hamming distance, interleavings, and isomorphic', submittedAt: '09:37:44', file: 500/500, results: '', checkedBy: 'Sir Hermocilla'},
-	{ id: 4,teamName: 'Team Two', problemTitle: 'The "Without" Problems', submittedAt: '09:33:04', file: 300/700, results: '', checkedBy: 'Sir Isungga' },
-	{ id: 5,teamName: 'Team Three', problemTitle: 'Figuring Patterns', submittedAt: '09:30:15', file: 0/1000, results: '', checkedBy: 'Sir Doria' },
-	{ id: 6,teamName: 'Team Four', problemTitle: 'Recursive Shifting', submittedAt: '09:10:45', file: 0/2800, results: '', checkedBy: 'Sir Hermocilla'},
-	{ id: 7,teamName: 'Team Five', problemTitle: 'Sudoku Validator', submittedAt: '09:10:45', file: 0/5500, results: '', checkedBy: 'Sir Isungga'},
-	{ id: 8,teamName: 'Team Six', problemTitle: 'Figure Output Pattern', submittedAt: '09:00:27', file: 0/600, results: '', checkedBy: 'Sir Doria' },
-	{ id: 9,teamName: 'Team Seven', problemTitle: 'Roman Numeral Calculator', submittedAt: '09:00:15', file: 0/700, results: '', checkedBy: 'Sir Hermocilla'},
+	{ id: 0,teamName: 'Team Yeah Yeah', problemTitle: 'Special Calculator', submittedAt: '09:55:01', uploadedFile: 'filename.txt', results: '', checkedBy: 'Sir Hermocilla'},
+	{ id: 1,teamName: 'Team Wiwzzz', problemTitle: 'Listing All Addends', submittedAt: '09:48:55', uploadedFile: 'filename.txt', results: '', checkedBy: 'Sir Isungga'},
+	{ id: 2,teamName: 'Team Ooohh', problemTitle: 'BINGO', submittedAt: '09:45:08', uploadedFile: 'filename.txt', results: '', checkedBy: 'Sir Doria'},
+	{ id: 3,teamName: 'Team One', problemTitle: 'Hamming distance, interleavings, and isomorphic', submittedAt: '09:37:44', uploadedFile: 'filename.txt', results: '', checkedBy: 'Sir Hermocilla'},
+	{ id: 4,teamName: 'Team Two', problemTitle: 'The "Without" Problems', submittedAt: '09:33:04', uploadedFile: 'filename.txt', results: '', checkedBy: 'Sir Isungga' },
+	{ id: 5,teamName: 'Team Three', problemTitle: 'Figuring Patterns', submittedAt: '09:30:15', uploadedFile: 'filename.txt', results: '', checkedBy: 'Sir Doria' },
+	{ id: 6,teamName: 'Team Four', problemTitle: 'Recursive Shifting', submittedAt: '09:10:45', uploadedFile: 'filename.txt', results: '', checkedBy: 'Sir Hermocilla'},
+	{ id: 7,teamName: 'Team Five', problemTitle: 'Sudoku Validator', submittedAt: '09:10:45', uploadedFile: 'filename.txt', results: '', checkedBy: 'Sir Isungga'},
+	{ id: 8,teamName: 'Team Six', problemTitle: 'Figure Output Pattern', submittedAt: '09:00:27', uploadedFile: 'filename.txt', results: '', checkedBy: 'Sir Doria' },
+	{ id: 9,teamName: 'Team Seven', problemTitle: 'Roman Numeral Calculator', submittedAt: '09:00:15', uploadedFile: 'filename.txt', results: '', checkedBy: 'Sir Hermocilla'},
 ];
 
 // leaderboard columns

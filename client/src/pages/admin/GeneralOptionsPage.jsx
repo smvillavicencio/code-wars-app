@@ -190,6 +190,7 @@ const GeneralOptionsPage = () => {
 							{/* Dropdown Select */}
 							<DropdownSelect
 								isDisabled={false}
+								variant="filled"
 								label="Select Round"
 								minWidth="100px"
 								options={optionsRounds}

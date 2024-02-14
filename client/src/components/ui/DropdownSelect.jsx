@@ -27,14 +27,17 @@ const DropdownSelect = ({
   options,
   handleChange,
   value,
+  variant,
+  innerRef,
   ...props
 }) => {
 
   return (
     <Box sx={{ minWidth:`${minWidth}` }}>
       <FormControl
+        ref={innerRef}
         fullWidth
-        variant="filled"
+        variant={variant}
         disabled={isDisabled}
       >
         {/* Label */}
@@ -54,6 +57,7 @@ const DropdownSelect = ({
           label={label}
           onChange={handleChange}
           style={{ backgroundColor: '#fff' }}
+          {...props}
         >
           {props.children}
 

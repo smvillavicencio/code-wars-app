@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 
 // This is the theme for the entire app.

@@ -1,5 +1,9 @@
 /* eslint-disable */ 
-import { useMemo, useState } from 'react';
+import {
+	useMemo,
+	useRef,
+	useState
+} from 'react';
 
 import ViewListIcon from '@mui/icons-material/ViewList';
 import {
@@ -8,6 +12,8 @@ import {
 	Stack,
 	Typography
 } from '@mui/material';
+import { useGridApiContext } from '@mui/x-data-grid';
+import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/utils';
 import { Link } from 'react-router-dom';
 
 import seal from 'assets/UPLB COSS.png';
@@ -47,6 +53,59 @@ const additionalStylesSubmissions = {
 }
 
 
+function renderEval(props) {
+	// console.log(props)
+	return (
+		<DropdownSelect
+			readOnly
+			variant="standard"
+			minWidth="100%"
+			options={optionsEval}
+			// isDisabled={true}
+			value={props.formattedValue}
+		/>
+	);
+}
+
+function EvalEditInputCell(props) {
+	const [currVal, setCurrVal] = useState('Default');
+
+	const { id, formattedValue, field, hasFocus } = props;
+	const apiRef = useGridApiContext();
+	const ref = useRef();
+
+	const handleChange = (event, newValue) => {
+		setCurrVal(event.target.value);
+    apiRef.current.setEditCellValue({ id, field, formattedValue: currVal });
+	};
+	
+	useEnhancedEffect(() => {
+		if (hasFocus && ref.current) {
+      const input = ref.current.querySelector(`input[value="${currVal}"]`);
+      input?.focus();
+    }
+	}, [hasFocus, currVal]);
+	
+	
+	return (
+		<DropdownSelect
+			innerRef={ref} 
+			displayEmpty
+			variant="standard"
+			// isDisabled={true}
+			minWidth="100%"
+			options={optionsEval}
+			handleChange={handleChange}
+			value={currVal}
+		> 
+			<MenuItem value="">Default</MenuItem>
+		</DropdownSelect>
+	)
+};
+
+const renderEvalEditInputCell = (params) => {
+  return <EvalEditInputCell props={params} />;
+};
 
 /**
  * Purpose: Displays the View Submissions Page for judges.
@@ -61,30 +120,18 @@ const ViewSubmissionsPage = () => {
 	const [selectedTeam, setSelectedTeam] = useState('');
 	// state handler for problem dropdown select
 	const [selectedProblem, setSelectedProblem] = useState('');
-	// state handler for evaluation dropdown select
-	const [evaluation, setEvaluation] = useState('');
 
 
 	// adding dropdown selects for evaluation column of submission table
 	const modifiedSubmissionColumns = columnsSubmissions.map((obj) => {
-		// if (obj.field === 'evaluation') {
-		// 	return {
-		// 		...obj,
-		// 		renderCell: (params) => {
-		// 			console.log(params.row.uploadedFile)
-		// 			return (
-		// 				<DropdownSelect
-		// 					isDisabled={true}
-		// 					minWidth="100%"
-		// 					label="Evaluation"
-		// 					options={optionsEval}
-		// 					handleChange={handleEvaluation}
-		// 					value={evaluation}
-		// 				/>
-		// 			);
-		// 		}
-		// 	};
-		// }
+		if (obj.field === 'evaluation') {
+			return {
+				...obj,
+				renderEditCell: renderEvalEditInputCell,
+				renderCell: renderEval,
+				// console.log(params.row.uploadedFile)
+			};
+		}
 		if (obj.field === 'uploadedFile') {
 			return {
 				...obj,
@@ -126,12 +173,7 @@ const ViewSubmissionsPage = () => {
 		setSelectedProblem(e.target.value);
 	}
 	
-	/**
-	* Purpose: Sets state of selectedEvaluation.
-	*/
-	const handleEvaluation = (e) => {
-		setEvaluation(e.target.value);
-	}
+	
 
 	/**
 	* Purpose: Client-side filtering based on values from the dropdown selects.
@@ -213,6 +255,7 @@ const ViewSubmissionsPage = () => {
 						isDisabled={false}
 						label="Team Name"
 						minWidth="20%"
+						variant="filled"
 						options={optionsTeam}
 						handleChange={handleTeams}
 						value={selectedTeam}
@@ -225,6 +268,7 @@ const ViewSubmissionsPage = () => {
 					<DropdownSelect
 						isDisabled={false}
 						minWidth="35%"
+						variant="filled"
 						label="Problem Title"
 						options={optionsProblems}
 						handleChange={handleProblems}
@@ -250,6 +294,8 @@ const ViewSubmissionsPage = () => {
 					initialState={{
 						pagination: { paginationModel: { pageSize: 8 } },
 					}}
+					// processRowUpdate={processRowUpdate}
+
 					// if there are no submission entries yet
 					slots={{
 						noRowsOverlay: () => (
@@ -264,11 +310,17 @@ const ViewSubmissionsPage = () => {
 			{/* Overall Leaderboard Modal Window */}
 			<CustomModal isOpen={open} setOpen={setOpen} windowTitle="Leaderboard">
 				<Table
+					editMode="row" 
 					rows={rowsLeaderboard}
 					columns={columnsLeaderboard}
 					hideFields={['id', 'totalSpent']}
 					additionalStyles={additionalStylesLeaderboard}
 					pageSize={5}
+					// processRowUpdate={(updatedRow, originalRow) =>
+					// 	mySaveOnServerFunction(updatedRow);
+					// }
+					// onProcessRowUpdateError={handleProcessRowUpdateError}
+					// isCellEditable={(params) => console.log(params)}
 					initialState={{
 						pagination: { paginationModel: { pageSize: 5 } },
 					}}

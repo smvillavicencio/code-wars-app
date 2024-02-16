@@ -1,7 +1,6 @@
 /* eslint-disable */ 
 import { useState, useEffect } from 'react';
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
 	AppBar,
 	Box,
@@ -59,7 +58,7 @@ const TopBar = ({
 						display: 'flex',
 						flexDirection: 'row',
 						py: 1,
-						gap: 3,
+						gap: 2,
 					}}
 				>
 					{/* Override default attributes of figure tag */}
@@ -78,10 +77,12 @@ const TopBar = ({
 								style={{
 									maxWidth: '50px',
 									maxHeight: '50px',
+									marginRight: 12,
+									marginLeft: 10,
 								}}
 							/>
 						) : (
-							<div style={{ fontSize: '1em', color: 'white' }}>{icon}</div>
+							<div>{icon}</div>
 						)}
 					</figure>
 

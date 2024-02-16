@@ -1,5 +1,5 @@
 /* eslint-disable */ 
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import {
@@ -9,58 +9,9 @@ import {
 	Typography,
 } from '@mui/material';
 
-import {
-	CustomModal,
-	Table
-} from 'components';
+import { CustomModal, Table } from 'components';
+import { columnsLeaderboard,	rowsLeaderboard } from 'utils/dummyData';
 
-
-// dummy data
-const columnsLeaderboard = [
-	{
-		field: "rank",
-		headerName: "Rank",
-    minWidth: 60,
-    maxWidth: 100,
-    headerAlign: "center",
-    align: "center",
-		flex: 1,
-	},
-	{
-		field: "teamName",
-		headerName: "Team Name",
-    minWidth: 250,
-    maxWidth: 600,
-		flex: 1,
-	},
-	{
-		field: "score",
-		headerName: "Score",
-		minWidth: 150,
-    // maxWidth: 200,
-		flex: 1,
-	},
-	{
-		field: "totalSpent",
-		headerName: "Total Spent",
-    minWidth: 100,
-    maxWidth: 150,
-    headerAlign: "left",
-    align: "left",
-		flex: 1,
-	},
-];
-
-// dummy data
-const rowsLeaderboard = [
-  { id: 1, rank: 1, teamName: 'Team One', score: 0/200, totalSpent: 1500},
-  { id: 2, rank: 2, teamName: 'Team Two', score: 0/400, totalSpent: 1300},
-  { id: 3, rank: 3, teamName: 'Team Three', score: 0/400, totalSpent: 1800},
-  { id: 4, rank: 4, teamName: 'Team Four', score: 500/500, totalSpent: 1000},
-  { id: 5, rank: 5, teamName: 'Team Five', score: 300/700, totalSpent: 650},
-  { id: 6, rank: 6, teamName: 'Team Six', score: 0/1000, totalSpent: 800},
-  { id: 7, rank: 7, teamName: 'Team Seven', score: 0/2800, totalSpent: 750},
-];
 
 
 /**
@@ -116,48 +67,45 @@ const ParticipantsLeaderboard = ({ rows }) => {
 				<Typography variant="h5">Leaderboard</Typography>
 
 				{/* Rankings */}
-<Box sx={{ marginTop: 2, width: '100%' }}>
-  {rows.map((row, idx) => (
-    // check if row belongs to top 4
-    idx < 4 ? (
-      // if row is in top 4, display this
-      <Typography
-        sx={{
-          gap: 5,
-          padding: 2,
-          marginY: 1,
-          display: 'flex',
-          borderRadius: '5px',
-          background: 'rgba(255, 255, 255)',
-        }}
-      >
-        {/* Circle with color based on rank */}
-        <span
-          style={{
-            width: '20px',
-            height: '20px',
-            borderRadius: '50%',
-            background:
-              row.rank === 1
-                ? '#C64343'
-                : row.rank === 2
-                ? '#30C136'
-                : row.rank === 3
-                ? '#2C64A6'
-                : row.rank === 4
-                ? '#C825CB'
-                : 'transparent',
-          }}
-        ></span>
-        <span>{row.teamName}</span>
-      </Typography>
-    ) : (
-      // current row does not belong to top 4
-      <></>
-    )
-  ))}
-</Box>
-
+				<Box sx={{ marginTop: 2, width: '100%' }}>
+					{rows.map((row, idx) => (
+						// check if row belongs to top 4
+						idx < 4 ? (
+							// if row is in top 4, display this
+							<Typography
+								key={idx}
+								sx={{
+									gap: 5,
+									padding: 2,
+									marginY: 1,
+									display: 'flex',
+									borderRadius: '5px',
+									background: 'rgba(255, 255, 255)',
+								}}
+							>
+								{/* Circle with color based on rank */}
+								<span
+									style={{
+										width: '20px',
+										height: '20px',
+										borderRadius: '50%',
+										background:
+											row.rank === 1
+												? '#C64343'
+												: row.rank === 2
+												? '#30C136'
+												: row.rank === 3
+												? '#2C64A6'
+												: row.rank === 4
+												? '#C825CB'
+												: 'transparent',
+									}}
+								/>
+								<span>{row.teamName}</span>
+							</Typography>
+						) : <Fragment key={idx}></Fragment>
+					))}
+				</Box>
 
 				{/* Ellipsis menu */}
 				<IconButton onClick={handleButton}>
@@ -172,8 +120,10 @@ const ParticipantsLeaderboard = ({ rows }) => {
 					columns={columnsLeaderboard}
 					hideFields={['id', 'totalSpent']}
 					additionalStyles={additionalStyles}
-					hideFooter
-					autoPageSize
+					pageSize={5}
+					initialState={{
+						pagination: { paginationModel: { pageSize: 5 } },
+					}}
 				/>
 			</CustomModal>
 		</Box>

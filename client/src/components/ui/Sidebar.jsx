@@ -20,7 +20,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import { userDetailsContext } from 'utils/UserDetailsProvider';
-
+import { ConfirmWindow } from 'components/';
 
 
 const DRAWER_WIDTH = 250;
@@ -41,8 +41,17 @@ const Sidebar = () => {
   * Params: None
   */
 	const handleLogout = () => {
-		setUserDetails(null);
-		navigate('/');
+		// fire success window
+    ConfirmWindow.fire({
+      text: 'Are you sure you want to log out?',
+		}).then((res) => {
+			if (res['isConfirmed']) {
+				setUserDetails(null);
+				navigate('/');
+			} else {
+				return;
+			}
+		})
 	};
 
 	

@@ -29,6 +29,7 @@ function Layout() {
 				backgroundImage: `url(${GeneralBackground})`,
 				backgroundSize: 'cover',
 				height: '100vh',
+				overflow: 'hidden',
 			}}
     >
       {/* Children will be displayed through outlet */}

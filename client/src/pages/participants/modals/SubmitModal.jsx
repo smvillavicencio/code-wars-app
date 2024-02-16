@@ -5,9 +5,12 @@ import SourceIcon from '@mui/icons-material/Source';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import { Box, Button, Typography } from "@mui/material";
 
+import {
+  SuccessWindow
+} from 'components';
 
 
-const  SubmitModal = () => {
+const  SubmitModal = ({ setOpen }) => {
 	/**
    * State handler for the team's uploaded file.
    */
@@ -40,6 +43,23 @@ const  SubmitModal = () => {
 		event.preventDefault();
 	};
 
+  /**
+   * Purpose: Handles submission of uploaded file.
+   * Params: <Event> event - current event
+   */
+  const handleSubmit = (event) => { 
+    // close submit button modal window
+    setOpen(false);
+
+    // add post request to db here
+    
+    // fire success window
+    SuccessWindow.fire({
+      text: 'Successfully submitted file!',
+      html:
+			'<p>You may submit a new file for this problem once the previous file has been graded.</p>'
+    });
+  }
 
   return (
     <Box>
@@ -198,7 +218,9 @@ const  SubmitModal = () => {
           // If there is an uploaded file
           file ? (
             <Button 
+              type="submit"
               variant="contained" 
+              onClick={handleSubmit}
               sx={{
                 width: "200px",
                 height: "50px",

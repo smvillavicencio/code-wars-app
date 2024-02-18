@@ -9,39 +9,35 @@ import {
 } from '@mui/material';
 
 
-/*
+/**
  * Purpose: Displays a dropdown select component.
  * Params:
- *    <Boolean> isDisabled - tells whether the component should be disabled or not.
- *    <String>  label - label for the select component.
- *    <String>  minWidth - minimum width of the select component.
- *    <Array>   options - options to display in the component's menu.
+ *    <Boolean>   isDisabled - tells whether the component should be disabled or not.
+ *    <String>    label - label for the select component.
+ *    <String>    minWidth - minimum width of the select component.
+ *    <Array>     options - options to display in the component's menu.
+ *    <String>    initial - sets default value for the select component
+ *    <Function>  handleChange - handles change event for the component
+ *    <String>    value - holds current selected value
  */
 const DropdownSelect = ({
   isDisabled,
   label,
   minWidth,
-  options
+  options,
+  handleChange,
+  value,
+  variant,
+  innerRef,
+  ...props
 }) => {
 
-  // state for the selected option
-  const [selected, setSelected] = useState('');
-
-  /*
-  * Purpose: Updates the state for easier retrieval of the value of selected option.
-  * Params:
-  *    <Event> e - triggers when an option is selected from the dropdown menu.
-  */
-  const handleChange = (e) => {
-    setSelected(e.target.value);
-	};
-
-  
   return (
     <Box sx={{ minWidth:`${minWidth}` }}>
       <FormControl
+        ref={innerRef}
         fullWidth
-        variant="filled"
+        variant={variant}
         disabled={isDisabled}
       >
         {/* Label */}
@@ -57,11 +53,14 @@ const DropdownSelect = ({
               document.activeElement.blur();
             }, 0);
           }}
-          value={selected}
+          value={value}
           label={label}
           onChange={handleChange}
           style={{ backgroundColor: '#fff' }}
+          {...props}
         >
+          {props.children}
+
           {/* Menu popover options */}
           {options.map((option, idx) => 
             <MenuItem key={idx} value={option}>{option}</MenuItem>

@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import { createContext, useState } from 'react';
 
 // create user context using the createContext api

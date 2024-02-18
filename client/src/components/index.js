@@ -1,24 +1,30 @@
 /* eslint-disable */ 
 import DropdownSelect from "./ui/DropdownSelect";
+import ConfirmWindow from "./ui/ConfirmWindow";
 import CustomModal from "./ui/CustomModal";
-import LogTable from "./tables/LogTable";
+import ErrorWindow from "./ui/ErrorWindow";
 import ParticipantsLeaderboard from "./features/leaderboard/ParticipantsLeaderboard";
+import PowerUpList from './widgets/power-ups/PowerUpList';
+import PowerUpType from './widgets/power-ups/PowerUpType';
 import Sidebar from './ui/Sidebar';
 import SponsorCarousel from "./features/carousel/SponsorCarousel";
-import SubmissionsTable from "./tables/SubmissionsTable";
+import SuccessWindow from "./ui/SuccessWindow";
 import Table from "./ui/Table";
-import Timer from "./features/timer/Timer";
+import Timer from "./widgets/timer/Timer";
 import TopBar from "./ui/Topbar";
 
 
 export { 
 	DropdownSelect,
+	ConfirmWindow,
 	CustomModal,
-	LogTable,
+	ErrorWindow,
 	ParticipantsLeaderboard,
+	PowerUpList,
+	PowerUpType,
 	Sidebar,
 	SponsorCarousel,
-	SubmissionsTable,
+	SuccessWindow,
 	Table,
 	Timer,
 	TopBar,

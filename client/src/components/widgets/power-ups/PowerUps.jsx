@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 
 import { Box } from "@mui/material";
 
-import { PowerUpList, PowerUpType } from "components";
+import PowerUpList from "./PowerUpList";
+import PowerUpType from "./PowerUpType";
 
 
 /**

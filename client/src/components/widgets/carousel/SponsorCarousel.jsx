@@ -1,7 +1,7 @@
 /* eslint-disable */ 
 import Carousel from 'react-material-ui-carousel';
 
-import Item from './Item';
+import Item from './CarouselItem';
 import placeholder from 'assets/UPLB COSS.png';
 
 

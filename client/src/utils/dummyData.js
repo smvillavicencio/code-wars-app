@@ -1,10 +1,9 @@
-/* eslint-disable */ 
-
 // dummy data for buffs
+// used in poweruplist.jsx component
 export const buffs = [
 	{
 		name: 'Dispel',
-    type: 'buff',
+		type: 'buff',
 		shortDescription:  'dispelled debuff',
 		fullDescription: 'The team’s current debuff is dispelled. When more than one debuff types are active, the team can only choose one.',
 		Cost: '120% of the cost of the dispelled debuff',
@@ -12,7 +11,7 @@ export const buffs = [
 	},
 	{
 		name: 'Immunity I',
-    type: 'buff',
+		type: 'buff',
 		shortDescription:  'Cannot be targeted by any debuff.',
 		fullDescription: 'Is decided before the round starts. The team cannot be targeted by any debuff from opposing teams for five (5) minutes since the round starts.',
 		Cost: '100 points',
@@ -20,7 +19,7 @@ export const buffs = [
 	},
 	{
 		name: 'Immunity II',
-    type: 'buff',
+		type: 'buff',
 		shortDescription:  'Cannot be targeted by any debuff.',
 		fullDescription: 'Is decided before the round starts. The team cannot be targeted by any debuff from opposing teams for five (5) minutes since the round starts.',
 		Cost: '100 points',
@@ -28,7 +27,7 @@ export const buffs = [
 	},
 	{
 		name: 'Immunity III',
-    type: 'buff',
+		type: 'buff',
 		shortDescription:  'Cannot be targeted by any debuff.',
 		fullDescription: 'Is decided before the round starts. The team cannot be targeted by any debuff from opposing teams for five (5) minutes since the round starts.',
 		Cost: '100 points',
@@ -36,7 +35,7 @@ export const buffs = [
 	},
 	{
 		name: 'Immunity IV',
-    type: 'buff',
+		type: 'buff',
 		shortDescription:  'Cannot be targeted by any debuff.',
 		fullDescription: 'Is decided before the round starts. The team cannot be targeted by any debuff from opposing teams for five (5) minutes since the round starts.',
 		Cost: '100 points',
@@ -44,7 +43,7 @@ export const buffs = [
 	},
 	{
 		name: 'Unchain',
-    type: 'buff',
+		type: 'buff',
 		shortDescription:  'Cannot be targeted by any debuff.',
 		fullDescription: 'Is decided before the round starts. The team cannot be targeted by any debuff from opposing teams for five (5) minutes since the round starts.',
 		Cost: '100 points',
@@ -53,30 +52,45 @@ export const buffs = [
 ];
 
 // dummy data for debuffs
+// used in poweruplist.jsx component
 export const debuffs = [
 	{
 		name: 'Stun',
-    type: 'debuff',
+		type: 'debuff',
 		fullDescription: 'Target an opposing team, that team would be unable to make changes to their code for two (2) minutes upon its activation.',
 		Cost: '100 points',
 		duration: '2 minutes'
 	},
 	{
 		name: 'Editor',
-    type: 'debuff',
+		type: 'debuff',
 		fullDescription: 'Target an opposing team, that team would be unable to make changes to their code for two (2) minutes upon its activation.',
 		Cost: '100 points',
 		duration: '2 minutes'
 	},
 	{
 		name: 'Frosty Hands',
-    type: 'debuff',
+		type: 'debuff',
 		fullDescription: 'Target an opposing team, that team would be unable to make changes to their code for two (2) minutes upon its activation.',
 		Cost: '100 points',
 		duration: '2 minutes'
 	}
 ];
 
+// dummy data for list of teams
+// used in powerupdetails.jsx component
+export const teamsList = [
+	'Team One',
+	'Team Two',
+	'Team Three',
+	'Team Four',
+	'Team Five',
+	'Team Six',
+	'Team Seven',
+	'Team Eight',
+	'Team Nine',
+	'Team Ten',
+];
 
 // options for rounds dropdown select
 // used in admin - general options page

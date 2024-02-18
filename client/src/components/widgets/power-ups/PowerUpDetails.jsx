@@ -7,22 +7,24 @@ import {
 
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import WestIcon from '@mui/icons-material/West';
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { DropdownSelect } from "components";
+import { userDetailsContext } from "utils/UserDetailsProvider";
+
 
 // dummy data for list of teams
 const teamsList = [
-	'Team 1',
-	'Team 2',
-	'Team 3',
-	'Team 4',
-	'Team 5',
-	'Team 6',
-	'Team 7',
-	'Team 8',
-	'Team 9',
-	'Team 10',
+	'Team One',
+	'Team Two',
+	'Team Three',
+	'Team Four',
+	'Team Five',
+	'Team Six',
+	'Team Seven',
+	'Team Eight',
+	'Team Nine',
+	'Team Ten',
 ];
 
 
@@ -38,8 +40,45 @@ const PowerUpDetails = ({
 	handleReturn,
 	powerUp
 }) => {
-	const [selectedTeam, setSelectedTeam] = useState('');
+	// state handler for selected team recipient for debuff
+	const [selectedTeam, setSelectedTeam] = useState('Team Two');
+	// state handler for teams list
+	const [teams, setTeams] = useState(teamsList)
+	// state for the context API
+	// const [userDetails, setUserDetails] = useContext(userDetailsContext);
 
+
+	/**
+	 * remove current user team from teamsList
+	 */
+	// useEffect(()=>{
+	// 	let updatedTeams = teamsList.filter(object => {
+	// 		return object !== userDetails.user
+	// 	})
+	// 	setTeams(updatedTeams)
+
+	// }, [userDetails])
+
+	// eto muna for use effect para di muna gamitin context api
+	useEffect(() => {
+		let userDetails = {
+			user: 'Team One',
+			role: 'participant'
+		}
+		let updatedTeams = teamsList.filter(object => {
+			return object !== userDetails.user
+		})
+		setTeams(updatedTeams)
+		setSelectedTeam(updatedTeams[0])
+	}, []) 
+	
+
+	/**
+	* Purpose: Sets state of selectedTeam.
+	*/
+	const handleTeams = (e) => {
+		setSelectedTeam(e.target.value);
+	}
 
 	/**
 	 * Purpose: Apply the debuff to the selected team.
@@ -50,7 +89,7 @@ const PowerUpDetails = ({
 		
 		// insert endpoint for applying debuff
 
-		setSelectedTeam(null);
+		setSelectedTeam('');
 		handleReturn();
 	};
 
@@ -58,9 +97,16 @@ const PowerUpDetails = ({
 	 * Purpose: Reset the selected target team and go back to debuff list.
 	 */
 	const handleBackDebuff = () => {
-		setSelectedTeam(null);
+		setSelectedTeam('');
 		handleReturn();
 	};
+
+	/**
+	 * Purpose: Applying buff to user team
+	 */
+	const handleBuy = () => {
+		setSelectedTeam(userDetails.user)
+	}
 
   return (
 		<Box
@@ -151,40 +197,35 @@ const PowerUpDetails = ({
 						{/* Select team dropdown select */}
 						<DropdownSelect
 							isDisabled={false}
-							label="Select Team"
+							label="Team Name"
 							minWidth="100%"
-							options={teamsList}
-							onClick={(e) => {setSelectedTeam(e.target.value)}}
+							variant="filled"
+							options={teams}
+							handleChange={handleTeams}
+							value={selectedTeam}
 						/>
 
 						{/* Button to inflict the debuff */}
 						<Button
 							onClick={() => applyDebuff(powerUp.name)}
-							disabled={selectedTeam? true: false}
-							// variant="contained"
+							variant="contained"
 							sx={{
 								marginBottom: '20px',
 								marginTop: '20px',
 								height: '40px',
 								fontSize: '14px',
-								// bgcolor: 'rgba(255, 255, 255, 0.1)', for disabled
 							}}
 						>
-							Inflict debuff to {selectedTeam ? <>{selectedTeam.name}</> : <> enemy</>}
+							Inflict debuff to {selectedTeam}
 						</Button>
 
 					</> :
 					// Buffs only have the buy button					
 					<>
 						{/* Buy button */}
-						<Button
-							variant="contained"
-							sx={{
-								marginBottom: '20px',
-							}}
-						>
+						<Button variant="contained" onClick={handleBuy} sx={{ marginBottom: '20px' }} >
 							<ShoppingCartIcon sx={{ margin: '5px' }} />
-								BUY
+							BUY
 						</Button>
 					</>
 				}

@@ -1,5 +1,4 @@
 /* eslint-disable */ 
-
 import { useState } from 'react';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -10,7 +9,7 @@ import {
 	Stack,
 	Typography,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import {
 	CustomModal,
@@ -19,88 +18,44 @@ import {
 	Timer,
 	TopBar
 } from 'components/';
+import {
+	columnsLeaderboard,
+	rowsLeaderboard
+} from 'utils/dummyData';
+
 import SubmitModal from './modals/SubmitModal';
 
-
-// dummy data for leaderboard
-const columns = [
-	{
-		field: 'id',
-		headerName: 'ID',
-	},
-	{
-		field: 'rank',
-		headerName: 'Rank',
-		minWidth: 60,
-		maxWidth: 100,
-		headerAlign: 'center',
-		align: 'center',
-		flex: 1,
-	},
-	{
-		field: 'teamName',
-		headerName: 'Team Name',
-		minWidth: 400,
-		// maxWidth: 500,
-		flex: 1,
-	},
-	{
-		field: 'score',
-		headerName: 'Score',
-		minWidth: 150,
-		// maxWidth: 200,
-		flex: 1,
-	},
-	{
-		field: 'totalSpent',
-		headerName: 'Total Spent',
-		minWidth: 100,
-		maxWidth: 200,
-		headerAlign: 'left',
-		align: 'left',
-		flex: 1,
-	},
-];
-
-// dummy data for leaderboard
-const rows = [
-	{ id: 1, rank: 1, teamName: 'Team One', score: 0/200, totalSpent: 1500},
-	{ id: 2, rank: 2, teamName: 'Team Two', score: 0/400, totalSpent: 1300},
-	{ id: 3, rank: 3, teamName: 'Team Three', score: 0/400, totalSpent: 1800},
-	{ id: 4, rank: 4, teamName: 'Team Four', score: 500/500, totalSpent: 1000},
-	{ id: 5, rank: 5, teamName: 'Team Five', score: 300/700, totalSpent: 650},
-	{ id: 6, rank: 6, teamName: 'Team Six', score: 0/1000, totalSpent: 800},
-	{ id: 7, rank: 7, teamName: 'Team Seven', score: 0/2800, totalSpent: 750},
-];
-
-// dummy data
-const problemTitle = 'Hamming distance, interleavings, and isomorphic';
-const problemSubtitle = 'UPLB Computer Science Society';
-const problemDescription = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mauris dolor, euismod nec commodo aliquam, porta vitae ante. Vivamus tincidunt egestas erat nec condimentum. Sed nec ex quis arcu lacinia laoreet. In interdum ipsum orci, ac gravida urna pharetra non. Etiam pretium, ipsum sed volutpat mollis, eros est hendrerit turpis, eget hendrerit libero dui ut eros. Donec sit amet dui sapien. Aliquam nec mi nec mauris placerat gravida. Cras egestas nisl semper semper mollis. Sed dictum augue congue porttitor ultricies. In accumsan, libero at suscipit aliquam, neque lorem eleifend velit, a vulputate lectus lorem in ante.\nMorbi non felis et lorem ultrices porttitor sit amet vitae est. Pellentesque magna urna, posuere a tincidunt a, vehicula sit amet ex. Vestibulum vehicula lectus eget consectetur imperdiet. Aenean interdum ante vel massa ultricies, a aliquet libero tempor. Mauris laoreet ipsum lacus, in iaculis nibh pharetra eget. Nunc eget purus egestas, elementum nulla eget, tincidunt nunc.';
 
 
 /*
  * Purpose: Displays the Specific Problem Page for participants.
  * Params: None
  */
-const ViewSpecificProblemPage = ({
-	// problemTitle,
-	// problemSubtitle,
-	// problemDescription,
-}) => {
+const ViewSpecificProblemPage = () => {
 	// state for the opening and closing of submit modal window
 	const [open, setOpen] = useState(false);
 
 	// used for client-side routing to other pages
 	const navigate = useNavigate();
+	// used for client-side routing from view all problems page
+	const location = useLocation();
+	// used to retrieve values of datagrid row
+	let params = new URLSearchParams(location.search);
+	// page values
+	const problemTitle = params.get('problemTitle')
+	// dummy values
+	const problemSubtitle = 'UPLB Computer Science Society';
+	const problemDescription = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mauris dolor, euismod nec commodo aliquam, porta vitae ante. Vivamus tincidunt egestas erat nec condimentum. Sed nec ex quis arcu lacinia laoreet. In interdum ipsum orci, ac gravida urna pharetra non. Etiam pretium, ipsum sed volutpat mollis, eros est hendrerit turpis, eget hendrerit libero dui ut eros. Donec sit amet dui sapien. Aliquam nec mi nec mauris placerat gravida. Cras egestas nisl semper semper mollis. Sed dictum augue congue porttitor ultricies. In accumsan, libero at suscipit aliquam, neque lorem eleifend velit, a vulputate lectus lorem in ante.\nMorbi non felis et lorem ultrices porttitor sit amet vitae est. Pellentesque magna urna, posuere a tincidunt a, vehicula sit amet ex. Vestibulum vehicula lectus eget consectetur imperdiet. Aenean interdum ante vel massa ultricies, a aliquet libero tempor. Mauris laoreet ipsum lacus, in iaculis nibh pharetra eget. Nunc eget purus egestas, elementum nulla eget, tincidunt nunc.';
 
+	
+	
 	/*
    * Purpose: Handles opening of the submit modal window
    * Params: None
    */ 
 	const handleButton = () => {
 		setOpen(true);
-	}
+	};
 
 	/*
    * Purpose: Handles on click event of return button and navigates to View All Problems Page
@@ -120,7 +75,9 @@ const ViewSpecificProblemPage = ({
 					<IconButton sx={{ color: '#fff' }} onClick={handleReturn}>
 						<ArrowBackIcon
 							sx={{
+								fontSize: '2rem',
 								cursor: 'pointer',
+								padding: 1.5,
 								borderRadius: 2,
 								'&:hover': {
 									backgroundColor: 'rgba(201, 209, 231, 0.1)',
@@ -132,7 +89,7 @@ const ViewSpecificProblemPage = ({
 				}
 				title={problemTitle}
 				subtitle={problemSubtitle}
-				buttonText="UPLOAD FILE"
+				buttonText="UPLOAD SUBMISSION"
 				startIcon={<FileUploadIcon />}
 				handleButton={handleButton}
 			/>
@@ -155,7 +112,7 @@ const ViewSpecificProblemPage = ({
 					}}
 				>
 					<Timer />
-					<ParticipantsLeaderboard rows={rows} columns={columns} />
+					<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
 					<SponsorCarousel />
 				</Stack>
 
@@ -176,7 +133,7 @@ const ViewSpecificProblemPage = ({
 								borderRadius: 4,
 							}}
 						>
-							{problemDescription}
+							<Typography paragraph>{problemDescription}</Typography>
 						</Box>
             
 						{/* Sample Inputs and Outputs */}
@@ -232,7 +189,7 @@ const ViewSpecificProblemPage = ({
 			
 			{/* Submit Modal Window */}
 			<CustomModal isOpen={open} setOpen={setOpen} windowTitle="Upload your answer">
-				<SubmitModal />
+				<SubmitModal setOpen={setOpen} />
 			</CustomModal>
 
 		</Stack>

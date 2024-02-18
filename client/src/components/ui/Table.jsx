@@ -3,8 +3,15 @@ import { useEffect } from "react";
 import { DataGrid, useGridApiRef } from "@mui/x-data-grid";
 
 
-
-const OverallLeaderboard = ({
+/**
+ * Purpose: Displays data in table form using MUI DataGrid component.
+ * Params:
+ *    <Array>     rows - array of objects containing the table's rows
+ *    <Array>     columns - array of objects containing the table's columns
+ *    <Array>     hideFields - array containing column names to be hidden
+ *    <Object>    additionalStyles - object containing additional styling for table
+ */
+const Table = ({
   rows,
   columns,
   hideFields,
@@ -16,6 +23,9 @@ const OverallLeaderboard = ({
    */
   const apiRef = useGridApiRef();
 
+  /**
+   * Hide columns on component mount
+   */
   useEffect(() => {
     hideFields.forEach((field) => {
       /**
@@ -25,14 +35,16 @@ const OverallLeaderboard = ({
     })
   }, []);
 
-
   /**
-   * Define common styles for the DataGrid
+   * Purpose: Define common styles for the DataGrid
    */
   const commonStyles = {
     // modify cell typography
-    '& .MuiDataGrid-cell': {
-      variant: "body1",
+    '.MuiDataGrid-cell': {
+      // variant: "body1 !important",
+      fontFamily: 'Inter',
+      fontSize: '1rem',
+      fontWeight: '400',
       borderLeft: 'none',
       borderRight: 'none', 
       borderTop: 'none', 
@@ -46,13 +58,20 @@ const OverallLeaderboard = ({
     '.MuiDataGrid-cell:focus': {
       outline: 'none'
     },
-    // pointer cursor on ll rows
-    '& .MuiDataGrid-row:hover': {
+    // make cursor a pointer on all rows
+    '.MuiDataGrid-row:hover': {
       cursor: 'pointer',
     },
+    // Change the color and width of the line
     '.MuiDataGrid-footerContainer': {
-      // Change the color and width of the line
       borderTop: 'none',
+    },
+    // Modify column header font styling
+    '.MuiDataGrid-columnHeaderTitle': { 
+      fontWeight: '700',
+      fontFamily: 'Poppins',
+      color: '#707070',
+      fontSize: '1rem'
     },
 
     // truncate values if longer than column maxWidth
@@ -72,13 +91,14 @@ const OverallLeaderboard = ({
       rows={rows}
       columns={columns}
       // loading={!rows.length}     // Display loading indicator if rows has not yet loaded
-      pageSizeOptions={[5, 10]}
+
       disableColumnSelector
       disableColumnFilter
       sx={gridStyles}
-      // {...props}
+    
+      {...props}
     />
   )
 }
 
-export default OverallLeaderboard;
+export default Table;

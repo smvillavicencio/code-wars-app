@@ -45,6 +45,9 @@ const SponsorCarousel = () => {
 				backdropFilter: 'blur(10px)',
 			}}
 
+			// remove grow animation on component mount
+			swipe={false}
+			
 			// make prev and next buttons always visible
 			navButtonsAlwaysVisible={true}
 

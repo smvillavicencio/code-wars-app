@@ -10,6 +10,7 @@ import {
 	LoginPage,
 	GeneralOptionsPage,
 	PowerUpLogs,
+	TopTeamsPage,
 	ViewAllProblemsPage,
 	ViewSpecificProblemPage,
 	ViewSubmissionsPage,
@@ -28,6 +29,7 @@ function Layout() {
 				backgroundImage: `url(${GeneralBackground})`,
 				backgroundSize: 'cover',
 				height: '100vh',
+				overflow: 'hidden',
 			}}
     >
       {/* Children will be displayed through outlet */}
@@ -53,6 +55,7 @@ function App() {
 							<Route path="judge/submissions" element={<ViewSubmissionsPage />} />
 							<Route path="admin/general" element={<GeneralOptionsPage />} />
 							<Route path="admin/logs" element={<PowerUpLogs />} />
+							<Route path="admin/podium" element={<TopTeamsPage />} />
 						</Route>
 					</Routes>
 				</Router>

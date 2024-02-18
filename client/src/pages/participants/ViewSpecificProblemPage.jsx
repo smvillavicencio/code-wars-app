@@ -1,4 +1,3 @@
-/* eslint-disable */ 
 import { useState } from 'react';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -42,7 +41,7 @@ const ViewSpecificProblemPage = () => {
 	// used to retrieve values of datagrid row
 	let params = new URLSearchParams(location.search);
 	// page values
-	const problemTitle = params.get('problemTitle')
+	const problemTitle = params.get('problemTitle');
 	// dummy values
 	const problemSubtitle = 'UPLB Computer Science Society';
 	const problemDescription = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mauris dolor, euismod nec commodo aliquam, porta vitae ante. Vivamus tincidunt egestas erat nec condimentum. Sed nec ex quis arcu lacinia laoreet. In interdum ipsum orci, ac gravida urna pharetra non. Etiam pretium, ipsum sed volutpat mollis, eros est hendrerit turpis, eget hendrerit libero dui ut eros. Donec sit amet dui sapien. Aliquam nec mi nec mauris placerat gravida. Cras egestas nisl semper semper mollis. Sed dictum augue congue porttitor ultricies. In accumsan, libero at suscipit aliquam, neque lorem eleifend velit, a vulputate lectus lorem in ante.\nMorbi non felis et lorem ultrices porttitor sit amet vitae est. Pellentesque magna urna, posuere a tincidunt a, vehicula sit amet ex. Vestibulum vehicula lectus eget consectetur imperdiet. Aenean interdum ante vel massa ultricies, a aliquet libero tempor. Mauris laoreet ipsum lacus, in iaculis nibh pharetra eget. Nunc eget purus egestas, elementum nulla eget, tincidunt nunc.';

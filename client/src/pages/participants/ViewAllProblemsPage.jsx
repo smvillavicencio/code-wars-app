@@ -185,7 +185,7 @@ const ViewAllProblemsPage = () => {
 			</Stack>
 			
 			{/* Buy Power-ups Popover */}
-			<ClickAwayListener onClickAway={handleClickAway}>
+			<ClickAwayListener mouseEvent="onMouseUp" onClickAway={handleClickAway}>
 				{/* Wrapping button and popover in Box for clickaway ref */}
 				<Box>
 					<BuyPowerUpsPopover

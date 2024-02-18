@@ -1,6 +1,4 @@
 /* eslint-disable */ 
-import { useState } from 'react';
-
 import { Box } from '@mui/material';
 
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
@@ -17,80 +15,7 @@ import PowerUpItem from './PowerUpItem';
 import PowerUpDetails from './PowerUpDetails';
 
 
-const buffs = [
-	{
-		name: 'Dispel',
-    type: 'buff',
-		shortDescription:  'dispelled debuff',
-		fullDescription: 'The team’s current debuff is dispelled. When more than one debuff types are active, the team can only choose one.',
-		Cost: '120% of the cost of the dispelled debuff',
-		duration: ''
-	},
-	{
-		name: 'Immunity I',
-    type: 'buff',
-		shortDescription:  'Cannot be targeted by any debuff.',
-		fullDescription: 'Is decided before the round starts. The team cannot be targeted by any debuff from opposing teams for five (5) minutes since the round starts.',
-		Cost: '100 points',
-		duration: '5 minutes'
-	},
-	{
-		name: 'Immunity II',
-    type: 'buff',
-		shortDescription:  'Cannot be targeted by any debuff.',
-		fullDescription: 'Is decided before the round starts. The team cannot be targeted by any debuff from opposing teams for five (5) minutes since the round starts.',
-		Cost: '100 points',
-		duration: '5 minutes'
-	},
-	{
-		name: 'Immunity III',
-    type: 'buff',
-		shortDescription:  'Cannot be targeted by any debuff.',
-		fullDescription: 'Is decided before the round starts. The team cannot be targeted by any debuff from opposing teams for five (5) minutes since the round starts.',
-		Cost: '100 points',
-		duration: '5 minutes'
-	},
-	{
-		name: 'Immunity IV',
-    type: 'buff',
-		shortDescription:  'Cannot be targeted by any debuff.',
-		fullDescription: 'Is decided before the round starts. The team cannot be targeted by any debuff from opposing teams for five (5) minutes since the round starts.',
-		Cost: '100 points',
-		duration: '5 minutes'
-	},
-	{
-		name: 'Unchain',
-    type: 'buff',
-		shortDescription:  'Cannot be targeted by any debuff.',
-		fullDescription: 'Is decided before the round starts. The team cannot be targeted by any debuff from opposing teams for five (5) minutes since the round starts.',
-		Cost: '100 points',
-		duration: '5 minutes'
-	},
-];
-
-const debuffs = [
-	{
-		name: 'Stun',
-    type: 'debuff',
-		fullDescription: 'Target an opposing team, that team would be unable to make changes to their code for two (2) minutes upon its activation.',
-		Cost: '100 points',
-		duration: '2 minutes'
-	},
-	{
-		name: 'Editor',
-    type: 'debuff',
-		fullDescription: 'Target an opposing team, that team would be unable to make changes to their code for two (2) minutes upon its activation.',
-		Cost: '100 points',
-		duration: '2 minutes'
-	},
-	{
-		name: 'Frosty Hands',
-    type: 'debuff',
-		fullDescription: 'Target an opposing team, that team would be unable to make changes to their code for two (2) minutes upon its activation.',
-		Cost: '100 points',
-		duration: '2 minutes'
-	}
-];
+import { buffs, debuffs } from 'utils/dummyData';
 
 
   

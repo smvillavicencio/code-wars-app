@@ -1,16 +1,15 @@
 /* eslint-disable */ 
 import { useState, useEffect } from 'react';
 
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import {
 	Button,
 	Box,
 	Stack,
-	Toolbar,
 	Tooltip,
 } from '@mui/material';
-import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import { useNavigate, createSearchParams } from 'react-router-dom';
 
 import seal from 'assets/UPLB COSS.png';
@@ -37,9 +36,9 @@ const ViewAllProblemsPage = () => {
 	// State handler for current round
 	const [currRound, setCurrRound] = useState('EASY');
 	// State handler for viewing buy power-up popover
-	const [open, setOpen] = useState(false)
+	const [open, setOpen] = useState(false);
 	
-	const rounds = ['EASY', 'MEDIUM', 'WAGER', 'HARD']
+	const rounds = ['EASY', 'MEDIUM', 'WAGER', 'HARD'];
 
 	const [showBuffs, setShowBuffs] = useState(false);
 	const [showDebuffs, setShowDebuffs] = useState(false);
@@ -47,13 +46,13 @@ const ViewAllProblemsPage = () => {
 	const [selectedPowerUp, setSelectedPowerUp] = useState(null);
 
 	useEffect(() => { 
-		setSeeDetails(false)
-		setShowBuffs(false)
-		setShowDebuffs(false)
-		setSelectedPowerUp(null)
-	}, [])
+		setSeeDetails(false);
+		setShowBuffs(false);
+		setShowDebuffs(false);
+		setSelectedPowerUp(null);
+	}, []);
 
-// Styling for the problem list table
+	// Styling for the problem list table
 	const additionalStyles = {
 		backgroundColor: '#fff',
 	};
@@ -77,19 +76,19 @@ const ViewAllProblemsPage = () => {
 	 */
 	const handleViewPowerUps = (e) => {
 		e.stopPropagation();
-		setOpen(!open)
-	}
+		setOpen(!open);
+	};
 
 	/**
 	 * Purpose: Closes Buy Power-up Modal if user clicked outside the component.
 	 */
 	const handleClickAway = () => {
-		setSeeDetails(false)
-		setShowBuffs(false)
-		setShowDebuffs(false)
-		setSelectedPowerUp(null)
-		setOpen(false)
-  };
+		setSeeDetails(false);
+		setShowBuffs(false);
+		setShowDebuffs(false);
+		setSelectedPowerUp(null);
+		setOpen(false);
+	};
 
 	return (
 		<>

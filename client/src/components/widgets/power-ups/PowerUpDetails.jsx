@@ -9,9 +9,12 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import WestIcon from '@mui/icons-material/West';
 import { useContext, useEffect, useState } from "react";
 
-import { DropdownSelect } from "components";
+import {
+	ConfirmWindow,
+	DropdownSelect,
+	SuccessWindow
+} from "components";
 import { userDetailsContext } from "utils/UserDetailsProvider";
-
 
 // dummy data for list of teams
 const teamsList = [
@@ -46,6 +49,7 @@ const PowerUpDetails = ({
 	const [teams, setTeams] = useState(teamsList)
 	// state for the context API
 	// const [userDetails, setUserDetails] = useContext(userDetailsContext);
+	const [userDetails, setUserDetails] = useState();
 
 
 	/**
@@ -70,6 +74,7 @@ const PowerUpDetails = ({
 		})
 		setTeams(updatedTeams)
 		setSelectedTeam(updatedTeams[0])
+		setUserDetails(userDetails)
 	}, []) 
 	
 
@@ -85,12 +90,23 @@ const PowerUpDetails = ({
 	 * Params: newDebuff - debuff name
 	 */
 	const applyDebuff = (newDebuff) => {
-		console.log(selectedTeam)
-		
-		// insert endpoint for applying debuff
+		// console.log(selectedTeam)
 
-		setSelectedTeam('');
-		handleReturn();
+		// ask for confirmation of action
+    ConfirmWindow.fire({
+			text: 'Are you sure you want to use '+`${newDebuff}`+' on '+`${selectedTeam}`+'?',
+		}).then((res) => {
+			if (res['isConfirmed']) {
+				SuccessWindow.fire({
+					text: 'Successfully used '+`${newDebuff}`+' on '+`${selectedTeam}`+'!'
+				})
+				// insert endpoint for applying debuff
+				setSelectedTeam('');
+				handleReturn();
+			} else {
+				return;
+			}
+		})
 	};
 
 	/**
@@ -104,8 +120,24 @@ const PowerUpDetails = ({
 	/**
 	 * Purpose: Applying buff to user team
 	 */
-	const handleBuy = () => {
+	const handleBuy = (buff) => {
 		setSelectedTeam(userDetails.user)
+
+		// ask for confirmation of action
+    ConfirmWindow.fire({
+			text: 'Are you sure you want to use '+`${buff}`+' on your team?',
+		}).then((res) => {
+			if (res['isConfirmed']) {
+				SuccessWindow.fire({
+					text: 'Successfully used '+`${buff}`+' on your team!'
+				})
+				// insert endpoint for applying buff
+				setSelectedTeam('');
+				handleReturn();
+			} else {
+				return;
+			}
+		})
 	}
 
   return (
@@ -223,7 +255,7 @@ const PowerUpDetails = ({
 					// Buffs only have the buy button					
 					<>
 						{/* Buy button */}
-						<Button variant="contained" onClick={handleBuy} sx={{ marginBottom: '20px' }} >
+						<Button variant="contained" onClick={() => handleBuy(powerUp.name)} sx={{ marginBottom: '20px' }} >
 							<ShoppingCartIcon sx={{ margin: '5px' }} />
 							BUY
 						</Button>

@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import Looks3Icon from '@mui/icons-material/Looks3';

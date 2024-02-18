@@ -1,12 +1,12 @@
 /* eslint-disable */ 
 import { useState } from 'react';
 
-import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import SourceIcon from '@mui/icons-material/Source';
-import { Box, Button, Typography } from '@mui/material';
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
+import { Box, Button, Typography } from "@mui/material";
 
 import {
-	SuccessWindow
+  SuccessWindow
 } from 'components';
 
 
@@ -14,9 +14,9 @@ const  SubmitModal = ({ setOpen }) => {
 	/**
    * State handler for the team's uploaded file.
    */
-	const [file, setFile] = useState(null);
+  const [file, setFile] = useState(null);
 
-	/**
+  /**
    * Purpose: Allows the file to be dropped in the designated area. Set the current file to the drop file  
    * Params: <Event> event - current event
    */
@@ -26,7 +26,7 @@ const  SubmitModal = ({ setOpen }) => {
 		setFile(droppedFile);
 	};
 
-	/**
+  /**
    * Purpose: Called when the BROWSE BUTTON is clicked. Set the uploaded file
    * Params: <Event> event - current event
    */
@@ -35,7 +35,7 @@ const  SubmitModal = ({ setOpen }) => {
 		setFile(selectedFile);
 	};
 
-	/**
+  /**
    * Purpose: Allows the file to be dragged on designated area. Prvent the browser from opening the file 
    * Params: <Event> event - current event
    */
@@ -43,217 +43,217 @@ const  SubmitModal = ({ setOpen }) => {
 		event.preventDefault();
 	};
 
-	/**
+  /**
    * Purpose: Handles submission of uploaded file.
    * Params: <Event> event - current event
    */
-	const handleSubmit = () => { 
-		// close submit button modal window
-		setOpen(false);
+  const handleSubmit = (event) => { 
+    // close submit button modal window
+    setOpen(false);
 
-		// add post request to db here
+    // add post request to db here
     
-		// fire success window
-		SuccessWindow.fire({
-			text: 'Successfully submitted file!',
-			html:
+    // fire success window
+    SuccessWindow.fire({
+      text: 'Successfully submitted file!',
+      html:
 			'<p>You may submit a new file for this problem once the previous file has been graded.</p>'
-		});
-	};
+    });
+  }
 
-	return (
-		<Box>
-			{/* Container for the dropdown box */}
-			<Box 
-				onDrop={handleDrop}
-				onDragOver={handleDragOver}
-				sx={{ 
-					display: 'flex',
-					flexDirection: 'column',
-					justifyContent: 'center',
-					alignItems: 'center',
-					marginBottom: '10px',
-				}}
-			>
-				{
-					// If there is an uploaded file
-					file ? (
-					// dropdown box
-						<Box
-							sx={{ 
-								border: '3px dashed',
-								borderRadius: '10px', 
-								height: '100px',
-								width: '90%', 
-								borderColor: 'rgba(64, 64, 64, 0.5)',
-								display: 'flex',
-								flexDirection: 'rows',
-								justifyContent: 'space-between',
-								alignItems: 'center',
-								paddingX: 3,
-								marginTop: 3,
-							}}
-						>
-							{/* Container for file name and file icon */}
-							<Box
-								sx={{
-									display: 'flex',
-									flexDirection: 'rows',
-									alignItems: 'center',
-									gap: 2,
-								}}
-							>
-								<SourceIcon sx={{ height: 33, width: 33, color: 'rgba(0, 0, 0, 0.5)' }} />
-								<Typography
-									variant="body1"
-									sx={{
-										color: 'rgba(0, 0, 0, 0.5)',
-										fontSize: '16px'
-									}}
-								>
-									{file.name}
-								</Typography>
-							</Box>
+  return (
+    <Box>
+      {/* Container for the dropdown box */}
+      <Box 
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        sx={{ 
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: "10px",
+        }}
+      >
+        {
+          // If there is an uploaded file
+          file ? (
+            // dropdown box
+            <Box
+              sx={{ 
+                border: `3px dashed`,
+                borderRadius: "10px", 
+                height: "100px",
+                width: "90%", 
+                borderColor: `rgba(64, 64, 64, 0.5)`,
+                display: "flex",
+                flexDirection: "rows",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingX: 3,
+                marginTop: 3,
+              }}
+            >
+              {/* Container for file name and file icon */}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "rows",
+                  alignItems: "center",
+                  gap: 2,
+                }}
+              >
+                <SourceIcon sx={{ height: 33, width: 33, color: "rgba(0, 0, 0, 0.5)" }} />
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "rgba(0, 0, 0, 0.5)",
+                    fontSize: "16px"
+                  }}
+                >
+                  {file.name}
+                </Typography>
+              </Box>
 
-							{/* Container for the status of the uploaded file*/}
-							<Box
-								sx={{
-									display: 'flex',
-									flexDirection: 'rows',
-									alignItems: 'center',
-									gap: 1
-								}}
-							>
-								<Typography
-									variant="body1"
-									sx={{
-										color: 'rgba(0, 0, 0, 0.5)',
-										fontSize: '16px', 
-										overflow: 'hidden',
-										textOverflow: 'ellipsis',
-										whiteSpace: 'nowrap'
-									}}
-								>
+              {/* Container for the status of the uploaded file*/}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "rows",
+                  alignItems: "center",
+                  gap: 1
+                }}
+              >
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "rgba(0, 0, 0, 0.5)",
+                    fontSize: "16px", 
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
                   Uploaded
-								</Typography>
-								<PendingActionsIcon
-									sx={{
-										height: 23,
-										width: 23,
-										color: 'rgba(0, 0, 0, 0.5)',
-									}}
-								/>
-							</Box>
-						</Box>
-					) 
-						: 
-					// No file uploaded
-						(
-					// dropdown box
-							<Box
-								sx={{ 
-									border: '3px dashed',
-									borderRadius: '10px', 
-									height: '250px',
-									width: '90%', 
-									borderColor: 'rgba(64, 64, 64, 0.5)',
-									display: 'flex',
-									flexDirection: 'column',
-									justifyContent: 'center',
-									alignItems: 'center',
-									marginTop: 3,
-								}}
-							>
-								{/* Container for the Drag and Drop title and file icon*/}
-								<SourceIcon sx={{ height: 80, width: 80, color: 'rgba(0, 0, 0, 0.3)' }} />
-								<Typography
-									id="transition-modal-title"
-									variant="h6"
-									component="h6"
-									sx={{ color: 'rgba(0, 0, 0, 0.3)', fontSize: '18px' }}
-								>
+                </Typography>
+                <PendingActionsIcon
+                  sx={{
+                    height: 23,
+                    width: 23,
+                    color: "rgba(0, 0, 0, 0.5)",
+                  }}
+                />
+              </Box>
+            </Box>
+          ) 
+          : 
+          // No file uploaded
+          (
+            // dropdown box
+            <Box
+              sx={{ 
+                border: `3px dashed`,
+                borderRadius: "10px", 
+                height: "250px",
+                width: "90%", 
+                borderColor: `rgba(64, 64, 64, 0.5)`,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 3,
+              }}
+            >
+              {/* Container for the Drag and Drop title and file icon*/}
+              <SourceIcon sx={{ height: 80, width: 80, color: "rgba(0, 0, 0, 0.3)" }} />
+              <Typography
+                id="transition-modal-title"
+                variant="h6"
+                component="h6"
+                sx={{ color: "rgba(0, 0, 0, 0.3)", fontSize: "18px" }}
+              >
                 Drag and Drop Here
-								</Typography>    
-							</Box>
-						)
-				}
-			</Box>
+              </Typography>    
+            </Box>
+          )
+        }
+      </Box>
       
-			{/* Container for the buttons for browsing files and submitting */}
-			<Box
-				sx={{
-					display: 'flex',
-					gap: 4,
-					flexDirection: 'rows',
-					justifyContent: 'center',
-					alignItems: 'center',
-				}}
-			>
-				{/* Button for browsing files */}
-				<label htmlFor="icon-button-file">
-					<Button 
-						variant="contained" 
-						component="span"
-						sx={{
-							width: '200px',
-							height: '50px',
-							marginTop: '20px',
-							bgcolor: 'primary.main',
-							'&:hover': {
-								bgcolor: 'primary.light',
-							}
-						}}
-					>
+      {/* Container for the buttons for browsing files and submitting */}
+      <Box
+        sx={{
+          display: 'flex',
+          gap: 4,
+          flexDirection: "rows",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {/* Button for browsing files */}
+        <label htmlFor="icon-button-file">
+          <Button 
+            variant="contained" 
+            component="span"
+            sx={{
+              width: "200px",
+              height: "50px",
+              marginTop: "20px",
+              bgcolor: "primary.main",
+              '&:hover': {
+                bgcolor: "primary.light",
+              }
+            }}
+          >
               Browse
-					</Button>
-					<input
-						type="file"
-						id="icon-button-file"
-						style={{ display: 'none' }}
-						onChange={handleFileInputChange}
-					/>
-				</label>
+          </Button>
+          <input
+            type="file"
+            id="icon-button-file"
+            style={{ display: 'none' }}
+            onChange={handleFileInputChange}
+          />
+        </label>
 
-				{   
-					// If there is an uploaded file
-					file ? (
-						<Button 
-							type="submit"
-							variant="contained" 
-							onClick={handleSubmit}
-							sx={{
-								width: '200px',
-								height: '50px',
-								marginTop: '20px',
-								bgcolor: 'secondary.main',
-								'&:hover': {
-									bgcolor: 'rgba(150, 30, 50, 1)',
-								}
-							}}
-						>
+        {   
+          // If there is an uploaded file
+          file ? (
+            <Button 
+              type="submit"
+              variant="contained" 
+              onClick={handleSubmit}
+              sx={{
+                width: "200px",
+                height: "50px",
+                marginTop: "20px",
+                bgcolor: "secondary.main",
+                '&:hover': {
+                  bgcolor: "rgba(150, 30, 50, 1)",
+                }
+              }}
+            >
               Submit
-						</Button>
-					) 
-						: 
-					// No file uploaded, disabled button
-						(
-							<Button 
-								variant="contained" 
-								sx={{
-									width: '200px',
-									height: '50px',
-									marginTop: '20px',
-									bgcolor: 'secondary.light',
-								}}
-								disabled
-							>
+            </Button>
+          ) 
+          : 
+          // No file uploaded, disabled button
+          (
+            <Button 
+              variant="contained" 
+              sx={{
+                width: "200px",
+                height: "50px",
+                marginTop: "20px",
+                bgcolor: "secondary.light",
+              }}
+              disabled
+            >
               Submit
-							</Button>
-						)
-				}
-			</Box>
-		</Box>
-	);
-};
+            </Button>
+          )
+        }
+      </Box>
+    </Box>
+  )
+}
 
 export default SubmitModal;

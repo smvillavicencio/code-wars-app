@@ -39,7 +39,7 @@ const LoginPage = () => {
 	const handleLogin = (username) => {
 		if (username == 'participant') {
 			setUserDetails({
-				user: 'Team One',
+				user: 'Team Yeah Yeah',
 				role: 'participant',
 			});
 			navigate('/participant/view-all-problems');

@@ -15,7 +15,6 @@ import TopBar from "./ui/Topbar";
 
 
 export { 
-	BuyPowerUpsPopover,
 	DropdownSelect,
 	ConfirmWindow,
 	CustomModal,

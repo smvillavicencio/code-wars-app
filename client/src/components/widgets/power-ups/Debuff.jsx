@@ -9,8 +9,7 @@ import { Box, Typography, Button } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
 import PropTypes from 'prop-types';
 
-//---------------------------------------------
-// DUMMY DATA Start
+
 const debuffs = [
 	{
 		name: 'Stun',
@@ -31,13 +30,10 @@ const debuffs = [
 		duration: '2 minutes'
 	}
 ];
-// DUMMY DATA End
-//---------------------------------------------
+
 
 const Debuff = ({showDebuffs, seeDetails, handleClickedPowerup, handleBack, powerUp}) => {
 
-	//---------------------------------------------
-	// DUMMY DATA Start
 	const [teams, setTeams] = useState([
 		{
 			name: 'Team 1',
@@ -65,8 +61,6 @@ const Debuff = ({showDebuffs, seeDetails, handleClickedPowerup, handleBack, powe
 			debuff: '',
 		}
 	]);
-	// DUMMY DATA End
-	//---------------------------------------------
 
 	// Target team to recieve the specific debuff
 	const [selectedEnemy, setSelectedEnemy] = useState(null);
@@ -142,7 +136,7 @@ const Debuff = ({showDebuffs, seeDetails, handleClickedPowerup, handleBack, powe
 							paddingY: 3,
 						}}
 					>
-						{/* Map the debuffs - Main Div of debuffs, clickable */}
+						{/* Container for debuffs, clickable */}
 						{
 							debuffs.map((item, index) => (
 

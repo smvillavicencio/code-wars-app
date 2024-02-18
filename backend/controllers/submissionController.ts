@@ -12,33 +12,61 @@ const Submission = mongoose.model("Submission");
     - viewSubmissionsTP (based on Team and current Problem)
 */
 
+// SAMPLE FLOW UPON UPLOADING AND CHECKING SUBMISSIONS
+// For a problem with a total of 500 points:
+// 1st submission: prevMaxScore=0,		score=200	[+200 team points]
+// 2nd submission: prevMaxScore=200,	score=100
+// 3rd submission: prevMaxScore=200,	score=200
+// 4th submission: prevMaxScore=200,	score=400	[+200]
+// 5th submission: prevMaxScore=400,	score=0
+// 6th submission: prevMaxScore=400,	score=500	[+100]
+
 /*
  * Purpose: Upload submission
  * Params (in the Request): problemId, teamId, teamName, judgeId, judgeName, (max)possiblePoints, (file)content
  * Returns (in the Response): 
  *      Object with fields success and the corresponding results
  */
+
 const uploadSubmission = async (req: Request, res: Response) => {
     const problemId = req.body.problemId;
     const teamId = req.body.teamId;
     const teamName = req.body.teamName;
-    const judgeId = req.body.judgeId;
-    const judgeName = req.body.judgeName;
+    // const judgeId = req.body.judgeId;
+    // const judgeName = req.body.judgeName; // Judge set when submission is checked
     const possiblePoints = req.body.possiblePoints;
     const content = req.body.content;
+    const totalCases = req.body.totalCases;
+
+    const prevSubmissions = await Submission.find({ team_id: teamId, problem_id: problemId })?.sort({ timestamp: 1 });
+    let prevMaxScore;
+
+    if (prevSubmissions.length == 0) {
+        prevMaxScore = 0;
+    } else {
+        let lastSubmission = prevSubmissions[prevSubmissions.length - 1];
+        if (lastSubmission.prev_max_score >= lastSubmission.score) {
+            prevMaxScore = lastSubmission.prev_max_score;
+        } else {
+            prevMaxScore = lastSubmission.score;
+        }
+    }
 
     const newSubmission = new Submission({
         team_id: teamId,
         team_name: teamName,
-        judge_id: judgeId,
-        judge_name: judgeName,
+        judge_id: "pending",//judgeId
+        judge_name: "pending",//judgeName
         problem_id: problemId,
         possible_points: possiblePoints,
         status: "pending",
         score: 0,
         evaluation: "pending",
         timestamp: new Date(),
-        content: content
+        content: content,
+        prev_max_score: prevMaxScore,
+        total_test_cases: totalCases,
+        curr_correct_cases: 0
     })
     // status : checked, error, pending
     // evaluation: correct, partial, wrong, error, pending
@@ -92,6 +120,8 @@ const downloadSubmission = async (req: Request, res: Response) => {
 const checkSubmission = async (req: Request, res: Response) => {
     const submissionId = req.body.submissionId;
     const evaluation = req.body.evaluation;
+    const judgeId = req.body.judgeId;
+    const judgeName = req.body.judgeName;
 
     // status : checked, error, pending
     // evaluation: correct, partial, wrong, error, pending
@@ -99,6 +129,9 @@ const checkSubmission = async (req: Request, res: Response) => {
 
     if (submission) {
         submission.evaluation = evaluation;
+        submission.judge_id = judgeId;
+        submission.judge_name = judgeName;
+        
         let status;
         let score = 0;
 

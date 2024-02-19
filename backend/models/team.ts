@@ -16,6 +16,9 @@ const TeamSchema = new mongoose.Schema({
   debuffs_from: { type: [String], required: true }
 });
 
+/*
+ * Purpose: Pre middleware function for hashing the password of a newly created instance
+ */
 TeamSchema.pre("save", function(next) {
     const user = this;
 
@@ -32,7 +35,10 @@ TeamSchema.pre("save", function(next) {
         });
     });
 });
-  
+
+/*
+ * Purpose: Function for checking if input password corresponds to the user's hashed password
+ */
 TeamSchema.methods.comparePassword = function(password: any, callback: any) {
     bcrypt.compare(password, this.password, callback);
 }

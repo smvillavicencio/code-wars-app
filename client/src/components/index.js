@@ -1,20 +1,21 @@
-/* eslint-disable */ 
-import DropdownSelect from "./ui/DropdownSelect";
-import ConfirmWindow from "./ui/ConfirmWindow";
-import CustomModal from "./ui/CustomModal";
-import ErrorWindow from "./ui/ErrorWindow";
-import ParticipantsLeaderboard from "./features/leaderboard/ParticipantsLeaderboard";
+import ConfirmWindow from './ui/ConfirmWindow';
+import CustomModal from './ui/CustomModal';
+import DropdownSelect from './ui/DropdownSelect';
+import ErrorWindow from './ui/ErrorWindow';
+import Sidebar from './ui/Sidebar';
+import SuccessWindow from './ui/SuccessWindow';
+import Table from './ui/Table';
+import TopBar from './ui/Topbar';
+import SponsorCarousel from './widgets/carousel/SponsorCarousel';
+import ParticipantsLeaderboard from './widgets/leaderboard/ParticipantsLeaderboard';
+import BuyPowerUpsPopover from './widgets/power-ups/BuyPowerUpsPopover';
 import PowerUpList from './widgets/power-ups/PowerUpList';
 import PowerUpType from './widgets/power-ups/PowerUpType';
-import Sidebar from './ui/Sidebar';
-import SponsorCarousel from "./features/carousel/SponsorCarousel";
-import SuccessWindow from "./ui/SuccessWindow";
-import Table from "./ui/Table";
-import Timer from "./widgets/timer/Timer";
-import TopBar from "./ui/Topbar";
+import Timer from './widgets/timer/Timer';
 
 
 export { 
+	BuyPowerUpsPopover,
 	DropdownSelect,
 	ConfirmWindow,
 	CustomModal,

@@ -6,6 +6,9 @@ const JudgeSchema = new mongoose.Schema({
   password: { type: String, required: true }
 });
 
+/*
+ * Purpose: Pre middleware function for hashing the password of a newly created instance
+ */
 JudgeSchema.pre("save", function(next) {
   const user = this;
 
@@ -23,6 +26,9 @@ JudgeSchema.pre("save", function(next) {
   });
 });
 
+/*
+ * Purpose: Function for checking if input password corresponds to the user's hashed password
+ */
 JudgeSchema.methods.comparePassword = function(password: any, callback: any) {
   bcrypt.compare(password, this.password, callback);
 }

@@ -47,6 +47,7 @@ function App() {
 	useEffect(() => {
 		const eventSource = new EventSource(`${BaseURL}/admincommand`);
 		eventSource.onmessage = (e) => {
+			if (localStorage.getItem("usertype") == "team") {
 			if (e.data == "freeze") {
 				try {
 					document.getElementById("overlayFreeze").style.display = "block";	
@@ -67,6 +68,7 @@ function App() {
 					document.getElementById("root").appendChild(newdiv);
 					document.getElementById("overlayFreeze").style.display = "none";	
 				}	
+			}
 			}
 		}
 	  }, []);

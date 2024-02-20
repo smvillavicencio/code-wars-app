@@ -1,7 +1,6 @@
 
 /* eslint-disable */ 
-
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ThemeProvider } from '@emotion/react';
 import { Box } from '@mui/material';
 import { Outlet, BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -18,6 +17,11 @@ import {
 } from 'pages/';
 import { theme } from 'theme.js';
 import { UserDetailsProvider } from 'utils/UserDetailsProvider.js';
+
+import {
+	FreezeOverlay,
+	TimerOverlay
+} from 'components';
 
 
 /**
@@ -43,35 +47,39 @@ function Layout() {
 const BaseURL = "http://localhost:5000";
 
 function App() {
+	const [freezeOverlay, setFreezeOverlay] = useState(false);
+
 
 	useEffect(() => {
 		const eventSource = new EventSource(`${BaseURL}/admincommand`);
 		eventSource.onmessage = (e) => {
 			if (localStorage.getItem("usertype") == "team") {
-			if (e.data == "freeze") {
-				try {
-					document.getElementById("overlayFreeze").style.display = "block";	
-				} catch (error) {
-					let newdiv = document.createElement("div");
-					newdiv.id = "overlayFreeze";
+				if (e.data == "freeze") {
+					setFreezeOverlay(true);
+					// try {
+					// 	document.getElementById("overlayFreeze").style.display = "block";
+					// } catch (error) {
+					// 	let newdiv = document.createElement("div");
+					// 	newdiv.id = "overlayFreeze";
 
-					document.getElementById("root").appendChild(newdiv);
-					document.getElementById("overlayFreeze").style.display = "block";	
-				}	
+					// 	document.getElementById("root").appendChild(newdiv);
+					// 	document.getElementById("overlayFreeze").style.display = "block";
+					// }
+				}
 			} else {
-				try {
-					document.getElementById("overlayFreeze").style.display = "none";	
-				} catch (error) {
-					let newdiv = document.createElement("div");
-					newdiv.id = "overlayFreeze";
+				setFreezeOverlay(false);
+				// try {
+				// 	document.getElementById("overlayFreeze").style.display = "none";	
+				// } catch (error) {
+				// 	let newdiv = document.createElement("div");
+				// 	newdiv.id = "overlayFreeze";
 
-					document.getElementById("root").appendChild(newdiv);
-					document.getElementById("overlayFreeze").style.display = "none";	
-				}	
-			}
+				// 	document.getElementById("root").appendChild(newdiv);
+				// 	document.getElementById("overlayFreeze").style.display = "none";	
+				// }	
 			}
 		}
-	  }, []);
+	}, []);
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -90,6 +98,8 @@ function App() {
 							<Route path="admin/general" element={<GeneralOptionsPage />} />
 							<Route path="admin/logs" element={<PowerUpLogs />} />
 							<Route path="admin/podium" element={<TopTeamsPage />} />
+
+							{freezeOverlay ? <FreezeOverlay /> : null}
 						</Route>
 					</Routes>
 				</Router>

@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 
 // get user model registered in Mongoose
 const Submission = mongoose.model("Submission");
+const Team = mongoose.model("Team");
 
 /*
     ENDPOINTS:
@@ -113,7 +114,7 @@ const downloadSubmission = async (req: Request, res: Response) => {
 
 /*
  * Purpose: Check or grade  (changes fields status, evaluation, and score)
- * Params (in the Request): submissionId, evaluation (correct, partial, wrong, error)
+ * Params (in the Request): submissionId, evaluation (correct, partial, wrong, error), judgeId, judgeName, correctCases, possiblePoints
  * Returns (in the Response): 
  *      Object with fields success and the corresponding results
  */
@@ -122,6 +123,8 @@ const checkSubmission = async (req: Request, res: Response) => {
     const evaluation = req.body.evaluation;
     const judgeId = req.body.judgeId;
     const judgeName = req.body.judgeName;
+    const correctCases = parseInt(req.body.currentCases);
+    const possiblePoints = parseInt(req.body.possiblePoints);
 
     // status : checked, error, pending
     // evaluation: correct, partial, wrong, error, pending
@@ -131,6 +134,7 @@ const checkSubmission = async (req: Request, res: Response) => {
         submission.evaluation = evaluation;
         submission.judge_id = judgeId;
         submission.judge_name = judgeName;
+        submission.curr_correct_cases = correctCases;
         
         let status;
         let score = 0;
@@ -141,11 +145,24 @@ const checkSubmission = async (req: Request, res: Response) => {
             status = "checked"
         }
 
-        if (evaluation == "correct") {
-            score = submission.possible_points;
+        score = Math.floor(possiblePoints * correctCases / submission.total_test_cases);
+        
+        let pointsToAdd = score - submission.prev_max_score;
+        if (pointsToAdd > 0) {
+            const team = await Team.findById(submission.team_id);
+
+            team.score = team.score + pointsToAdd;
+
+            try {
+                team.save()
+
+            } catch (error) {
+                return res.send({
+                    success: false,
+                    results: "Failed updating team score"
+                });
+            }
         }
-        // TODO: Insert logic for partial points
-        // The total current score for the team may also be calculated here
 
         submission.status = status;
         submission.score = score;

@@ -1,118 +1,235 @@
 /* eslint-disable */ 
+import {
+	useMemo,
+	useRef,
+	useState
+} from 'react';
+
 import ViewListIcon from '@mui/icons-material/ViewList';
 import {
 	Box,
-	Stack
+	MenuItem,
+	Stack,
+	Typography
 } from '@mui/material';
+import { useGridApiContext } from '@mui/x-data-grid';
+import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/utils';
+import { Link } from 'react-router-dom';
 
 import seal from 'assets/UPLB COSS.png';
 import {
+	CustomModal,
 	DropdownSelect,
-	SubmissionsTable,
+	Table,
 	TopBar
 } from 'components/';
 
-
-// dummy data
-const columns = [
-	{
-		field: 'id',
-		headerName: 'ID',
-		width: 50,
-	},
-	{
-		field: 'teamName',
-		headerName: 'Team Name',
-		minWidth: 300,
-		flex: 1,
-	},
-	{
-		field: 'problemTitle',
-		headerName: 'Problem Title',
-		minWidth: 400,
-		// maxWidth: 500,
-		flex: 1,
-	},
-	{
-		field: 'submittedAt',
-		headerName: 'Submitted At',
-		minWidth: 150,
-		// maxWidth: 200,
-		flex: 1,
-	},
-	{
-		field: 'latestFile',
-		headerName: 'Latest Uploaded File',
-		minWidth: 100,
-		maxWidth: 200,
-		headerAlign: 'left',
-		align: 'left',
-		flex: 1,
-	},
-	{
-		field: 'results',
-		headerName: 'Results',
-		minWidth: 200,
-		// maxWidth: 250,
-		flex: 1,
-	},
-	{
-		field: 'checkedBy',
-		headerName: 'Judge',
-		minWidth: 200,
-		// maxWidth: 250,
-		flex: 1,
-	},
-];
-
-// dummy data
-const rows = [
-	{ id: 0,teamName: 'Team Yeah Yeah', problemTitle: 'Special Calculator', submittedAt: '09:55:01', latestFile: 0/200, results: '', checkedBy: 'Sir Hermocilla'},
-	{ id: 1,teamName: 'Team Wiwzzz', problemTitle: 'Listing All Addends', submittedAt: '09:48:55', latestFile: 0/400, results: '', checkedBy: 'Sir Isungga'},
-	{ id: 2,teamName: 'Team Ooohh', problemTitle: 'BINGO', submittedAt: '09:45:08', latestFile: 0/400, results: '', checkedBy: 'Sir Doria'},
-	{ id: 3,teamName: 'Team One', problemTitle: 'Hamming distance, interleavings, and isomorphic', submittedAt: '09:37:44', latestFile: 500/500, results: '', checkedBy: 'Sir Hermocilla'},
-	{ id: 4,teamName: 'Team Two', problemTitle: 'The "Without" Problems', submittedAt: '09:33:04', latestFile: 300/700, results: '', checkedBy: 'Sir Isungga' },
-	{ id: 5,teamName: 'Team Three', problemTitle: 'Figuring Patterns', submittedAt: '09:30:15', latestFile: 0/1000, results: '', checkedBy: 'Sir Doria' },
-	{ id: 6,teamName: 'Team Four', problemTitle: 'Recursive Shifting', submittedAt: '09:10:45', latestFile: 0/2800, results: '', checkedBy: 'Sir Hermocilla'},
-	{ id: 7,teamName: 'Team Five', problemTitle: 'Sudoku Validator', submittedAt: '09:10:45', latestFile: 0/5500, results: '', checkedBy: 'Sir Isungga'},
-	{ id: 8,teamName: 'Team Six', problemTitle: 'Figure Output Pattern', submittedAt: '09:00:27', latestFile: 0/600, results: '', checkedBy: 'Sir Doria' },
-	{ id: 9,teamName: 'Team Seven', problemTitle: 'Roman Numeral Calculator', submittedAt: '09:00:15', latestFile: 0/700, results: '', checkedBy: 'Sir Hermocilla'},
-];
-
-// dummy data
-const optionsTeam = [
-	'Team Yeah Yeah',
-	'Team Wiwzzz',
-	'Team Ooohh',
-	'Team One',
-	'Team Two',
-	'Team Three',
-	'Team Four',
-	'Team Five',
-	'Team Six',
-	'Team Seven',
-];
-
-// dummy data
-const optionsProblem = [
-	'Special Calculator',
-	'Listing All Addends',
-	'BINGO',
-	'Hamming distance, interleavings, and isomorphic',
-	'The "Without" Problems',
-	'Figuring Patterns',
-	'Recursive Shifting',
-	'Sudoku Validator',
-	'Figure Output Pattern',
-	'Roman Numeral Calculator',
-];
+import {
+	columnsSubmissions,
+	columnsLeaderboard,
+	optionsEval,
+	optionsTeam,
+	optionsProblems,
+	rowsSubmissions,
+	rowsLeaderboard
+} from 'utils/dummyData';
 
 
-/*
+// Styling for Leaderboard table
+const additionalStylesLeaderboard = {
+	// modify column header typography
+	'& .MuiDataGrid-columnHeader': {
+		bgcolor: "rgba(0, 0, 0, 0.1)",
+	},
+	bgcolor: 'transparent',
+	border: 'none',
+	padding: 2,
+}
+
+// Styling for Submissions table
+const additionalStylesSubmissions = {
+	backgroundColor: '#fff',
+	paddingX: 2,
+}
+
+
+function renderEval(props) {
+	// console.log(props)
+	return (
+		<DropdownSelect
+			readOnly
+			variant="standard"
+			minWidth="100%"
+			options={optionsEval}
+			// isDisabled={true}
+			value={props.formattedValue}
+		/>
+	);
+}
+
+function EvalEditInputCell(props) {
+	const [currVal, setCurrVal] = useState('Default');
+
+	const { id, formattedValue, field, hasFocus } = props;
+	const apiRef = useGridApiContext();
+	const ref = useRef();
+
+	const handleChange = (event, newValue) => {
+		setCurrVal(event.target.value);
+    apiRef.current.setEditCellValue({ id, field, formattedValue: currVal });
+	};
+	
+	useEnhancedEffect(() => {
+		if (hasFocus && ref.current) {
+      const input = ref.current.querySelector(`input[value="${currVal}"]`);
+      input?.focus();
+    }
+	}, [hasFocus, currVal]);
+	
+	
+	return (
+		<DropdownSelect
+			innerRef={ref} 
+			displayEmpty
+			variant="standard"
+			// isDisabled={true}
+			minWidth="100%"
+			options={optionsEval}
+			handleChange={handleChange}
+			value={currVal}
+		> 
+			<MenuItem value="">Default</MenuItem>
+		</DropdownSelect>
+	)
+};
+
+const renderEvalEditInputCell = (params) => {
+  return <EvalEditInputCell props={params} />;
+};
+
+/**
  * Purpose: Displays the View Submissions Page for judges.
  * Params: None
  */
 const ViewSubmissionsPage = () => {
+	// state handler for overall leaderboard modal
+	const [open, setOpen] = useState(false);
+
+	// default values are given to make the component a controlled component
+	// state handler for team dropdown select
+	const [selectedTeam, setSelectedTeam] = useState('');
+	// state handler for problem dropdown select
+	const [selectedProblem, setSelectedProblem] = useState('');
+
+
+	// adding dropdown selects for evaluation column of submission table
+	const modifiedSubmissionColumns = columnsSubmissions.map((obj) => {
+		if (obj.field === 'evaluation') {
+			return {
+				...obj,
+				renderEditCell: renderEvalEditInputCell,
+				renderCell: renderEval,
+				// console.log(params.row.uploadedFile)
+			};
+		}
+		if (obj.field === 'uploadedFile') {
+			return {
+				...obj,
+				renderCell: (params) => {
+					return (
+						<Link
+							target="_blank"
+							download
+							// onClick={handleDownload}
+							// to={'/'}
+						>
+							{params.value}
+						</Link>
+					);
+				}
+			};
+		}
+    return obj;
+	});
+
+	/**
+	* Purpose: Handles opening of modal window for overall leaderboard.
+	*/
+	const handleButton = () => {
+		setOpen(true);
+	}
+
+	/**
+	* Purpose: Sets state of selectedTeam for filtering.
+	*/
+	const handleTeams = (e) => {
+		setSelectedTeam(e.target.value);
+	}
+
+	/**
+	* Purpose: Sets state of selectedProblem for filtering.
+	*/
+	const handleProblems = (e) => {
+		setSelectedProblem(e.target.value);
+	}
+	
+	
+
+	/**
+	* Purpose: Client-side filtering based on values from the dropdown selects.
+  * will be replaced if magkakaron ng server-side filtering
+	*/
+	const getFilteredRows = (rowsSubmissions) => {
+		// will hold the filtered rows
+		let temp = [];
+		let temp2 = [];
+
+		if (selectedTeam === '' & selectedProblem === '') return rowsSubmissions;
+
+		// Filter out rows based on selectedTeam
+		if (selectedTeam != '') {
+			rowsSubmissions.filter((row) => {
+				// if entry is submitted by selectedTeam
+				if (row.teamName === selectedTeam) {
+					// If matched row is not yet in temp, push to temp
+					if (!temp.find(obj => obj.id === row.id)) {
+						temp.push(row);
+					};
+				}
+			})
+		}
+		
+		if (selectedProblem != '') {
+			// if there is a selectedTeam, filter based on temp, not on rowsSubmissions
+			if (temp.length > 0) {
+				temp.filter((row) => {
+					// if problemTitle matches selectedProblem
+					if (row.problemTitle === selectedProblem) {
+						// If matched row is not yet in temp2, push to temp
+						if (!temp2.find(obj => obj.id === row.id)) {
+							temp2.push(row);
+						};
+					}
+				})
+				return temp2;
+			
+			// if there is no selected team
+			} else {
+				rowsSubmissions.filter((row) => {
+					// if problemTitle matches selectedProblem
+					if (row.problemTitle === selectedProblem) {
+						// If matched row is not yet in temp2, push to temp
+						if (!temp.find(obj => obj.id === row.id)) {
+							temp.push(row);
+						};
+					}
+				})
+				return temp;
+			}
+		}
+		return temp;
+	}
+
 
 	return (
 		<Box>
@@ -123,10 +240,10 @@ const ViewSubmissionsPage = () => {
 				subtitle="UPLB Computer Science Society"
 				buttonText="VIEW LEADERBOARD"
 				startIcon={<ViewListIcon />}
-				// handleButton={}
+				handleButton={handleButton}
 			/>
 			
-			<Stack spacing={5} sx={{ mt: 5, mx: 15 }}>
+			<Stack spacing={5} sx={{ mt: 5, mx: 15 }} >
 				
 				{/* Dropdown selects for team name and problem title */}
 				<Box sx={{
@@ -138,19 +255,77 @@ const ViewSubmissionsPage = () => {
 						isDisabled={false}
 						label="Team Name"
 						minWidth="20%"
+						variant="filled"
 						options={optionsTeam}
-					/>
+						handleChange={handleTeams}
+						value={selectedTeam}
+					>
+						{/* Empty Value */}
+						<MenuItem value="">
+							<em>All</em>
+						</MenuItem>
+					</DropdownSelect>
 					<DropdownSelect
 						isDisabled={false}
 						minWidth="35%"
+						variant="filled"
 						label="Problem Title"
-						options={optionsProblem}
-					/>
+						options={optionsProblems}
+						handleChange={handleProblems}
+						value={selectedProblem}
+					>
+						{/* Empty Value */}
+						<MenuItem value="">
+							<em>All</em>
+						</MenuItem>
+					</DropdownSelect>
 				</Box>
 
 				{/* Submission Entry Table */}
-				<SubmissionsTable columns={columns} rows={rows} />
+				<Table
+					rows={useMemo(() => {return getFilteredRows(rowsSubmissions)}, [selectedTeam, selectedProblem] )}
+					columns={useMemo(() => {return modifiedSubmissionColumns}, [] )}
+					hideFields={[]}
+					additionalStyles={additionalStylesSubmissions}
+					density={"comfortable"}
+					columnHeaderHeight={45}
+					pageSizeOptions={[5, 8]}
+					autoHeight
+					initialState={{
+						pagination: { paginationModel: { pageSize: 8 } },
+					}}
+					// processRowUpdate={processRowUpdate}
+
+					// if there are no submission entries yet
+					slots={{
+						noRowsOverlay: () => (
+							<Stack height="100%" alignItems="center" justifyContent="center">
+								<Typography><em>No records to display.</em></Typography>
+							</Stack>
+						)
+					}}
+				/>
 			</Stack>
+
+			{/* Overall Leaderboard Modal Window */}
+			<CustomModal isOpen={open} setOpen={setOpen} windowTitle="Leaderboard">
+				<Table
+					editMode="row" 
+					rows={rowsLeaderboard}
+					columns={columnsLeaderboard}
+					hideFields={['id', 'totalSpent']}
+					additionalStyles={additionalStylesLeaderboard}
+					pageSize={5}
+					// processRowUpdate={(updatedRow, originalRow) =>
+					// 	mySaveOnServerFunction(updatedRow);
+					// }
+					// onProcessRowUpdateError={handleProcessRowUpdateError}
+					// isCellEditable={(params) => console.log(params)}
+					initialState={{
+						pagination: { paginationModel: { pageSize: 5 } },
+					}}
+				/>
+			</CustomModal>
 		</Box>
 	);
 };

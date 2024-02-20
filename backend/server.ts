@@ -2,6 +2,7 @@
 import "./models/judge";
 import "./models/admin";
 import "./models/team";
+import "./models/submission";
 
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -12,6 +13,7 @@ import signupRoute from './routes/signupRoute';
 import checkIfLoggedInRoute from './routes/checkIfLoggedInRoute';
 import teamScoreRoutes from './routes/teamScoreRoutes';
 import powerupRoutes from './routes/powerupRoute'
+import submissionRoutes from './routes/submissionRoutes';
 
 
 const app = express();
@@ -30,6 +32,7 @@ app.use(signupRoute);
 app.use(checkIfLoggedInRoute);
 app.use(teamScoreRoutes);
 app.use(powerupRoutes);
+app.use(submissionRoutes);
 app.use('/api', sampleRoutes);
 
 // Start the server

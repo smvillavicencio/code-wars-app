@@ -1,264 +1,203 @@
 /* eslint-disable */ 
+import { useState, useEffect } from 'react';
+
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import LockIcon from '@mui/icons-material/Lock';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 import {
 	Button,
 	Box,
 	Stack,
-	Toolbar,
 	Tooltip,
 } from '@mui/material';
+import { useNavigate, createSearchParams } from 'react-router-dom';
 
 import seal from 'assets/UPLB COSS.png';
 import {
-	Modal,
+	BuyPowerUpsPopover,
 	ParticipantsLeaderboard,
-	ProblemListTable,
 	SponsorCarousel,
+	Table,
 	Timer,
 	TopBar
 } from 'components/';
-
-
-
-// dummy data for problems table
-const columns1 = [
-	{
-		field: 'id',
-		headerName: '#',
-		minWidth: 60,
-		maxWidth: 100,
-		headerAlign: 'center',
-		align: 'center',
-		flex: 1,
-	},
-	{
-		field: 'problemTitle',
-		headerName: 'Problem Title',
-		minWidth: 400,
-		// maxWidth: 500,
-		flex: 1,
-	},
-	{
-		field: 'status',
-		headerName: 'Status',
-		minWidth: 150,
-		// maxWidth: 200,
-		flex: 1,
-	},
-	{
-		field: 'score',
-		headerName: 'Score',
-		minWidth: 100,
-		maxWidth: 200,
-		headerAlign: 'left',
-		align: 'left',
-		flex: 1,
-	},
-	{
-		field: 'checkedBy',
-		headerName: 'Checked By',
-		minWidth: 200,
-		// maxWidth: 250,
-		flex: 1,
-	},
-];
-
-// dummy data for problems table
-const rows1 = [
-	{ id: 1, problemTitle: 'Special Calculator', status: 'Unopened', score: 0/200, checkedBy: 'Sir Hermocilla'},
-	{ id: 2, problemTitle: 'Listing All Addends', status: 'Submitted', score: 0/400, checkedBy: 'Sir Isungga'},
-	{ id: 3, problemTitle: 'BINGO', status: 'Under Review', score: 0/400, checkedBy: 'Sir Doria'},
-	{ id: 4, problemTitle: 'Hamming distance, interleavings, and isomorphic', status: 'Unopened', score: 500/500, checkedBy: 'Sir Hermocilla'},
-	{ id: 5, problemTitle: 'The "Without" Problems', status: 'Done', score: 300/700, checkedBy: 'Sir Isungga' },
-	{ id: 6, problemTitle: 'Figuring Patterns', status: 'Done', score: 0/1000, checkedBy: 'Sir Doria' },
-	{ id: 7, problemTitle: 'Recursive Shifting', status: 'Submitted', score: 0/2800, checkedBy: 'Sir Hermocilla'},
-	{ id: 8, problemTitle: 'Sudoku Validator', status: 'Unopened', score: 0/5500, checkedBy: 'Sir Isungga'},
-	{ id: 9, problemTitle: 'Figure Output Pattern', status: 'Unopened', score: 0/600, checkedBy: 'Sir Doria' },
-	{ id: 10, problemTitle: 'Roman Numeral Calculator', status: 'Unopened', score: 0/700, checkedBy: 'Sir Hermocilla'},
-];
-
-// dummy data for leaderboard
-const columns2 = [
-	{
-		field: 'id',
-		headerName: 'ID',
-	},
-	{
-		field: 'rank',
-		headerName: 'Rank',
-		minWidth: 60,
-		maxWidth: 100,
-		headerAlign: 'center',
-		align: 'center',
-		flex: 1,
-	},
-	{
-		field: 'teamName',
-		headerName: 'Team Name',
-		minWidth: 400,
-		// maxWidth: 500,
-		flex: 1,
-	},
-	{
-		field: 'score',
-		headerName: 'Score',
-		minWidth: 150,
-		// maxWidth: 200,
-		flex: 1,
-	},
-	{
-		field: 'totalSpent',
-		headerName: 'Total Spent',
-		minWidth: 100,
-		maxWidth: 200,
-		headerAlign: 'left',
-		align: 'left',
-		flex: 1,
-	},
-];
-
-// dummy data for leaderboard
-const rows2 = [
-	{ id: 1, rank: 1, teamName: 'Team One', score: 0/200, totalSpent: 1500},
-	{ id: 2, rank: 2, teamName: 'Team Two', score: 0/400, totalSpent: 1300},
-	{ id: 3, rank: 3, teamName: 'Team Three', score: 0/400, totalSpent: 1800},
-	{ id: 4, rank: 4, teamName: 'Team Four', score: 500/500, totalSpent: 1000},
-	{ id: 5, rank: 5, teamName: 'Team Five', score: 300/700, totalSpent: 650},
-	{ id: 6, rank: 6, teamName: 'Team Six', score: 0/1000, totalSpent: 800},
-	{ id: 7, rank: 7, teamName: 'Team Seven', score: 0/2800, totalSpent: 750},
-];
-
+import {
+	columnsLeaderboard,
+	columnsProblems,
+	rowsLeaderboard,
+	rowsProblems
+} from 'utils/dummyData';
 
 /*
  * Purpose: Displays the View All Problems Page for participants.
  * Params: None
  */
 const ViewAllProblemsPage = () => {
+	// State handler for current round
+	const [currRound, setCurrRound] = useState('EASY');
+	// State handler for viewing buy power-up popover
+	const [open, setOpen] = useState(false);
+	
+	const rounds = ['EASY', 'MEDIUM', 'WAGER', 'HARD'];
+
+	const [showBuffs, setShowBuffs] = useState(false);
+	const [showDebuffs, setShowDebuffs] = useState(false);
+	const [seeDetails, setSeeDetails] = useState(false);
+	const [selectedPowerUp, setSelectedPowerUp] = useState(null);
+
+	useEffect(() => { 
+		setSeeDetails(false);
+		setShowBuffs(false);
+		setShowDebuffs(false);
+		setSelectedPowerUp(null);
+	}, []);
+
+	// Styling for the problem list table
+	const additionalStyles = {
+		backgroundColor: '#fff',
+	};
+
+	// used for client-side routing to other pages
+	const navigate = useNavigate();
+
+	/**
+   * Purpose: Handles opening of leaderboard modal window upon clicking the ellipsis button.
+   * Params: <Object> receives information of selected problem in the Problem List Table.
+   */
+	const handleRowClick = (params) => {
+		navigate({
+			pathname: '/participant/view-specific-problem',
+			search: createSearchParams(params.row).toString()
+		});
+	};
+
+	/**
+	 * Purpose: Handles opening of power-up popover.
+	 */
+	const handleViewPowerUps = (e) => {
+		e.stopPropagation();
+		setOpen(!open);
+	};
+
+	/**
+	 * Purpose: Closes Buy Power-up Modal if user clicked outside the component.
+	 */
+	const handleClickAway = () => {
+		setSeeDetails(false);
+		setShowBuffs(false);
+		setShowDebuffs(false);
+		setSelectedPowerUp(null);
+		setOpen(false);
+	};
+
 	return (
-		<Stack>
-			{/* Topbar */}
-			<TopBar
-				isImg={true}
-				icon={seal}
-				title="Code Wars"
-				subtitle="UPLB Computer Science Society"
-				buttonText="BUY POWER-UP"
-				// handleButton={}
-			/>
+		<>
+			<Stack>
+				{/* Topbar */}
+				<TopBar
+					isImg={true}
+					icon={seal}
+					title="Code Wars"
+					subtitle="UPLB Computer Science Society"
+					buttonText="BUY POWER-UP"
+					handleButton={handleViewPowerUps}
+				/>
 
-			{/* Other components */}
-			<Box
-				sx={{
-					display: 'flex',
-					flexDirection: 'row',
-					gap: 4,
-				}}
-			>
-				{/* Left column is for timer, leaderboard, sponsors' carousel */}
-				<Stack
-					spacing={3}
+				{/* Other components */}
+				<Box
 					sx={{
-						mt: 4,
-						mx: 8,
-						minWidth: 325,
+						display: 'flex',
+						flexDirection: 'row',
+						gap: 4,
 					}}
 				>
-					<Timer />
-					<ParticipantsLeaderboard rows={rows2} columns={columns2} />
-					<SponsorCarousel />
-				</Stack>
+					{/* Left column is for timer, leaderboard, sponsors' carousel */}
+					<Stack
+						spacing={3}
+						sx={{
+							mt: 4,
+							mx: 8,
+							minWidth: 325,
+						}}
+					>
+						<Timer />
+						<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
+						<SponsorCarousel />
+					</Stack>
 
-				{/* Right column is for the round buttons and problem list table */}
-				<Stack
-					spacing={5}
-					sx={{
-						mt: 8,
-						width: '68%',
-					}}
-				>
-          
-					{/* Container for round buttons */}
-					<Box sx={{ display: 'flex', gap: 3 }}>
+					{/* Right column is for the round buttons and problem list table */}
+					<Stack
+						spacing={5}
+						sx={{
+							mt: 8,
+							width: '68%',
+							height: '100%'
+						}}
+					>
+						
+						{/* Container for round buttons */}
+						<Box sx={{ display: 'flex', gap: 3 }}>
+							{rounds.map((round, idx) => 
+								<Button
+									key={idx}
+									variant="contained"
+									startIcon={currRound === round ? <LockOpenIcon/> : <LockIcon />}
+									disabled={currRound === round ? false : true}
+									size="large"
+									sx={{
+										fontFamily: 'Poppins',
+										fontWeight: '600',
+										minWidth: 125,
+										gap: 0.5,
+										bgcolor: 'major.main',
+										'&:hover': {
+											bgcolor: 'major.light',
+											color: 'general.main',
+										},
+										'&:disabled': {
+											bgcolor: 'major.light',
+											color: '#fff'
+										}
+									}}
+								>
+									{round}
+								</Button>
+							)}
+						</Box>
 
-						{/* Easy round */}
-						<Button
-							variant="contained"
-							startIcon={<LockIcon />}
-							size="large"
-							sx={{
-								minWidth: 125,
-								gap: 0.5,
-								bgcolor: 'major.main',
-								'&:hover': {
-									bgcolor: 'major.light',
-									color: 'general.main',
-								}
+						{/* Problem List Table for the round */}
+						<Table
+							rows={rowsProblems}
+							columns={columnsProblems}
+							hideFields={[]}
+							additionalStyles={additionalStyles}
+							onRowClick={handleRowClick}
+							pageSizeOptions={[5, 10]}
+							autoHeight={true}
+							pageSize={10}
+							initialState={{
+								pagination: { paginationModel: { pageSize: 10 } },
 							}}
-						>
-              EASY
-						</Button>
-
-						{/* Medium round */}
-						<Button
-							variant="contained"
-							startIcon={<LockIcon />}
-							size="large"
-							sx={{
-								minWidth: 125,
-								gap: 0.5,
-								bgcolor: 'major.main',
-								'&:hover': {
-									bgcolor: 'major.light',
-									color: 'general.main',
-								}
-							}}
-						>
-              MEDIUM
-						</Button>
-
-						{/* Wager round */}
-						<Button
-							variant="contained"
-							startIcon={<LockIcon />}
-							size="large"
-							sx={{
-								minWidth: 125,
-								gap: 0.5,
-								bgcolor: 'major.main',
-								'&:hover': {
-									bgcolor: 'major.light',
-									color: 'general.main',
-								}
-							}}
-						>
-              WAGER
-						</Button>
-
-						{/* Hard round */}
-						<Button
-							variant="contained"
-							startIcon={<LockIcon />}
-							size="large"
-							sx={{
-								minWidth: 125,
-								gap: 0.5,
-								bgcolor: 'major.main',
-								'&:hover': {
-									bgcolor: 'major.light',
-									color: 'general.main',
-								}
-							}}
-						>
-              HARD
-						</Button>
-					</Box>
-
-					{/* Problem List Table for the round */}
-					<ProblemListTable rows={rows1} columns={columns1} />
-					<Toolbar />
-				</Stack>
-			</Box>
-		</Stack>
+						/>
+					</Stack>
+				</Box>
+			</Stack>
+			
+			{/* Buy Power-ups Popover */}
+			<ClickAwayListener mouseEvent="onMouseUp" onClickAway={handleClickAway}>
+				{/* Wrapping button and popover in Box for clickaway ref */}
+				<Box>
+					<BuyPowerUpsPopover
+						isOpen={open}
+						setOpen={setOpen}
+						buffsState={[showBuffs, setShowBuffs]}
+						debuffsState={[showDebuffs, setShowDebuffs]}
+						detailsState={[seeDetails, setSeeDetails]}
+						powerUpState={[selectedPowerUp, setSelectedPowerUp]}
+					/>
+				</Box>
+			</ClickAwayListener>
+		</>
 	);
 };
 

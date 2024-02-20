@@ -3,7 +3,9 @@ import { useContext } from 'react';
 
 import BoltIcon from '@mui/icons-material/Bolt';
 import LogoutIcon from '@mui/icons-material/Logout';
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import SettingsIcon from '@mui/icons-material/Settings';
+
 import {
 	Box,
 	Button,
@@ -18,7 +20,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import { userDetailsContext } from 'utils/UserDetailsProvider';
-
+import { ConfirmWindow } from 'components/';
 
 
 const DRAWER_WIDTH = 250;
@@ -39,8 +41,17 @@ const Sidebar = () => {
   * Params: None
   */
 	const handleLogout = () => {
-		setUserDetails(null);
-		navigate('/');
+		// fire success window
+    ConfirmWindow.fire({
+      text: 'Are you sure you want to log out?',
+		}).then((res) => {
+			if (res['isConfirmed']) {
+				setUserDetails(null);
+				navigate('/');
+			} else {
+				return;
+			}
+		})
 	};
 
 	
@@ -107,7 +118,26 @@ const Sidebar = () => {
 					>
             Power-up Logs
 					</Button>
-				</Box>
+
+					{/* Podium Page */}
+					<Button
+							variant="contained"
+							color="major"
+							size="large"
+							onClick={() => { navigate('/admin/podium'); }}
+							startIcon={<MilitaryTechIcon />}
+							sx={{
+								marginTop: '2em',
+								width: '85%',
+								'&:hover': {
+									bgcolor: 'major.light',
+									color: 'general.main',
+								}
+							}}
+						>
+							Podium
+						</Button>
+					</Box>
 
 				{/* Logout Button */}
 				<List

@@ -1,27 +1,32 @@
-/* eslint-disable */ 
-import DropdownSelect from "./ui/DropdownSelect";
-import CustomModal from "./ui/CustomModal";
-import LogTable from "./tables/LogTable";
-import OverallLeaderboard from "./features/leaderboard/OverallLeaderboard";
-import ParticipantsLeaderboard from "./features/leaderboard/ParticipantsLeaderboard";
-import ProblemListTable from "./tables/ProblemListTable";
+import ConfirmWindow from './ui/ConfirmWindow';
+import CustomModal from './ui/CustomModal';
+import DropdownSelect from './ui/DropdownSelect';
+import ErrorWindow from './ui/ErrorWindow';
 import Sidebar from './ui/Sidebar';
-import SponsorCarousel from "./features/carousel/SponsorCarousel";
-import SubmissionsTable from "./tables/SubmissionsTable";
-import Timer from "./features/timer/Timer";
-import TopBar from "./ui/Topbar";
+import SuccessWindow from './ui/SuccessWindow';
+import Table from './ui/Table';
+import TopBar from './ui/Topbar';
+import SponsorCarousel from './widgets/carousel/SponsorCarousel';
+import ParticipantsLeaderboard from './widgets/leaderboard/ParticipantsLeaderboard';
+import BuyPowerUpsPopover from './widgets/power-ups/BuyPowerUpsPopover';
+import PowerUpList from './widgets/power-ups/PowerUpList';
+import PowerUpType from './widgets/power-ups/PowerUpType';
+import Timer from './widgets/timer/Timer';
 
 
 export { 
+	BuyPowerUpsPopover,
 	DropdownSelect,
+	ConfirmWindow,
 	CustomModal,
-	LogTable,
+	ErrorWindow,
 	ParticipantsLeaderboard,
-	OverallLeaderboard,
-	ProblemListTable,
+	PowerUpList,
+	PowerUpType,
 	Sidebar,
 	SponsorCarousel,
-	SubmissionsTable,
+	SuccessWindow,
+	Table,
 	Timer,
 	TopBar,
 };

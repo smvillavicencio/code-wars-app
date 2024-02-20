@@ -11,6 +11,12 @@ const Team = mongoose.model("Team");
 const Judge = mongoose.model("Judge");
 const Admin = mongoose.model("Admin");
 
+/*
+ * Purpose: Create an account (any type)
+ * Params (in the Request): username, password, and usertype ("team", "judge", or "admin")
+ * Returns (in the Response): 
+ *      Object with fields success and the corresponding results
+ */
 const signup = async (req: Request, res: Response) => {
   const username = req.body.username.trim();
   const password = req.body.password.trim();
@@ -28,11 +34,10 @@ const signup = async (req: Request, res: Response) => {
   }
 
   if (user) {
-    res.send({
+    return res.send({
       success: false,
       results: "Username already taken"
     });
-    return;
   }
 
   var newuser;
@@ -69,10 +74,17 @@ const signup = async (req: Request, res: Response) => {
 
   let results = await newuser.save();
     return res.send({
+      success: true,
       results: results
   });
 }
 
+/*
+ * Purpose: Login (checks all account types)
+ * Params (in the Request): username, and password
+ * Returns (in the Response): 
+ *      Object with fields success, the corresponding results, and the token if login is successful
+ */
 const login = async (req: Request, res: Response) => {
     const username = req.body.username.trim();
     const inputPassword = req.body.password;
@@ -139,6 +151,13 @@ const login = async (req: Request, res: Response) => {
 
   }
 
+  /*
+ * Purpose: Check if user is logged in 
+ * Note: This particular endpoint may not be used, just copy relevant code blocks and paste in the appropriate endpoints
+ * Params (in the Request): The "authToken" cookie will be checked
+ * Returns (in the Response): 
+ *      Object with field isLoggedIn
+ */
 const checkIfLoggedIn = (req: Request, res: Response) => {
 
   if (!req.cookies || !req.cookies.authToken) {

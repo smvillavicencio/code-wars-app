@@ -1,7 +1,7 @@
 /* eslint-disable */ 
 import Carousel from 'react-material-ui-carousel';
 
-import Item from './Item';
+import Item from './CarouselItem';
 import placeholder from 'assets/UPLB COSS.png';
 
 
@@ -45,6 +45,9 @@ const SponsorCarousel = () => {
 				backdropFilter: 'blur(10px)',
 			}}
 
+			// remove grow animation on component mount
+			swipe={false}
+			
 			// make prev and next buttons always visible
 			navButtonsAlwaysVisible={true}
 

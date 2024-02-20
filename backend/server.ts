@@ -12,6 +12,7 @@ import loginRoute from './routes/loginRoute';
 import signupRoute from './routes/signupRoute';
 import checkIfLoggedInRoute from './routes/checkIfLoggedInRoute';
 import teamScoreRoutes from './routes/teamScoreRoutes';
+import powerupRoutes from './routes/powerupRoute'
 import submissionRoutes from './routes/submissionRoutes';
 import adminRoutes from './routes/adminRoutes';
 
@@ -34,6 +35,7 @@ app.use(loginRoute);
 app.use(signupRoute);
 app.use(checkIfLoggedInRoute);
 app.use(teamScoreRoutes);
+app.use(powerupRoutes);
 app.use(submissionRoutes);
 app.use(adminRoutes);
 app.use('/api', sampleRoutes);

@@ -1,19 +1,29 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import { PowerupInfo } from './powerup';
 
-const TeamSchema = new mongoose.Schema({
+export interface Team extends Document {
+  team_name: string;
+  password: string;
+  members: string;
+  score: number;
+  total_points_used: number;
+
+  active_buffs: PowerupInfo[];
+  activated_powerups: PowerupInfo[];
+  debuffs_received: PowerupInfo[];
+}
+
+const TeamSchema = new mongoose.Schema<Team>({
   team_name: { type: String, required: true },
   password: { type: String, required: true },
   members: { type: String, required: true },
   score: { type: Number, required: true },
   total_points_used: { type: Number, required: true },
   
-  activated_buffs: { type: [String], required: true },
-  activated_own_debuffs: { type: [String], required: true },
-  applied_debuffs_to: { type: [String], required: true },
-  available_powerups: { type: [String], required: true },
-  debuffs_afflicted: { type: [String], required: true },
-  debuffs_from: { type: [String], required: true }
+  active_buffs: { type: [Object], required: true },
+  activated_powerups: {type: [Object], required: true},
+  debuffs_received: { type: [Object], required: true },
 });
 
 /*
@@ -43,4 +53,6 @@ TeamSchema.methods.comparePassword = function(password: any, callback: any) {
     bcrypt.compare(password, this.password, callback);
 }
 
-mongoose.model("Team", TeamSchema);
+const TeamModel = mongoose.model<Team>("Team", TeamSchema);
+
+export default TeamModel;

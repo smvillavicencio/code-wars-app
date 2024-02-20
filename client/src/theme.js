@@ -54,6 +54,7 @@ let customTheme = createTheme({
 		primary: {
 			contrastText: '#e5ebff',
 			main: '#395395',
+			light: '#c6d0ec',
 		},
 		secondary: {
 			contrastText: '#e5ebff',

@@ -61,7 +61,8 @@ const CustomModal = ({
 						WebkitBackdropFilter: 'blur(10px)',
 						boxShadow: '0px 0px 10px 5px rgba(0, 0, 0, 0.5)',
 
-						p: 4,
+						padding: 4,
+						minWidth: '25%',
 						borderRadius: '10px',
 						bgcolor: 'rgba(255, 255, 255)',
 					}}
@@ -77,7 +78,10 @@ const CustomModal = ({
 					>
 						<Typography
 							variant="h5"
-							sx={{ color: 'general.main' }}
+							sx={{
+								fontFamily: 'Inter',
+								color: 'general.main'
+							}}
 						>
 							{windowTitle}
 						</Typography>
@@ -97,42 +101,6 @@ const CustomModal = ({
 					
 					{/* Modal Body */}
 					{props.children}
-
-					{/* Primary Button */}
-					{/* <Box sx={{ display: 'flex', flexDirection: 'row', gap: 4 }}>
-						<Button 
-							variant="contained" 
-							component="span"
-							sx={{
-								width: '200px',
-								height: '50px',
-								marginTop: '20px',
-								bgcolor: 'primary.main',
-								'&:hover': {
-									bgcolor: 'primary.light',
-								}
-							}}
-						>
-							{primaryButtonText}
-						</Button> */}
-
-						{/* Secondary Button */}
-						{/* <Button 
-							variant="contained" 
-							component="span"
-							sx={{
-								width: '200px',
-								height: '50px',
-								marginTop: '20px',
-								bgcolor: 'secondary.main',
-								'&:hover': {
-									bgcolor: 'secondary.light',
-								}
-							}}
-						>
-              Cancel
-						</Button>
-					</Box> */}
 				</Box>
 			</Fade>
 		</Modal>

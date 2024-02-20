@@ -2,27 +2,32 @@ import { Schema, model, Document } from 'mongoose';
 
 export interface Powerup extends Document {
   name: string;
-  description: string;
-  duration?: number;
-  cost: number;
   type: number;
   code: string;
+  tier: {
+    [tier_no: string]: {
+      description: string;
+      duration: number;
+      cost: number;
+    };
+  };
+}
+
+export interface PowerupInfo {
+  _id: string;
+  code: string;
+  type: number;
+  tier: string;
+  duration: number;
+  cost: number;
+  from?: string;
+  target?: string;
+  timestamp: Date;
 }
 
 const PowerupSchema = new Schema<Powerup>({
   name: {
     type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  duration: {
-    type: Number,
-  },
-  cost: {
-    type: Number,
     required: true,
   },
   type: {
@@ -33,6 +38,10 @@ const PowerupSchema = new Schema<Powerup>({
     type: String,
     required: true,
     unique: true,
+  },
+  tier: {
+    type: Object,
+    required: true,
   }
 });
 

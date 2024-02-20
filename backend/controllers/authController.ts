@@ -51,12 +51,12 @@ const signup = async (req: Request, res: Response) => {
       score: 0,
       total_points_used: 0,
       
-      activated_buffs: [],
-      activated_own_debuffs: [],
-      applied_debuffs_to: [],
-      available_powerups: [],
-      debuffs_afflicted: [],
-      debuffs_from: []
+      active_buffs: [],
+      activated_powerups: [],
+      // applied_debuffs: [],
+      // available_powerups: [],
+      debuffs_received: [],
+      // debuffs_from: []
     });
   }
   else if (intendedUserType == "judge") {

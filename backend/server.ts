@@ -14,9 +14,13 @@ import checkIfLoggedInRoute from './routes/checkIfLoggedInRoute';
 import teamScoreRoutes from './routes/teamScoreRoutes';
 import powerupRoutes from './routes/powerupRoute'
 import submissionRoutes from './routes/submissionRoutes';
+import adminRoutes from './routes/adminRoutes';
 
-
+const cors = require("cors");
 const app = express();
+
+app.use(cors());
+
 const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
@@ -33,6 +37,7 @@ app.use(checkIfLoggedInRoute);
 app.use(teamScoreRoutes);
 app.use(powerupRoutes);
 app.use(submissionRoutes);
+app.use(adminRoutes);
 app.use('/api', sampleRoutes);
 
 // Start the server

@@ -1,7 +1,7 @@
-import Overlay from "./Overlay";
-import { Typography } from "@mui/material";
 import HourglassFullTwoToneIcon from '@mui/icons-material/HourglassFullTwoTone';
+import { Typography } from '@mui/material';
 
+import Overlay from './Overlay';
 
 /**
  * Purpose: Displays frozen screen overlay
@@ -15,6 +15,7 @@ const FreezeOverlay = () => {
 					fontSize: '10rem',
 					alignSelf: 'center'
 				}}
+				className="fOverlay"
 			/>}
 			text={<Typography 
 				variant="h4"
@@ -22,13 +23,14 @@ const FreezeOverlay = () => {
 					whiteSpace: 'pre-wrap',
 					textAlign: 'center'
 				}}
+				className="fOverlay"
 			>
 				
 				Your screen has been frozen. <br/>
 				Please Wait.
 			</Typography>}
 		/> 
-	)
-}
+	);
+};
 
 export default FreezeOverlay;

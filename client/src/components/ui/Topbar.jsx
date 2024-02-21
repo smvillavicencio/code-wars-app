@@ -1,5 +1,7 @@
 /* eslint-disable */ 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+
+import { useNavigate } from 'react-router-dom';
 
 import {
 	AppBar,
@@ -8,7 +10,10 @@ import {
 	Toolbar,
 	Typography
 } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
 
+import { userDetailsContext } from 'utils/UserDetailsProvider';
+import { ConfirmWindow } from 'components/';
 /*
  * Purpose: Displays the topbar component for the participant and judge-related pages.
  * Params:
@@ -34,12 +39,36 @@ const TopBar = ({
    */
 	const [image, setImage] = useState(true);
 
+	// state for context API
+	const [userDetails, setUserDetails] = useContext(userDetailsContext);
+
+	// used for client-side routing to other pages
+	const navigate = useNavigate();
+
 	/**
    * Sets image upon component mount
    */
 	useEffect(() => {
 		setImage(isImg);
 	}, []);
+
+	/*
+  * Purpose: Handles termination of user session.
+  * Params: None
+  */
+	const handleLogout = () => {
+		// fire success window
+    ConfirmWindow.fire({
+      text: 'Are you sure you want to log out?',
+		}).then((res) => {
+			if (res['isConfirmed']) {
+				setUserDetails(null);
+				navigate('/');
+			} else {
+				return;
+			}
+		})
+	};
 
 
 	return (
@@ -103,23 +132,41 @@ const TopBar = ({
 					</Box>
 				</Box>
 
-				{/* Button */}
-				<Button
-					variant="contained"
-					color="major"
-					size="large"
-					onClick={handleButton}
-					startIcon={startIcon ? <>{startIcon}</> : <></>}
-					sx={{
-						minWidth: 30,
-						'&:hover': {
-							bgcolor: 'major.light',
-							color: 'general.main',
-						},
-					}}
-				>
-					{buttonText}
-				</Button>
+				<div>
+					{/* Button */}
+					<Button
+						variant="contained"
+						color="major"
+						size="large"
+						onClick={handleButton}
+						startIcon={startIcon ? <>{startIcon}</> : <></>}
+						sx={{
+							minWidth: 30,
+							'&:hover': {
+								bgcolor: 'major.light',
+								color: 'general.main',
+							},
+						}}
+					>
+						{buttonText}
+					</Button>
+					<Button
+						variant="contained"
+						color="major"
+						size="large"
+						onClick={handleLogout}
+						sx={{
+							minWidth: 10,
+							'&:hover': {
+								bgcolor: 'major.light',
+								color: 'general.main',
+							},
+							marginLeft: "10px"
+						}}
+					>
+						<LogoutIcon />
+					</Button>
+				</div>
 			</Toolbar>
 		</AppBar>
 	);

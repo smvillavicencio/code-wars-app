@@ -89,29 +89,37 @@ const login = async (req: Request, res: Response) => {
     const username = req.body.username.trim();
     const inputPassword = req.body.password;
     var userType = ""
+    var foundType = false;
 
     // Check if user exists
     var user = await Team.findOne({ team_name: username });
     
     if (user) {
       userType = "team"
+      foundType = true;
     } else {
       user = await Judge.findOne({ judge_name: username });
     }
 
-    if (user) {
-      userType = "judge"
-    } else {
-      user = await Admin.findOne({ admin_name: username });
+    if (!foundType) {
+      if (user) {
+        userType = "judge"
+        foundType = true;
+      } else {
+        user = await Admin.findOne({ admin_name: username });
+      }
     }
 
-    if (user) {
-      userType = "admin"
-    } else {
-      return res.send({
-        success: false,
-        results: "User does not exist"
-      });
+    if (!foundType) {
+      if (user) {
+        userType = "admin"
+        foundType = true;
+      } else {
+        return res.send({
+          success: false,
+          results: "User does not exist"
+        });
+      }
     }
     
     // Check if password is correct
@@ -133,6 +141,7 @@ const login = async (req: Request, res: Response) => {
       // create a new copy to properly remove the password in the response 
       let userCopy = ({...user}._doc);
       delete userCopy["password"];
+      userCopy["usertype"] = userType;
       return res.send({
         success: true,
         token: token,

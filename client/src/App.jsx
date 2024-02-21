@@ -18,6 +18,7 @@ import {
 } from 'pages/';
 import { theme } from 'theme.js';
 import { UserDetailsProvider } from 'utils/UserDetailsProvider.js';
+import { baseURL } from 'utils/constants';
 
 
 /**
@@ -39,13 +40,10 @@ function Layout() {
 	);
 }
 
-
-const BaseURL = "http://localhost:5000";
-
 function App() {
 
 	useEffect(() => {
-		const eventSource = new EventSource(`${BaseURL}/admincommand`);
+		const eventSource = new EventSource(`${baseURL}/admincommand`);
 		eventSource.onmessage = (e) => {
 			if (localStorage.getItem("usertype") == "team") {
 			if (e.data == "freeze") {

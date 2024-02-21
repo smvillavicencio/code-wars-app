@@ -82,7 +82,7 @@ export async function postFetch(url, obj) {
 		body: JSON.stringify(obj)
 
 	}).then((res) => {
-		return res.ok;
+		return res.json();
 	});
 }
 

@@ -3,11 +3,11 @@ import { get_all_powerups , get_powerups_by_type, get_powerup_by_id, get_availab
 
 const router = Router();
 
-router.get('/', get_all_powerups);
-router.post('/buy', buy_powerup);
-router.get('/available', get_available_powerups);
-// router.get('/:type', get_powerups_by_type);
-router.get('/:id', get_powerup_by_id);
+router.get('powerups/', get_all_powerups);
+router.post('powerups/buy', buy_powerup);
+router.get('powerups/available', get_available_powerups);
+// router.get('powerups/:type', get_powerups_by_type);
+router.get('powerups/:id', get_powerup_by_id);
 
 export default router;
  

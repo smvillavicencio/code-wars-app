@@ -24,38 +24,18 @@ import {
 } from 'components';
 
 
-/**
- * This will set the common background for all pages (except login page)
- */
-function Layout() {
-	return (
-		<Box
-			style={{
-				backgroundImage: `url(${GeneralBackground})`,
-				backgroundSize: 'cover',
-				height: '100vh',
-				overflow: 'hidden',
-			}}
-    >
-      {/* Children will be displayed through outlet */}
-			<Outlet />
-		</Box>
-	);
-}
-
-
 const BaseURL = "http://localhost:5000";
 
-function App() {
+function App() {	
 	const [freezeOverlay, setFreezeOverlay] = useState(false);
-
 
 	useEffect(() => {
 		const eventSource = new EventSource(`${BaseURL}/admincommand`);
 		eventSource.onmessage = (e) => {
 			if (localStorage.getItem("usertype") == "team") {
-				if (e.data == "freeze") {
+			if (e.data == "freeze") {
 					setFreezeOverlay(true);
+					console.log("Should freeze");
 					// try {
 					// 	document.getElementById("overlayFreeze").style.display = "block";
 					// } catch (error) {
@@ -65,7 +45,6 @@ function App() {
 					// 	document.getElementById("root").appendChild(newdiv);
 					// 	document.getElementById("overlayFreeze").style.display = "block";
 					// }
-				}
 			} else {
 				setFreezeOverlay(false);
 				// try {
@@ -78,13 +57,35 @@ function App() {
 				// 	document.getElementById("overlayFreeze").style.display = "none";	
 				// }	
 			}
+			}
 		}
 	}, []);
+
+	/**
+	 * This will set the common background for all pages (except login page)
+	 */
+	function Layout() {
+		return (
+			
+			<Box
+				style={{
+					backgroundImage: `url(${GeneralBackground})`,
+					backgroundSize: 'cover',
+					height: '100vh',
+					overflow: 'hidden',
+				}}
+		>
+		{/* Children will be displayed through outlet */}
+				{freezeOverlay ? <FreezeOverlay /> : null}
+				<Outlet />
+			</Box>
+		);
+	}
 
 	return (
 		<ThemeProvider theme={theme}>
 			<UserDetailsProvider>
-				<div id='overlayFreeze'></div>
+				{/* <div id='overlayFreeze'></div> */}
 				<Router>
 					<Routes>
 						{/* Login page */}
@@ -99,7 +100,7 @@ function App() {
 							<Route path="admin/logs" element={<PowerUpLogs />} />
 							<Route path="admin/podium" element={<TopTeamsPage />} />
 
-							{freezeOverlay ? <FreezeOverlay /> : null}
+							
 						</Route>
 					</Routes>
 				</Router>

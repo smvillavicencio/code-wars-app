@@ -354,7 +354,7 @@ export const buy_powerup = async (req: Request, res: Response) => {
             }, 
             $push: { 
               "activated_powerups": info, 
-              "activated_buffs": info
+              "active_buffs": info
             },
             $pull: { 
               "debuffs_received": {

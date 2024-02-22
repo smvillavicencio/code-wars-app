@@ -117,7 +117,7 @@ function App() {
 	return (
 		<ThemeProvider theme={theme}>
 			<UserDetailsProvider>
-				<div id='overlayFreeze'></div>
+				{/* <div id='overlayFreeze'></div> */}
 				<Router>
 					<Routes>
 						{/* Login page */}

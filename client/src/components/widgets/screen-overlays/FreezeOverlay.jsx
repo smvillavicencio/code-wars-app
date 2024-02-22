@@ -3,7 +3,6 @@ import Overlay from "./Overlay";
 import { Typography } from "@mui/material";
 import HourglassFullTwoToneIcon from '@mui/icons-material/HourglassFullTwoTone';
 
-
 /**
  * Purpose: Displays frozen screen overlay
  * Params: None
@@ -31,7 +30,7 @@ const FreezeOverlay = () => {
 				Please Wait.
 			</Typography>}
 		/> 
-	)
-}
+	);
+};
 
 export default FreezeOverlay;

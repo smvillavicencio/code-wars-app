@@ -1,5 +1,5 @@
 /* eslint-disable */ 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
 	Box,
@@ -22,8 +22,12 @@ import {
 	rowsLeaderboard
 } from 'utils/dummyData';
 import { enterAdminPassword } from 'utils/enterAdminPassword';
+import { useNavigate } from 'react-router-dom';
 
+import { baseURL } from 'utils/constants';
+import { postFetch } from 'utils/apiRequest';
 
+import Loading from 'components/widgets/screen-overlays/Loading';
 
 // styling for leaderboard table
 const additionalStyles = {
@@ -35,7 +39,14 @@ const additionalStyles = {
  * Purpose: Displays general options page for admin.
  * Params: None
  */
-const GeneralOptionsPage = () => {
+const GeneralOptionsPage = ({
+	isLoggedIn,
+	setIsLoggedIn,
+	checkIfLoggedIn
+}) => {
+	// used for client-side routing to other pages
+	const navigate = useNavigate();
+
 	/**
 	 * State handler for current round.
 	 * Default value is Easy.
@@ -43,6 +54,22 @@ const GeneralOptionsPage = () => {
 	const [currRound, setCurrRound] = useState('Easy');
 	// State handler for toggle switch state
 	const [checked, setChecked] = useState(false);
+
+	useEffect(() => { 
+		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
+		if (usertype == "judge") {
+			navigate('/judge/submissions');
+		}
+		else if (usertype == "participant") {
+			navigate('/participant/view-all-problems');
+		}
+		else if (usertype == "admin") {
+			checkIfLoggedIn();	
+		}
+		else {
+			setIsLoggedIn(false);
+		}
+	}, []);
 
 	/**
 	 * Purpose: Handler for toggle switch button. This will freeze the screens of all active sessions
@@ -140,6 +167,9 @@ const GeneralOptionsPage = () => {
 
 
 	return (
+		<> 
+		{
+			isLoggedIn ?
 		<Box sx={{ display: 'flex' }}>
 			{/* Sidebar */}
 			<Sidebar />
@@ -222,7 +252,9 @@ const GeneralOptionsPage = () => {
 					</Box>
 				</Box>
 			</Stack>
-		</Box>
+		</Box> : <Loading /> 
+		} 
+		</>
 	);
 };
 

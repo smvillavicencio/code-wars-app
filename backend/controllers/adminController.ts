@@ -14,7 +14,7 @@ const commandChannel = (req: Request, res: Response) => {
       res.flushHeaders();
     
       const interval = setInterval(() => {
-        res.write(`data: ${command}\n\n`);
+          res.write(`data: ${command}\n\n`);
       }, 500);
     
       res.on("close", () => {

@@ -89,29 +89,37 @@ const login = async (req: Request, res: Response) => {
     const username = req.body.username.trim();
     const inputPassword = req.body.password;
     var userType = ""
+    var foundType = false;
 
     // Check if user exists
     var user = await Team.findOne({ team_name: username });
     
     if (user) {
       userType = "team"
+      foundType = true;
     } else {
       user = await Judge.findOne({ judge_name: username });
     }
 
-    if (user) {
-      userType = "judge"
-    } else {
-      user = await Admin.findOne({ admin_name: username });
+    if (!foundType) {
+      if (user) {
+        userType = "judge"
+        foundType = true;
+      } else {
+        user = await Admin.findOne({ admin_name: username });
+      }
     }
 
-    if (user) {
-      userType = "admin"
-    } else {
-      return res.send({
-        success: false,
-        results: "User does not exist"
-      });
+    if (!foundType) {
+      if (user) {
+        userType = "admin"
+        foundType = true;
+      } else {
+        return res.send({
+          success: false,
+          results: "User does not exist"
+        });
+      }
     }
     
     // Check if password is correct
@@ -133,6 +141,16 @@ const login = async (req: Request, res: Response) => {
       // create a new copy to properly remove the password in the response 
       let userCopy = ({...user}._doc);
       delete userCopy["password"];
+      
+      if (userType == "team") {
+        delete userCopy["activated_powerups"];
+        delete userCopy["active_buffs"];
+        delete userCopy["debuffs_received"];
+        delete userCopy["score"];
+        delete userCopy["total_points_used"];
+      }
+
+      userCopy["usertype"] = userType;
       return res.send({
         success: true,
         token: token,
@@ -159,34 +177,83 @@ const login = async (req: Request, res: Response) => {
  *      Object with field isLoggedIn
  */
 const checkIfLoggedIn = (req: Request, res: Response) => {
+  var cookieDict: any = {};
 
-  if (!req.cookies || !req.cookies.authToken) {
+  if (req.headers.cookie) {
+    var cookies = req.headers.cookie!.split("&");
+
+    for (let i = 0; i < cookies!.length; i++) {
+      cookieDict[cookies[i].split("=")[0]] = cookies[i].split("=")[1];
+    } 
+    if (!cookieDict.authToken) {
+      // Scenario 1: FAIL - No cookies / no authToken cookie sent
+      return res.send({ isLoggedIn: false, scenario: 1 });
+    }
+  } else {
     // Scenario 1: FAIL - No cookies / no authToken cookie sent
-    return res.send({ isLoggedIn: false });
+    return res.send({ isLoggedIn: false, scenario: 1 });
   }
 
   // Token is present. Validate it
   return jwt.verify(
-    req.cookies.authToken,
+    cookieDict.authToken,
     secret1!,
     async (err: any, tokenPayload: any) => {
       if (err) {
         // Scenario 2: FAIL - Error validating token
-        return res.send({ isLoggedIn: false });
+        return res.send({ isLoggedIn: false, scenario: 2 });
       }
 
       const userId = tokenPayload._id;
 
       // Check if user exists
-      const user = await Team.findById(userId);
+      var user = await Team.findById(userId);
+      if (!user) {
+        user = await Judge.findById(userId);
+      }
+      if (!user) {
+        user = await Admin.findById(userId);
+      }
       if (!user) {
         // Scenario 3: FAIL - Failed to find user based on id inside token payload
-        return res.send({ isLoggedIn: false });
+        return res.send({ isLoggedIn: false, scenario: 3 });
       } else {
         // Scenario 4: SUCCESS - token and user id are valid
-        return res.send({ isLoggedIn: true });
+        return res.send({ isLoggedIn: true, scenario: 4 });
       }
     });
 }
 
-export { signup, login, checkIfLoggedIn };
+const checkTokenMiddleware = (req: Request, res: Response, next: any) => {
+  var cookieDict: any = {};
+
+  if (req.headers.cookie) {
+    var cookies = req.headers.cookie!.split("&");
+
+    for (let i = 0; i < cookies!.length; i++) {
+      cookieDict[cookies[i].split("=")[0]] = cookies[i].split("=")[1];
+    } 
+    if (!cookieDict.authToken) {
+      // Scenario 1: FAIL - No cookies / no authToken cookie sent
+      return res.send({ isLoggedIn: false, scenario: 1 });
+    }
+  } else {
+    // Scenario 1: FAIL - No cookies / no authToken cookie sent
+    return res.send({ isLoggedIn: false, scenario: 1 });
+  }
+
+  // Token is present. Validate it
+  return jwt.verify(
+    cookieDict.authToken,
+    secret1!,
+    async (err: any, tokenPayload: any) => {
+      if (err) {
+        // Scenario 2: FAIL - Error validating token
+        return res.send({ isLoggedIn: false, scenario: 2 });
+      }
+
+      next();
+    });
+}
+
+export { signup, login, checkIfLoggedIn, checkTokenMiddleware };

@@ -79,10 +79,11 @@ export async function postFetch(url, obj) {
 		headers: {
 			'Content-Type': 'application/json',
 		},
+		credentials: 'include',
 		body: JSON.stringify(obj)
 
 	}).then((res) => {
-		return res.ok;
+		return res.json();
 	});
 }
 

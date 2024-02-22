@@ -15,7 +15,9 @@ import Swal from 'sweetalert2';
 import LoginBackground from 'assets/LoginBackground.png';
 import { SponsorCarousel } from 'components/index.js';
 import { userDetailsContext } from 'utils/UserDetailsProvider';
-
+import { baseURL } from 'utils/constants';
+import { postFetch } from 'utils/apiRequest';
+import Cookies from "universal-cookie";
 
 /*
  * Purpose: Displays the login page for all users.
@@ -36,31 +38,77 @@ const LoginPage = () => {
 	 * Purpose: Handles click event on login button, sets user role based on username, and navigates to index page of user role.
 	 * Params: <String> username - receives username input.
 	 */
-	const handleLogin = (username) => {
-		if (username == 'participant') {
-			setUserDetails({
-				user: 'Team One',
-				role: 'participant',
-			});
-			navigate('/participant/view-all-problems');
+	const handleLogin = async (username, password) => {
+		const loginResponse = await postFetch(`${baseURL}/login`, {
+			username: username,
+			password: password
+		});
 
-		} else if (username == 'judge') {
-			setUserDetails({
-				user: 'Sir Name',
-				role: 'Judge',
-			});
-			navigate('/judge/submissions');
-
-		} else if (username == 'admin') {
-			setUserDetails({
-				user: 'Code Wars Admin',
-				role: 'admin',
-			});
-			navigate('/admin/general');
-
+		if (!loginResponse.success) {
+			alert(loginResponse.results);
 		} else {
-			alert('Failed');
+			let user = loginResponse.results;
+
+			if (user.usertype == "team") {
+				user["username"] = user["team_name"];
+				delete user["team_name"];
+				user["usertype"] = "participant";
+
+				navigate('/participant/view-all-problems');
+			} 
+			else if (user.usertype == "judge") {
+				user["username"] = user["judge_name"];
+				delete user["judge_name"];
+
+				navigate('/judge/submissions');
+			}
+			else if (user.usertype == "admin") {
+				user["username"] = user["admin_name"];
+				delete user["admin_name"];
+
+				navigate('/admin/general');
+			}
+
+			//console.log(loginResponse);
+			setUserDetails(user);
+			localStorage.setItem("user", JSON.stringify(user));
+
+			const cookies = new Cookies();
+			cookies.set(
+				"authToken",
+				loginResponse.token,
+				{
+					path: "/",
+					age: 60*60*24,
+					sameSite: "lax"
+				}
+			);
 		}
+
+		// if (username == 'participant') {
+		// 	setUserDetails({
+		// 		user: 'Team One',
+		// 		role: 'participant',
+		// 	});
+		// 	navigate('/participant/view-all-problems');
+
+		// } else if (username == 'judge') {
+		// 	setUserDetails({
+		// 		user: 'Sir Name',
+		// 		role: 'Judge',
+		// 	});
+		// 	navigate('/judge/submissions');
+
+		// } else if (username == 'admin') {
+		// 	setUserDetails({
+		// 		user: 'Code Wars Admin',
+		// 		role: 'admin',
+		// 	});
+		// 	navigate('/admin/general');
+
+		// } else {
+		// 	alert('Failed');
+		// }
 	};
 
 
@@ -228,8 +276,8 @@ const LoginPage = () => {
 
 						{/* Sign In Button */}
 						<Button 
-							type="submit"
-							onClick={() => { handleLogin(username); }}
+							//type="submit"
+							onClick={() => { handleLogin(username, password); }}
 							variant="contained" 
 							sx={{
 								width: '320px',

@@ -56,12 +56,24 @@ const ViewAllProblemsPage = ({
 	const [selectedPowerUp, setSelectedPowerUp] = useState(null);
 
 	useEffect(() => {
-		//setIsLoggedIn(false);
 		setSeeDetails(false);
 		setShowBuffs(false);
 		setShowDebuffs(false);
 		setSelectedPowerUp(null);
-		checkIfLoggedIn();
+		
+		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
+		if (usertype == "judge") {
+			navigate('/judge/submissions');
+		}
+		else if (usertype == "admin") {
+			navigate('/admin/general');
+		}
+		else if (usertype == "participant") {
+			checkIfLoggedIn();	
+		}
+		else {
+			setIsLoggedIn(false);
+		}
 	}, []);
 
 	// Styling for the problem list table

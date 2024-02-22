@@ -70,8 +70,19 @@ const ViewSpecificProblemPage = ({
 	};
 
 	useEffect(() => {
-		//setIsLoggedIn(false);
-		checkIfLoggedIn();
+		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
+		if (usertype == "judge") {
+			navigate('/judge/submissions');
+		}
+		else if (usertype == "admin") {
+			navigate('/admin/general');
+		}
+		else if (usertype == "participant") {
+			checkIfLoggedIn();	
+		}
+		else {
+			setIsLoggedIn(false);
+		}
 	}, []);
 
 	return (

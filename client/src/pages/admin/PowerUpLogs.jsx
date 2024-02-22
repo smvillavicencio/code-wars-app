@@ -4,6 +4,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import { Sidebar, Table } from 'components/';
 import { columnsPowerUpLog, rowsPowerUpLog } from 'utils/dummyData';
 import Loading from 'components/widgets/screen-overlays/Loading';
+import { useNavigate } from 'react-router-dom';
 
 /*
  * Purpose: Displays the page power-up logs for admin.
@@ -14,14 +15,27 @@ const PowerUpLogs = ({
 	setIsLoggedIn,
 	checkIfLoggedIn
 }) => {
+	// used for client-side routing to other pages
+	const navigate = useNavigate();
 
 	const additionalStyles = {
 		backgroundColor: '#fff',
 	};
 
 	useEffect(() => { 
-		//setIsLoggedIn(false);
-		checkIfLoggedIn();
+		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
+		if (usertype == "judge") {
+			navigate('/judge/submissions');
+		}
+		else if (usertype == "participant") {
+			navigate('/participant/view-all-problems');
+		}
+		else if (usertype == "admin") {
+			checkIfLoggedIn();	
+		}
+		else {
+			setIsLoggedIn(false);
+		}
 	}, []);
 
 	return (

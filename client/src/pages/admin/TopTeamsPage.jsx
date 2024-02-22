@@ -5,6 +5,7 @@ import LooksOneIcon from "@mui/icons-material/LooksOne";
 import LooksTwoIcon from "@mui/icons-material/LooksTwo";
 import Looks3Icon from "@mui/icons-material/Looks3";
 import { Sidebar } from "components/";
+import { useNavigate } from 'react-router-dom';
 import Loading from "components/widgets/screen-overlays/Loading";
 
 const TopTeamsPage = ({
@@ -12,10 +13,23 @@ const TopTeamsPage = ({
 	setIsLoggedIn,
 	checkIfLoggedIn
 }) => {
+  // used for client-side routing to other pages
+	const navigate = useNavigate();
   
   useEffect(() => { 
-		//setIsLoggedIn(false);
-		checkIfLoggedIn();
+		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
+		if (usertype == "judge") {
+			navigate('/judge/submissions');
+		}
+		else if (usertype == "participant") {
+			navigate('/participant/view-all-problems');
+		}
+		else if (usertype == "admin") {
+			checkIfLoggedIn();	
+		}
+		else {
+			setIsLoggedIn(false);
+		}
 	}, []);
 
   return (

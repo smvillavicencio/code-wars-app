@@ -22,6 +22,7 @@ import {
 	rowsLeaderboard
 } from 'utils/dummyData';
 import { enterAdminPassword } from 'utils/enterAdminPassword';
+import { useNavigate } from 'react-router-dom';
 
 import { baseURL } from 'utils/constants';
 import { postFetch } from 'utils/apiRequest';
@@ -43,6 +44,9 @@ const GeneralOptionsPage = ({
 	setIsLoggedIn,
 	checkIfLoggedIn
 }) => {
+	// used for client-side routing to other pages
+	const navigate = useNavigate();
+
 	/**
 	 * State handler for current round.
 	 * Default value is Easy.
@@ -52,8 +56,19 @@ const GeneralOptionsPage = ({
 	const [checked, setChecked] = useState(false);
 
 	useEffect(() => { 
-		//setIsLoggedIn(false);
-		checkIfLoggedIn();
+		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
+		if (usertype == "judge") {
+			navigate('/judge/submissions');
+		}
+		else if (usertype == "participant") {
+			navigate('/participant/view-all-problems');
+		}
+		else if (usertype == "admin") {
+			checkIfLoggedIn();	
+		}
+		else {
+			setIsLoggedIn(false);
+		}
 	}, []);
 
 	/**

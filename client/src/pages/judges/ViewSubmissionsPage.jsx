@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { useGridApiContext } from '@mui/x-data-grid';
 import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/utils';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import seal from 'assets/UPLB COSS.png';
 import {
@@ -237,9 +237,24 @@ const ViewSubmissionsPage = ({
 		return temp;
 	}
 
+	// used for client-side routing to other pages
+	const navigate = useNavigate();
+
 	useEffect(() => { 
-		//setIsLoggedIn(false);
-		checkIfLoggedIn();
+		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
+		if (usertype == "participant") {
+			navigate('/participant/view-all-problems');
+		}
+		else if (usertype == "admin") {
+			navigate('/admin/general');
+		}
+		else if (usertype == "judge") {
+			checkIfLoggedIn();	
+		}
+		else {
+			setIsLoggedIn(false);
+		}
+		
 	}, []);
 
 	return (

@@ -57,6 +57,7 @@ function App() {
 	useEffect(() => {
 		const eventSource = new EventSource(`${baseURL}/admincommand`);
 		eventSource.onmessage = (e) => {
+			//console.log("Received message");
 			if (JSON.parse(localStorage?.getItem("user"))?.usertype == "participant") {
 			if (e.data == "freeze") {
 				try {

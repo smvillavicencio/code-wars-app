@@ -56,7 +56,7 @@ const ViewAllProblemsPage = ({
 	const [selectedPowerUp, setSelectedPowerUp] = useState(null);
 
 	useEffect(() => {
-		setIsLoggedIn(false);
+		//setIsLoggedIn(false);
 		setSeeDetails(false);
 		setShowBuffs(false);
 		setShowDebuffs(false);

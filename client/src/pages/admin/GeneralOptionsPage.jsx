@@ -52,7 +52,7 @@ const GeneralOptionsPage = ({
 	const [checked, setChecked] = useState(false);
 
 	useEffect(() => { 
-		setIsLoggedIn(false);
+		//setIsLoggedIn(false);
 		checkIfLoggedIn();
 	}, []);
 

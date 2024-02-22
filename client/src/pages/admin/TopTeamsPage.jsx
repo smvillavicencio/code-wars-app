@@ -14,7 +14,7 @@ const TopTeamsPage = ({
 }) => {
   
   useEffect(() => { 
-		setIsLoggedIn(false);
+		//setIsLoggedIn(false);
 		checkIfLoggedIn();
 	}, []);
 

@@ -49,9 +49,9 @@ function App() {
 		let response = await postFetch(`${baseURL}/checkifloggedin`, {});
 		
 		// IMPORTANT: Remove this timeout in the future
-		setTimeout(()=>{
+		//setTimeout(()=>{
 			setIsLoggedIn(response.isLoggedIn);
-		}, 1000);
+		//}, 1000);
 	}
 
 	useEffect(() => {

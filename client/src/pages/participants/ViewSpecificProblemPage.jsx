@@ -70,7 +70,7 @@ const ViewSpecificProblemPage = ({
 	};
 
 	useEffect(() => {
-		setIsLoggedIn(false);
+		//setIsLoggedIn(false);
 		checkIfLoggedIn();
 	}, []);
 

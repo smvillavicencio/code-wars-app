@@ -20,7 +20,7 @@ const PowerUpLogs = ({
 	};
 
 	useEffect(() => { 
-		setIsLoggedIn(false);
+		//setIsLoggedIn(false);
 		checkIfLoggedIn();
 	}, []);
 

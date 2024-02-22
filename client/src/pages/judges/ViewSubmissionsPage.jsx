@@ -238,7 +238,7 @@ const ViewSubmissionsPage = ({
 	}
 
 	useEffect(() => { 
-		setIsLoggedIn(false);
+		//setIsLoggedIn(false);
 		checkIfLoggedIn();
 	}, []);
 

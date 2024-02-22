@@ -3,6 +3,6 @@ import { checkIfLoggedIn } from '../controllers/authController';
 
 const router = Router();
 
-router.post('/checkIfLoggedIn', checkIfLoggedIn);
+router.post('/checkifloggedin', checkIfLoggedIn);
 
 export default router;

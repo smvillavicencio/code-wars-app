@@ -15,11 +15,15 @@ import teamScoreRoutes from './routes/teamScoreRoutes';
 import powerupRoutes from './routes/powerupRoute'
 import submissionRoutes from './routes/submissionRoutes';
 import adminRoutes from './routes/adminRoutes';
+import { checkTokenMiddleware } from "./controllers/authController";
 
 const cors = require("cors");
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin : "http://localhost:3000",
+  credentials: true
+}));
 
 const PORT = process.env.PORT || 5000;
 
@@ -34,11 +38,15 @@ app.use(bodyParser.json());
 app.use(loginRoute);
 app.use(signupRoute);
 app.use(checkIfLoggedInRoute);
+app.use(adminRoutes);
+
+app.use(checkTokenMiddleware);
+
 app.use(teamScoreRoutes);
 app.use(powerupRoutes);
 app.use(submissionRoutes);
-app.use(adminRoutes);
-app.use('/api', sampleRoutes);
+
+//app.use('/api', sampleRoutes);
 
 // Start the server
 app.listen(PORT, () => {

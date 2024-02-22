@@ -1,12 +1,27 @@
 /* eslint-disable */
+import { useEffect } from 'react';
 import { Box } from "@mui/material";
 import LooksOneIcon from "@mui/icons-material/LooksOne";
 import LooksTwoIcon from "@mui/icons-material/LooksTwo";
 import Looks3Icon from "@mui/icons-material/Looks3";
 import { Sidebar } from "components/";
+import Loading from "components/widgets/screen-overlays/Loading";
 
-const TopTeamsPage = () => {
+const TopTeamsPage = ({
+	isLoggedIn,
+	setIsLoggedIn,
+	checkIfLoggedIn
+}) => {
+  
+  useEffect(() => { 
+		setIsLoggedIn(false);
+		checkIfLoggedIn();
+	}, []);
+
   return (
+    <> 
+    {
+      isLoggedIn ?
     <>
       <Box
         sx={{
@@ -142,6 +157,8 @@ const TopTeamsPage = () => {
         />
       </Box>
       <Sidebar />
+    </> : <Loading />
+    }
     </>
   );
 };

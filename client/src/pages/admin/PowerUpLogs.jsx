@@ -1,20 +1,32 @@
 /* eslint-disable */ 
+import { useEffect } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import { Sidebar, Table } from 'components/';
 import { columnsPowerUpLog, rowsPowerUpLog } from 'utils/dummyData';
-
+import Loading from 'components/widgets/screen-overlays/Loading';
 
 /*
  * Purpose: Displays the page power-up logs for admin.
  * Params: None
  */
-const PowerUpLogs = () => {
+const PowerUpLogs = ({
+	isLoggedIn,
+	setIsLoggedIn,
+	checkIfLoggedIn
+}) => {
 
 	const additionalStyles = {
 		backgroundColor: '#fff',
 	};
 
+	useEffect(() => { 
+		setIsLoggedIn(false);
+		checkIfLoggedIn();
+	}, []);
+
 	return (
+		<>
+		{ isLoggedIn ?
 		<Box sx={{ display: 'flex' }}>
 			{/* Sidebar */}
 			<Sidebar />
@@ -53,7 +65,9 @@ const PowerUpLogs = () => {
 					</Box>
 				</Box>
 			</Stack>
-		</Box>
+		</Box> : <Loading />
+		}
+		</>
 	);
 };
 

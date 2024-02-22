@@ -18,8 +18,9 @@ import {
 } from 'pages/';
 import { theme } from 'theme.js';
 import { UserDetailsProvider } from 'utils/UserDetailsProvider.js';
-import { baseURL } from 'utils/constants';
 
+import { baseURL } from 'utils/constants';
+import { postFetch } from 'utils/apiRequest';
 
 /**
  * This will set the common background for all pages (except login page)
@@ -42,10 +43,21 @@ function Layout() {
 
 function App() {
 
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+	const checkIfLoggedIn = async () => {
+		let response = await postFetch(`${baseURL}/checkifloggedin`, {});
+		
+		// IMPORTANT: Remove this timeout in the future
+		setTimeout(()=>{
+			setIsLoggedIn(response.isLoggedIn);
+		}, 1000);
+	}
+
 	useEffect(() => {
 		const eventSource = new EventSource(`${baseURL}/admincommand`);
 		eventSource.onmessage = (e) => {
-			if (localStorage.getItem("usertype") == "team") {
+			if (JSON.parse(localStorage?.getItem("user"))?.usertype == "participant") {
 			if (e.data == "freeze") {
 				try {
 					document.getElementById("overlayFreeze").style.display = "block";	
@@ -82,12 +94,12 @@ function App() {
 
 						{/* Pages with same backgrounds */}
 						<Route path="/" element={<Layout />}>
-							<Route path="participant/view-all-problems" element={<ViewAllProblemsPage />} />
-							<Route path="participant/view-specific-problem" element={<ViewSpecificProblemPage />} />
-							<Route path="judge/submissions" element={<ViewSubmissionsPage />} />
-							<Route path="admin/general" element={<GeneralOptionsPage />} />
-							<Route path="admin/logs" element={<PowerUpLogs />} />
-							<Route path="admin/podium" element={<TopTeamsPage />} />
+							<Route path="participant/view-all-problems" element={<ViewAllProblemsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
+							<Route path="participant/view-specific-problem" element={<ViewSpecificProblemPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
+							<Route path="judge/submissions" element={<ViewSubmissionsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
+							<Route path="admin/general" element={<GeneralOptionsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
+							<Route path="admin/logs" element={<PowerUpLogs isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
+							<Route path="admin/podium" element={<TopTeamsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
 						</Route>
 					</Routes>
 				</Router>

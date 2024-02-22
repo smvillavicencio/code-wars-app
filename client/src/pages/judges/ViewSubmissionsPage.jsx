@@ -2,7 +2,8 @@
 import {
 	useMemo,
 	useRef,
-	useState
+	useState,
+	useEffect
 } from 'react';
 
 import ViewListIcon from '@mui/icons-material/ViewList';
@@ -33,6 +34,8 @@ import {
 	rowsSubmissions,
 	rowsLeaderboard
 } from 'utils/dummyData';
+
+import Loading from 'components/widgets/screen-overlays/Loading';
 
 
 // Styling for Leaderboard table
@@ -111,7 +114,11 @@ const renderEvalEditInputCell = (params) => {
  * Purpose: Displays the View Submissions Page for judges.
  * Params: None
  */
-const ViewSubmissionsPage = () => {
+const ViewSubmissionsPage = ({
+	isLoggedIn,
+	setIsLoggedIn,
+	checkIfLoggedIn
+}) => {
 	// state handler for overall leaderboard modal
 	const [open, setOpen] = useState(false);
 
@@ -230,8 +237,14 @@ const ViewSubmissionsPage = () => {
 		return temp;
 	}
 
+	useEffect(() => { 
+		setIsLoggedIn(false);
+		checkIfLoggedIn();
+	}, []);
 
 	return (
+		<>
+		{ isLoggedIn ?
 		<Box>
 			<TopBar
 				isImg={true}
@@ -283,8 +296,8 @@ const ViewSubmissionsPage = () => {
 
 				{/* Submission Entry Table */}
 				<Table
-					rows={useMemo(() => {return getFilteredRows(rowsSubmissions)}, [selectedTeam, selectedProblem] )}
-					columns={useMemo(() => {return modifiedSubmissionColumns}, [] )}
+					rows={getFilteredRows(rowsSubmissions)}// useMemo(() => {return getFilteredRows(rowsSubmissions)}, [selectedTeam, selectedProblem] ) // Replaced original for now due to error happening when # of hooks used change between renders
+					columns={modifiedSubmissionColumns}// useMemo(() => {return modifiedSubmissionColumns}, [] )
 					hideFields={[]}
 					additionalStyles={additionalStylesSubmissions}
 					density={"comfortable"}
@@ -326,7 +339,9 @@ const ViewSubmissionsPage = () => {
 					}}
 				/>
 			</CustomModal>
-		</Box>
+		</Box> : <Loading />
+		}
+		</>
 	);
 };
 

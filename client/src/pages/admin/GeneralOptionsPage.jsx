@@ -1,5 +1,5 @@
 /* eslint-disable */ 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
 	Box,
@@ -23,7 +23,10 @@ import {
 } from 'utils/dummyData';
 import { enterAdminPassword } from 'utils/enterAdminPassword';
 
+import { baseURL } from 'utils/constants';
+import { postFetch } from 'utils/apiRequest';
 
+import Loading from 'components/widgets/screen-overlays/Loading';
 
 // styling for leaderboard table
 const additionalStyles = {
@@ -35,7 +38,11 @@ const additionalStyles = {
  * Purpose: Displays general options page for admin.
  * Params: None
  */
-const GeneralOptionsPage = () => {
+const GeneralOptionsPage = ({
+	isLoggedIn,
+	setIsLoggedIn,
+	checkIfLoggedIn
+}) => {
 	/**
 	 * State handler for current round.
 	 * Default value is Easy.
@@ -43,6 +50,11 @@ const GeneralOptionsPage = () => {
 	const [currRound, setCurrRound] = useState('Easy');
 	// State handler for toggle switch state
 	const [checked, setChecked] = useState(false);
+
+	useEffect(() => { 
+		setIsLoggedIn(false);
+		checkIfLoggedIn();
+	}, []);
 
 	/**
 	 * Purpose: Handler for toggle switch button. This will freeze the screens of all active sessions
@@ -140,6 +152,9 @@ const GeneralOptionsPage = () => {
 
 
 	return (
+		<> 
+		{
+			isLoggedIn ?
 		<Box sx={{ display: 'flex' }}>
 			{/* Sidebar */}
 			<Sidebar />
@@ -222,7 +237,9 @@ const GeneralOptionsPage = () => {
 					</Box>
 				</Box>
 			</Stack>
-		</Box>
+		</Box> : <Loading /> 
+		} 
+		</>
 	);
 };
 

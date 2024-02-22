@@ -1,4 +1,5 @@
-import { useState } from 'react';
+/* eslint-disable */ 
+import { useState, useEffect } from 'react';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
@@ -23,14 +24,18 @@ import {
 } from 'utils/dummyData';
 
 import SubmitModal from './modals/SubmitModal';
-
+import Loading from 'components/widgets/screen-overlays/Loading';
 
 
 /*
  * Purpose: Displays the Specific Problem Page for participants.
  * Params: None
  */
-const ViewSpecificProblemPage = () => {
+const ViewSpecificProblemPage = ({
+	isLoggedIn,
+	setIsLoggedIn,
+	checkIfLoggedIn
+}) => {
 	// state for the opening and closing of submit modal window
 	const [open, setOpen] = useState(false);
 
@@ -64,8 +69,15 @@ const ViewSpecificProblemPage = () => {
 		navigate('/participant/view-all-problems');
 	};
 
+	useEffect(() => {
+		setIsLoggedIn(false);
+		checkIfLoggedIn();
+	}, []);
 
 	return (
+		<>
+		{
+			isLoggedIn ? 
 		<Stack>
 			{/* Topbar */}
 			<TopBar
@@ -192,6 +204,8 @@ const ViewSpecificProblemPage = () => {
 			</CustomModal>
 
 		</Stack>
+		: <Loading /> }
+		</>
 	);
 };
 

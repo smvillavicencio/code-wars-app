@@ -13,7 +13,7 @@ import {
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import { userDetailsContext } from 'utils/UserDetailsProvider';
-import { ConfirmWindow } from 'components/';
+import { handleLogout } from 'utils/commonFunctions';
 /*
  * Purpose: Displays the topbar component for the participant and judge-related pages.
  * Params:
@@ -51,24 +51,6 @@ const TopBar = ({
 	useEffect(() => {
 		setImage(isImg);
 	}, []);
-
-	/*
-  * Purpose: Handles termination of user session.
-  * Params: None
-  */
-	const handleLogout = () => {
-		// fire success window
-    ConfirmWindow.fire({
-      text: 'Are you sure you want to log out?',
-		}).then((res) => {
-			if (res['isConfirmed']) {
-				setUserDetails(null);
-				navigate('/');
-			} else {
-				return;
-			}
-		})
-	};
 
 
 	return (
@@ -154,7 +136,7 @@ const TopBar = ({
 						variant="contained"
 						color="major"
 						size="large"
-						onClick={handleLogout}
+						onClick={()=>{handleLogout(setUserDetails, navigate)}}
 						sx={{
 							minWidth: 10,
 							'&:hover': {

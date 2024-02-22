@@ -20,8 +20,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import { userDetailsContext } from 'utils/UserDetailsProvider';
-import { ConfirmWindow } from 'components/';
-
+import { handleLogout } from 'utils/commonFunctions';
 
 const DRAWER_WIDTH = 250;
 
@@ -35,25 +34,6 @@ const Sidebar = () => {
 
 	// used for client-side routing to other pages
 	const navigate = useNavigate();
-
-	/*
-  * Purpose: Handles termination of user session.
-  * Params: None
-  */
-	const handleLogout = () => {
-		// fire success window
-    ConfirmWindow.fire({
-      text: 'Are you sure you want to log out?',
-		}).then((res) => {
-			if (res['isConfirmed']) {
-				setUserDetails(null);
-				navigate('/');
-			} else {
-				return;
-			}
-		})
-	};
-
 	
 	return (
 		<Box>
@@ -141,7 +121,7 @@ const Sidebar = () => {
 
 				{/* Logout Button */}
 				<List
-					onClick={handleLogout}
+					onClick={()=>{handleLogout(setUserDetails, navigate)}}
 					sx={{
 						position: 'absolute',
 						bottom: '0',

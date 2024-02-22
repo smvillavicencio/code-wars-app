@@ -69,8 +69,20 @@ const LoginPage = () => {
 				navigate('/admin/general');
 			}
 
-			//console.log(user);
+			//console.log(loginResponse);
 			setUserDetails(user);
+			localStorage.setItem("user", JSON.stringify(user));
+
+			const cookies = new Cookies();
+			cookies.set(
+				"authToken",
+				loginResponse.token,
+				{
+					path: "/",
+					age: 60*60*24,
+					sameSite: "lax"
+				}
+			);
 		}
 
 		// if (username == 'participant') {

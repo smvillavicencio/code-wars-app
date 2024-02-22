@@ -58,6 +58,7 @@ function App() {
 					height: '100vh',
 					overflow: 'hidden',
 				}}
+				id="commonBox"
 		>
 		{/* Children will be displayed through outlet */}
 				{freezeOverlay ? <div className='fOverlayScreen' style={{zIndex: "10000"}}><FreezeOverlay /></div> : null}
@@ -88,7 +89,7 @@ function App() {
 								} catch (error) {
 									
 								}
-
+								
 								const immortalDiv = document.createElement('div');
 								immortalDiv.className = "fOverlayScreen";
 								immortalDiv.style.zIndex = "10000";

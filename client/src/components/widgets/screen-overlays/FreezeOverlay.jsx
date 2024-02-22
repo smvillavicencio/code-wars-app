@@ -16,6 +16,7 @@ const FreezeOverlay = () => {
 					fontSize: '10rem',
 					alignSelf: 'center'
 				}}
+				className="fOverlay"
 			/>}
 			text={<Typography 
 				variant="h4"
@@ -23,6 +24,7 @@ const FreezeOverlay = () => {
 					whiteSpace: 'pre-wrap',
 					textAlign: 'center'
 				}}
+				className="fOverlay"
 			>
 				
 				Your screen has been frozen. <br/>

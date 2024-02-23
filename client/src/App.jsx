@@ -43,6 +43,7 @@ function App() {
 		// IMPORTANT: Remove this timeout in the future
 		//setTimeout(()=>{
 			setIsLoggedIn(response.isLoggedIn);
+			console.log(response);
 		//}, 1000);
 	}
 

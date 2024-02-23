@@ -178,9 +178,10 @@ const login = async (req: Request, res: Response) => {
  */
 const checkIfLoggedIn = (req: Request, res: Response) => {
   var cookieDict: any = {};
+  //console.log(req.headers.cookie);
 
   if (req.headers.cookie) {
-    var cookies = req.headers.cookie!.split("&");
+    var cookies = req.headers.cookie!.split("; ");
 
     for (let i = 0; i < cookies!.length; i++) {
       cookieDict[cookies[i].split("=")[0]] = cookies[i].split("=")[1];

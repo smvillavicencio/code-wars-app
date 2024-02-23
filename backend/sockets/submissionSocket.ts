@@ -52,7 +52,7 @@ const uploadSubmission = async (arg: any) => {
     const newSubmission = new Submission({
         team_id: teamId,
         team_name: teamName,
-        judge_id: "",//judgeId
+        judge_id: "Unassigned",//judgeId
         judge_name: "Unassigned",//judgeName
         problem_id: problemId,
         problem_title: problemTitle,

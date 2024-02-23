@@ -74,6 +74,8 @@ const ViewAllProblemsPage = ({
 		else {
 			setIsLoggedIn(false);
 		}
+
+		
 	}, []);
 
 	// Styling for the problem list table

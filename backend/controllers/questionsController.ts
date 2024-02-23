@@ -6,7 +6,7 @@ const Question = mongoose.model("Question");
 
 const viewQuestions = async (req : any, res : any) => {
     try {
-        const questions = await Question.find({}).exec();
+        const questions = await Question.find({});
         return res.send({ success: true, questions });
     }catch(err) {
         console.error(err);

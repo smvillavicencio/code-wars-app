@@ -13,7 +13,7 @@ import ParticipantsLeaderboard from './widgets/leaderboard/ParticipantsLeaderboa
 import BuyPowerUpsPopover from './widgets/power-ups/BuyPowerUpsPopover';
 import PowerUpList from './widgets/power-ups/PowerUpList';
 import PowerUpType from './widgets/power-ups/PowerUpType';
-import RoundTimer from './widgets/timer/RoundTimer';
+import Timer from './widgets/timer/Timer';
 import TimerOverlay from './widgets/screen-overlays/TimerOverlay';
 
 
@@ -28,11 +28,11 @@ export {
 	ParticipantsLeaderboard,
 	PowerUpList,
 	PowerUpType,
-	RoundTimer,
 	Sidebar,
 	SponsorCarousel,
 	SuccessWindow,
 	Table,
+	Timer,
 	TimerOverlay,
 	TopBar
 };

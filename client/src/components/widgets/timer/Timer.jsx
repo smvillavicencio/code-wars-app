@@ -9,7 +9,7 @@ import {
  * Purpose: Displays the round timer.
  * Params: None
  */
-const RoundTimer = () => {
+const Timer = () => {
 	return (
 		<Box
 			sx={{
@@ -31,7 +31,7 @@ const RoundTimer = () => {
 					justifyContent: 'center',
 				}}
 			>
-				<span>ROUND TIMER</span>
+				<span>TIMER</span>
 			</Typography>
 
 			<Typography noWrap variant="h3">
@@ -41,4 +41,4 @@ const RoundTimer = () => {
 	);
 };
 
-export default RoundTimer;
+export default Timer;

@@ -1,4 +1,5 @@
 // ADD YOUR FILE EXPORTS HERE
+
 let io = require("socket.io")(8000, {
   cors: {
     origin: ["http://localhost:3000", process.env.FRONTEND_URL || "", process.env.DEV_FRONTEND_URL || "", process.env.PROD_FRONTEND_URL || ""],
@@ -8,8 +9,4 @@ let io = require("socket.io")(8000, {
 
 io.on("connection", (socket) => {
   //ADD SOCKET EVENTS HERE
-  socket.on("submittedEval", async (data) => {
-    
-})
-  socket.emit("updatedScores")
 });

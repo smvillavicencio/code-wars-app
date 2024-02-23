@@ -1,4 +1,3 @@
-/* eslint-disable */ 
 import { io } from "socket.io-client";
 
 import { get } from "lodash";

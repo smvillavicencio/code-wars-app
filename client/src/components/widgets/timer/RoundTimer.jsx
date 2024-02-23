@@ -5,11 +5,11 @@ import {
 } from '@mui/material';
 
 
-/*
+/**
  * Purpose: Displays the round timer.
  * Params: None
  */
-const Timer = () => {
+const RoundTimer = () => {
 	return (
 		<Box
 			sx={{
@@ -31,7 +31,7 @@ const Timer = () => {
 					justifyContent: 'center',
 				}}
 			>
-				<span>TIMER</span>
+				<span>ROUND TIMER</span>
 			</Typography>
 
 			<Typography noWrap variant="h3">
@@ -41,4 +41,4 @@ const Timer = () => {
 	);
 };
 
-export default Timer;
+export default RoundTimer;

@@ -2,6 +2,7 @@
 import "./models/judge";
 import "./models/admin";
 import "./models/team";
+import "./models/question";
 import "./models/submission";
 
 import express from 'express';
@@ -15,6 +16,7 @@ import teamScoreRoutes from './routes/teamScoreRoutes';
 import powerupRoutes from './routes/powerupRoute'
 import submissionRoutes from './routes/submissionRoutes';
 import adminRoutes from './routes/adminRoutes';
+import questionRoutes from './routes/questionRoutes';
 import { checkTokenMiddleware } from "./controllers/authController";
 
 import './sockets/socket.js';
@@ -24,8 +26,7 @@ const app = express();
 
 app.use(cors({
   origin : "http://localhost:3000",
-  credentials: true,
-  methods: ['POST', 'GET', 'PUT', 'DELETE']
+  credentials: true
 }));
 
 const PORT = process.env.PORT || 5000;
@@ -48,6 +49,7 @@ app.use(adminRoutes);
 app.use(teamScoreRoutes);
 app.use(powerupRoutes);
 app.use(submissionRoutes);
+app.use(questionRoutes);
 
 //app.use('/api', sampleRoutes);
 

@@ -64,7 +64,7 @@ function renderEval(props) {
 			variant="standard"
 			minWidth="100%"
 			options={optionsEval}
-			// isDisabled={true}
+			isDisabled={props.row.hasFileDownloaded ? false : true}
 			value={props.formattedValue}
 		/>
 	);
@@ -95,7 +95,7 @@ function EvalEditInputCell(props) {
 			innerRef={ref} 
 			displayEmpty
 			variant="standard"
-			// isDisabled={true}
+			isDisabled={props.props.row?.hasFileDownloaded ? false : true}
 			minWidth="100%"
 			options={optionsEval}
 			handleChange={handleChange}
@@ -128,6 +128,10 @@ const ViewSubmissionsPage = ({
 	// state handler for problem dropdown select
 	const [selectedProblem, setSelectedProblem] = useState('');
 
+	const handleDownload = (e, params) => {
+		e.preventDefault();
+		params.row.hasFileDownloaded = true;
+	}
 
 	// adding dropdown selects for evaluation column of submission table
 	const modifiedSubmissionColumns = columnsSubmissions.map((obj) => {
@@ -147,7 +151,7 @@ const ViewSubmissionsPage = ({
 						<Link
 							target="_blank"
 							download
-							// onClick={handleDownload}
+							onClick={(e) => {handleDownload(e, params)}}
 							// to={'/'}
 						>
 							{params.value}

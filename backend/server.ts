@@ -2,6 +2,7 @@
 import "./models/judge";
 import "./models/admin";
 import "./models/team";
+import "./models/question";
 import "./models/submission";
 
 import express from 'express';

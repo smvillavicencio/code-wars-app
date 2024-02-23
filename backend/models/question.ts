@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
 
 const QuestionSchema = new mongoose.Schema({
+    title: { type: String, required: true },
     body: { type: String, required: true },
-    types: { type: String, required: true},
-    points: { type: Number, required: true }
+    points: { type: Number, required: true },
+    difficulty: { type: String, required: true }
 });
 
-const Question = mongoose.model("QuestionSchema");
+mongoose.model("Question", QuestionSchema);

@@ -55,6 +55,8 @@ const ViewAllProblemsPage = ({
 	 * State handler for viewing buy power-up popover
 	 */
 	const [open, setOpen] = useState(false);
+
+	const [currQuestions, setCurrQuestions] = useState([]);
 	
 	// options for rounds
 	const rounds = ['EASY', 'MEDIUM', 'WAGER', 'HARD'];
@@ -63,6 +65,28 @@ const ViewAllProblemsPage = ({
 	const [showDebuffs, setShowDebuffs] = useState(false);
 	const [seeDetails, setSeeDetails] = useState(false);
 	const [selectedPowerUp, setSelectedPowerUp] = useState(null);
+
+	const getRoundQuestions = async () => {
+		const qResponse = await postFetch(`${baseURL}/viewquestionsdiff`, {
+			difficulty: currRound.toLowerCase()
+		});
+
+		let newQuestions = [];
+
+		qResponse.questions?.map((question)=>{
+			let formattedQuestion = {};
+			formattedQuestion.problemTitle = question.title;
+			formattedQuestion.id = question._id;
+			formattedQuestion.status = "pending";
+			formattedQuestion.score = 0;
+			formattedQuestion.checkedBy = "";
+
+			newQuestions.push(formattedQuestion);
+		})
+
+		//console.log(qResponse);
+		setCurrQuestions(newQuestions);
+	}
 
 	useEffect(() => {
 		setSeeDetails(false);
@@ -83,6 +107,9 @@ const ViewAllProblemsPage = ({
 		else {
 			setIsLoggedIn(false);
 		}
+
+		getRoundQuestions();
+		
 	}, []);
 
 
@@ -250,7 +277,7 @@ const ViewAllProblemsPage = ({
 
 							{/* Problem List Table for the round */}
 							<Table
-								rows={rowsProblems}
+								rows={currQuestions} //rowsProblems
 								columns={columnsProblems}
 								hideFields={[]}
 								additionalStyles={additionalStyles}

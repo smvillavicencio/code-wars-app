@@ -1,4 +1,5 @@
 // ADD YOUR FILE EXPORTS HERE
+import { uploadSubmission } from './submissionSocket'
 
 let io = require("socket.io")(8000, {
   cors: {
@@ -7,11 +8,27 @@ let io = require("socket.io")(8000, {
   // if ever there will be cors errors from the web-sockets, create .env files to store the frontend urls that you're using to connect to this socket server. (populate the FRONTEND_URL, DEV_FRONTEND_URL, PROD_FRONTEND_URL with the urls of the frontend that you're using.)
 });
 
-io.on("connection", (socket) => {
+io.on("connection", (socket: any) => {
   //ADD SOCKET EVENTS HERE
-  socket.on("buyBuff", (data) => {
-    powerUp = data.powerUp
-    userTeam = data.userTeam.user
+  
+  socket.on("newupload", (arg: any)=>{
+    setTimeout( async ()=>{
+      try {
+        let response = await uploadSubmission(arg);
+      
+        if (response.success) {
+          console.log("||||||");
+          socket.emit("newitemtojudge", response.submission);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }, 20000);
+
+  });
+  socket.on("buyBuff", (data: any) => {
+    let powerUp = data.powerUp
+    let userTeam = data.userTeam.user
 
     console.log(data)
     // insert backend function for applying buff
@@ -22,10 +39,10 @@ io.on("connection", (socket) => {
     socket.emit("newBuff", powerUp)
   })
 
-  socket.on("applyDebuff", (data) => {
-    powerUp = data.powerUp
-    userTeam = data.userTeam.user
-    recipientTeam = data.recipientTeam
+  socket.on("applyDebuff", (data: any) => {
+    let powerUp = data.powerUp
+    let userTeam = data.userTeam.user
+    let recipientTeam = data.recipientTeam
 
     // insert backend function for applying debuff to chosen team
     

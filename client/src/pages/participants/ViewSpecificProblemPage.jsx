@@ -25,6 +25,8 @@ import {
 
 import SubmitModal from './modals/SubmitModal';
 import Loading from 'components/widgets/screen-overlays/Loading';
+import { baseURL } from 'utils/constants';
+import { postFetch } from 'utils/apiRequest';
 
 
 /*
@@ -49,9 +51,15 @@ const ViewSpecificProblemPage = ({
 	const problemTitle = params.get('problemTitle');
 	// dummy values
 	const problemSubtitle = 'UPLB Computer Science Society';
-	const problemDescription = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mauris dolor, euismod nec commodo aliquam, porta vitae ante. Vivamus tincidunt egestas erat nec condimentum. Sed nec ex quis arcu lacinia laoreet. In interdum ipsum orci, ac gravida urna pharetra non. Etiam pretium, ipsum sed volutpat mollis, eros est hendrerit turpis, eget hendrerit libero dui ut eros. Donec sit amet dui sapien. Aliquam nec mi nec mauris placerat gravida. Cras egestas nisl semper semper mollis. Sed dictum augue congue porttitor ultricies. In accumsan, libero at suscipit aliquam, neque lorem eleifend velit, a vulputate lectus lorem in ante.\nMorbi non felis et lorem ultrices porttitor sit amet vitae est. Pellentesque magna urna, posuere a tincidunt a, vehicula sit amet ex. Vestibulum vehicula lectus eget consectetur imperdiet. Aenean interdum ante vel massa ultricies, a aliquet libero tempor. Mauris laoreet ipsum lacus, in iaculis nibh pharetra eget. Nunc eget purus egestas, elementum nulla eget, tincidunt nunc.';
-
+	//const problemDescription = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean mauris dolor, euismod nec commodo aliquam, porta vitae ante. Vivamus tincidunt egestas erat nec condimentum. Sed nec ex quis arcu lacinia laoreet. In interdum ipsum orci, ac gravida urna pharetra non. Etiam pretium, ipsum sed volutpat mollis, eros est hendrerit turpis, eget hendrerit libero dui ut eros. Donec sit amet dui sapien. Aliquam nec mi nec mauris placerat gravida. Cras egestas nisl semper semper mollis. Sed dictum augue congue porttitor ultricies. In accumsan, libero at suscipit aliquam, neque lorem eleifend velit, a vulputate lectus lorem in ante.\nMorbi non felis et lorem ultrices porttitor sit amet vitae est. Pellentesque magna urna, posuere a tincidunt a, vehicula sit amet ex. Vestibulum vehicula lectus eget consectetur imperdiet. Aenean interdum ante vel massa ultricies, a aliquet libero tempor. Mauris laoreet ipsum lacus, in iaculis nibh pharetra eget. Nunc eget purus egestas, elementum nulla eget, tincidunt nunc.';
 	
+	const [problem, setProblem] = useState();
+	const [problemDescription, setProblemDescription] = useState();
+
+	const tempId = "65d5388fa3fd7658a9c15971";
+	const tempPossiblePoints = 500;
+	const tempTitle = "37 PATTERN";
+	const tempTotalCases = 5;
 	
 	/*
    * Purpose: Handles opening of the submit modal window
@@ -69,6 +77,16 @@ const ViewSpecificProblemPage = ({
 		navigate('/participant/view-all-problems');
 	};
 
+	const getQuestionContent = async () => {
+		const qResponse = await postFetch(`${baseURL}/viewquestioncontent`, {
+			id: params.get("id")
+		});
+		console.log(qResponse.question);
+
+		setProblem(qResponse.question);
+		setProblemDescription(qResponse.question.body);
+	}
+
 	useEffect(() => {
 		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
 		if (usertype == "judge") {
@@ -83,6 +101,9 @@ const ViewSpecificProblemPage = ({
 		else {
 			setIsLoggedIn(false);
 		}
+
+		getQuestionContent();
+
 	}, []);
 
 	return (
@@ -210,9 +231,20 @@ const ViewSpecificProblemPage = ({
 			</Box>
 			
 			{/* Submit Modal Window */}
-			<CustomModal isOpen={open} setOpen={setOpen} windowTitle="Upload your answer">
-				<SubmitModal setOpen={setOpen} />
-			</CustomModal>
+			<>
+			{
+				problem ?
+				<CustomModal isOpen={open} setOpen={setOpen} windowTitle="Upload your answer">
+				<SubmitModal 
+					setOpen={setOpen} 
+					problemId={problem._id} 
+					problemTitle={problem.title} 
+					possiblePoints={problem.points} 
+					totalCases={problem.total_cases}
+				/>
+				</CustomModal> : null
+			}
+			</>
 
 		</Stack>
 		: <Loading /> }

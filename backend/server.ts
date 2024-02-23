@@ -20,7 +20,7 @@ import questionRoutes from './routes/questionRoutes';
 import teamDetailsRoute from './routes/teamDetailsRoute';
 import { checkTokenMiddleware } from "./controllers/authController";
 
-import './sockets/socket.js';
+import './sockets/socket';
 
 const cors = require("cors");
 const app = express();

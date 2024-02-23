@@ -6,7 +6,7 @@ import { Box } from '@mui/material';
 import { Outlet, BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import GeneralBackground from 'assets/GeneralBackground.png';
-import { ToastContainerConfig, FreezeOverlay } from 'components';
+import { FreezeOverlay, ToastContainerConfig } from 'components';
 import {
 	LoginPage,
 	GeneralOptionsPage,
@@ -120,8 +120,6 @@ function App() {
 							<Route path="admin/podium" element={<TopTeamsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
 						</Route>
 					</Routes>
-					
-					{/* Putting Toastify Container here so toast notifs can be used in any pages where the round timer is also present */}
 					<ToastContainerConfig />
 				</Router>
 			</UserDetailsProvider>

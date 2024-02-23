@@ -7,7 +7,7 @@ export const buffs = [
 		shortDescription:  'dispelled debuff',
 		fullDescription: 'The team’s current debuff is dispelled. When more than one debuff types are active, the team can only choose one.',
 		Cost: '120% of the cost of the dispelled debuff',
-		duration: ''
+		duration: 5000
 	},
 	{
 		name: 'Immunity I',
@@ -15,7 +15,7 @@ export const buffs = [
 		shortDescription:  'Cannot be targeted by any debuff.',
 		fullDescription: 'Is decided before the round starts. The team cannot be targeted by any debuff from opposing teams for five (5) minutes since the round starts.',
 		Cost: '100 points',
-		duration: '5 minutes'
+		duration: 5000
 	},
 	{
 		name: 'Immunity II',
@@ -23,7 +23,7 @@ export const buffs = [
 		shortDescription:  'Cannot be targeted by any debuff.',
 		fullDescription: 'Is decided before the round starts. The team cannot be targeted by any debuff from opposing teams for five (5) minutes since the round starts.',
 		Cost: '100 points',
-		duration: '5 minutes'
+		duration: 5000
 	},
 	{
 		name: 'Immunity III',
@@ -31,7 +31,7 @@ export const buffs = [
 		shortDescription:  'Cannot be targeted by any debuff.',
 		fullDescription: 'Is decided before the round starts. The team cannot be targeted by any debuff from opposing teams for five (5) minutes since the round starts.',
 		Cost: '100 points',
-		duration: '5 minutes'
+		duration: 5000
 	},
 	{
 		name: 'Immunity IV',
@@ -39,7 +39,7 @@ export const buffs = [
 		shortDescription:  'Cannot be targeted by any debuff.',
 		fullDescription: 'Is decided before the round starts. The team cannot be targeted by any debuff from opposing teams for five (5) minutes since the round starts.',
 		Cost: '100 points',
-		duration: '5 minutes'
+		duration: 5000
 	},
 	{
 		name: 'Unchain',
@@ -47,7 +47,7 @@ export const buffs = [
 		shortDescription:  'Cannot be targeted by any debuff.',
 		fullDescription: 'Is decided before the round starts. The team cannot be targeted by any debuff from opposing teams for five (5) minutes since the round starts.',
 		Cost: '100 points',
-		duration: '5 minutes'
+		duration: 5000
 	},
 ];
 
@@ -80,16 +80,16 @@ export const debuffs = [
 // dummy data for list of teams
 // used in powerupdetails.jsx component
 export const teamsList = [
-	'Team One',
-	'Team Two',
-	'Team Three',
-	'Team Four',
-	'Team Five',
-	'Team Six',
-	'Team Seven',
-	'Team Eight',
-	'Team Nine',
-	'Team Ten',
+	'Team1',
+	'Team2',
+	'Team3',
+	'Team4',
+	'Team5',
+	'Team6',
+	'Team7',
+	'Team8',
+	'Team9',
+	'Team10',
 ];
 
 // options for rounds dropdown select

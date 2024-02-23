@@ -26,4 +26,37 @@ io.on("connection", (socket: any) => {
     }, 20000);
 
   });
+  socket.on("buyBuff", (data: any) => {
+    let powerUp = data.powerUp
+    let userTeam = data.userTeam.user
+
+    console.log(data)
+    // insert backend function for applying buff
+
+    console.log("Team " + userTeam + " has bought a buff.")
+
+    // for toast notif
+    socket.emit("newBuff", powerUp)
+  })
+
+  socket.on("applyDebuff", (data: any) => {
+    let powerUp = data.powerUp
+    let userTeam = data.userTeam.user
+    let recipientTeam = data.recipientTeam
+
+    // insert backend function for applying debuff to chosen team
+    
+    // for toast notif
+    // ilalagay to dun sa applying debuff to chosen team na functionality
+    // settimeout ay for testing lang - iisang laptop ang userTeam and recipientTeam
+    setTimeout(() => {
+      socket.emit("newDebuff", powerUp)
+    }, 20000)
+
+    // lalabas to sa side ng userTeam
+    console.log("Team " + userTeam + " has bought a debuff to be used against " + recipientTeam)
+  })
+
+
+  
 });

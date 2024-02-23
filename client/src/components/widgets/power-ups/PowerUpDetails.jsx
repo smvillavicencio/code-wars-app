@@ -32,10 +32,6 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 	 */
 	const [selectedTeam, setSelectedTeam] = useState('Team1');
 	/**
-	 * State handler for teams list
-	 */
-	const [teams, setTeams] = useState(teamsList);
-	/**
 	 * State handler for user details
 	 */
 	const [userDetails, setUserDetails] = useState();
@@ -52,7 +48,7 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 			role: JSON.parse(localStorage?.getItem("user")).usertype
 		};
 
-		getAllTeams(user);
+		getAllTeams(userDetails.user);
 		setUserDetails(userDetails);
 	}, []); 
 
@@ -73,7 +69,6 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 				const teamListOptions = updatedTeams.map(team => team.team_name);
 
 				// update states
-				setTeams(updatedTeams);
 				setTeamOptions(teamListOptions);
 				setSelectedTeam(teamListOptions[0]);
 			} else {

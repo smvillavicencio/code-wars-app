@@ -95,7 +95,7 @@ const ViewAllProblemsPage = ({
 			const duration = powerUp.duration
 			const powerUpName = powerUp.name
 
-			toast.info('🚀 New Buff ' + powerUpName + ' applied on your team!', {
+			toast.info('🚀 New buff ' + powerUpName + ' applied on your team!', {
 				position: "bottom-right",
 				autoClose: duration,
 				hideProgressBar: false,
@@ -113,7 +113,7 @@ const ViewAllProblemsPage = ({
 			const duration = powerUp.duration
 			const powerUpName = powerUp.name
 
-			toast.warn('New Debuff ' + powerUpName + ' has been applied to your team!', {
+			toast.warn('New debuff ' + powerUpName + ' has been applied to your team!', {
 				position: "bottom-right",
 				autoClose: duration,
 				hideProgressBar: false,

@@ -1,6 +1,6 @@
 
 /* eslint-disable */ 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { ThemeProvider } from '@emotion/react';
 import { Box } from '@mui/material';
 import { Outlet, BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -18,9 +18,11 @@ import {
 } from 'pages/';
 import { theme } from 'theme.js';
 
+import { userDetailsContext } from 'utils/UserDetailsProvider';
 import { baseURL } from 'utils/constants';
 import { postFetch } from 'utils/apiRequest';
 import { UserDetailsProvider } from 'utils/UserDetailsProvider.js';
+import Cookies from "universal-cookie";
 
 
 
@@ -64,6 +66,9 @@ function App() {
 		);
 	}
 
+	// state for context API
+	//const [userDetails, setUserDetails] = useContext(userDetailsContext ?? null);
+
 	useEffect(() => {
 		const eventSource = new EventSource(`${baseURL}/admincommand`);
 		eventSource.onmessage = (e) => {
@@ -95,7 +100,18 @@ function App() {
 								commonBox.insertBefore(immortalDiv, commonBox.firstChild);
 							}
 						}, 1000);
-			} else {
+			} 
+			else if (e.data == "logout") {
+				setFreezeOverlay(false);
+				localStorage.removeItem("user");
+                //setUserDetails(null);
+                window.location.replace(window.location.origin);
+
+                // Delete cookie with authToken
+                const cookies = new Cookies();
+                cookies.remove("authToken");
+			} 
+			else {
 				setFreezeOverlay(false);	
 			}
 			}

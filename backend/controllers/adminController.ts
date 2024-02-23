@@ -15,6 +15,10 @@ const commandChannel = (req: Request, res: Response) => {
     
       const interval = setInterval(() => {
           res.write(`data: ${command}\n\n`);
+
+          if (command == "logout") {
+            command = "normal";
+          }
       }, 500);
     
       res.on("close", () => {

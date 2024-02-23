@@ -17,6 +17,8 @@ import submissionRoutes from './routes/submissionRoutes';
 import adminRoutes from './routes/adminRoutes';
 import { checkTokenMiddleware } from "./controllers/authController";
 
+import './sockets/socket.js';
+
 const cors = require("cors");
 const app = express();
 

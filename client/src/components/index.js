@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import ConfirmWindow from './ui/ConfirmWindow';
 import CustomModal from './ui/CustomModal';
 import DropdownSelect from './ui/DropdownSelect';

@@ -15,7 +15,7 @@ import {
 	CustomModal,
 	ParticipantsLeaderboard,
 	SponsorCarousel,
-	Timer,
+	RoundTimer,
 	TopBar
 } from 'components/';
 import {
@@ -133,7 +133,7 @@ const ViewSpecificProblemPage = ({
 						minWidth: 325,
 					}}
 				>
-					<Timer />
+					<RoundTimer />
 					<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
 					<SponsorCarousel />
 				</Stack>

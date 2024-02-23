@@ -19,7 +19,7 @@ import {
 	ParticipantsLeaderboard,
 	SponsorCarousel,
 	Table,
-	Timer,
+	RoundTimer,
 	TopBar
 } from 'components/';
 import {
@@ -147,7 +147,7 @@ const ViewAllProblemsPage = ({
 								minWidth: 325,
 							}}
 						>
-							<Timer />
+							<RoundTimer />
 							<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
 							<SponsorCarousel />
 						</Stack>

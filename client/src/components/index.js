@@ -14,8 +14,6 @@ import BuyPowerUpsPopover from './widgets/power-ups/BuyPowerUpsPopover';
 import PowerUpList from './widgets/power-ups/PowerUpList';
 import PowerUpType from './widgets/power-ups/PowerUpType';
 import RoundTimer from './widgets/timer/RoundTimer';
-import TimerOverlay from './widgets/screen-overlays/TimerOverlay';
-
 
 
 export { 
@@ -33,6 +31,5 @@ export {
 	SponsorCarousel,
 	SuccessWindow,
 	Table,
-	TimerOverlay,
 	TopBar
 };

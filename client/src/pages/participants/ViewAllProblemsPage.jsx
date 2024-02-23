@@ -32,6 +32,10 @@ import Loading from 'components/widgets/screen-overlays/Loading';
 
 import { baseURL } from 'utils/constants';
 import { postFetch } from 'utils/apiRequest';
+import { Bounce, toast } from 'react-toastify';
+import { socketClient } from 'socket/socket';
+import 'react-toastify/dist/ReactToastify.css'
+
 
 /*
  * Purpose: Displays the View All Problems Page for participants.
@@ -43,11 +47,16 @@ const ViewAllProblemsPage = ({
 	checkIfLoggedIn
 }) => {
 
-	// State handler for current round
+	/**
+	 * State handler for current round
+	 */
 	const [currRound, setCurrRound] = useState('EASY');
-	// State handler for viewing buy power-up popover
+	/**
+	 * State handler for viewing buy power-up popover
+	 */
 	const [open, setOpen] = useState(false);
 	
+	// options for rounds
 	const rounds = ['EASY', 'MEDIUM', 'WAGER', 'HARD'];
 
 	const [showBuffs, setShowBuffs] = useState(false);
@@ -75,6 +84,53 @@ const ViewAllProblemsPage = ({
 			setIsLoggedIn(false);
 		}
 	}, []);
+
+
+	// websocket listener for power-ups toast notifs
+	useEffect(() => {
+		if (!socketClient) return;
+
+		// listener for buffs
+		socketClient.on("newBuff", (powerUp) => {
+			const duration = powerUp.duration
+			const powerUpName = powerUp.name
+
+			toast.info('🚀 New Buff ' + powerUpName + ' applied on your team!', {
+				position: "bottom-right",
+				autoClose: duration,
+				hideProgressBar: false,
+				closeOnClick: false,
+				pauseOnHover: false,
+				draggable: false,
+				progress: undefined,
+				theme: "dark",
+				transition: Bounce,
+			});
+		});
+
+		// listener for debuffs
+		socketClient.on("newDebuff", (powerUp) => {
+			const duration = powerUp.duration
+			const powerUpName = powerUp.name
+
+			toast.warn('New Debuff ' + powerUpName + ' has been applied to your team!', {
+				position: "bottom-right",
+				autoClose: duration,
+				hideProgressBar: false,
+				closeOnClick: false,
+				pauseOnHover: false,
+				draggable: false,
+				progress: undefined,
+				theme: "dark",
+				transition: Bounce,
+			});
+		});
+
+		return () => {
+			socketClient.off("newBuff");
+			socketClient.off("newDebuff");
+		};
+	});
 
 	// Styling for the problem list table
 	const additionalStyles = {

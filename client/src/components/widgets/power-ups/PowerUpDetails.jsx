@@ -15,15 +15,16 @@ import {
 	DropdownSelect,
 	SuccessWindow
 } from 'components';
-import { teamsList } from 'utils/dummyData';
+// import { teamsList } from 'utils/dummyData';
 import { userDetailsContext } from 'utils/UserDetailsProvider';
+import { getFetch } from 'utils/apiRequest';
 
 
 
 /** 
  * Purpose: This component displays the details of the specific power-up selected.
  * Params:
- * 		<String>		type - receives the type of power-up clicked.
+ * 		<Int>				type - receives the type of power-up clicked.
  *    <Boolean>   open - tells whether to 
  *    <Object> 		powerUp - state containing the details about the power-up selected.
  */
@@ -33,9 +34,10 @@ const PowerUpDetails = ({
 	powerUp
 }) => {
 	// state handler for selected team recipient for debuff
-	const [selectedTeam, setSelectedTeam] = useState('Team Two');
+	const [selectedTeam, setSelectedTeam] = useState('');
 	// state handler for teams list
-	const [teams, setTeams] = useState(teamsList);
+	const [teams, setTeams] = useState([]);
+	const [teamOptions, setTeamOptions] = useState([]);
 	// state for the context API
 	// const [userDetails, setUserDetails] = useContext(userDetailsContext);
 	const [userDetails, setUserDetails] = useState();
@@ -51,19 +53,33 @@ const PowerUpDetails = ({
 	// 	setTeams(updatedTeams)
 
 	// }, [userDetails])
+	const getAllTeams = async (user) => {
+		try{
+			const res = await getFetch("http://localhost:5000/teams");
+			if(res.success){
+				const updatedTeams = res.teams.filter(team => {
+					return team._id !== user?._id;
+				});
 
+				const teamNamesArray = updatedTeams.map(team => team.team_name);
+
+				setTeams(updatedTeams);
+				setTeamOptions(teamNamesArray);
+				setSelectedTeam(teamNamesArray[0]);
+			} else {
+				console.log(res.message);
+				return [];
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	};
 	// eto muna for use effect para di muna gamitin context api
 	useEffect(() => {
-		let userDetails = {
-			user: 'Team One',
-			role: 'participant'
-		};
-		let updatedTeams = teamsList.filter(object => {
-			return object !== userDetails.user;
-		});
-		setTeams(updatedTeams);
-		setSelectedTeam(updatedTeams[0]);
-		setUserDetails(userDetails);
+		const user = JSON.parse(localStorage?.getItem("user"));
+
+		getAllTeams(user);
+		setUserDetails(user);
 	}, []); 
 	
 
@@ -212,7 +228,7 @@ const PowerUpDetails = ({
 					Cost: { powerUp.code == "dispel" ? "120% of the cost of the dispelled debuff" : powerUp.code == "immune" && Object.keys(powerUp.tier)[0] == 4 ? "1000 + 10% of the team\’s current total points" : powerUp.tier[Object.keys(powerUp.tier)[0]].cost}
 				</Typography>
 				
-				{type === 'debuff' ?
+				{type === 0 ?
 					// Debuffs should have ui elements that allow the participants to select an enemy team to inflict the power-up on.
 					<>
 						{/* Select team dropdown select */}
@@ -221,7 +237,7 @@ const PowerUpDetails = ({
 							label="Team Name"
 							minWidth="100%"
 							variant="filled"
-							options={teams}
+							options={teamOptions}
 							handleChange={handleTeams}
 							value={selectedTeam}
 						/>
@@ -239,7 +255,33 @@ const PowerUpDetails = ({
 						>
 							Inflict debuff to {selectedTeam}
 						</Button>
+					</> :
+					type === 1 && powerUp.code === 'dispel' ?
+					<>
+						{/* Select team dropdown select */}
+						<DropdownSelect
+							isDisabled={false}
+							label="Debuffs"
+							minWidth="100%"
+							variant="filled"
+							options={teamOptions}
+							handleChange={handleTeams}
+							value={selectedTeam}
+						/>
 
+						{/* Button to inflict the debuff */}
+						<Button
+							onClick={() => applyDebuff(powerUp.name)}
+							variant="contained"
+							sx={{
+								marginBottom: '20px',
+								marginTop: '20px',
+								height: '40px',
+								fontSize: '14px',
+							}}
+						>
+							Dispel debuff to {selectedTeam}
+						</Button>
 					</> :
 					// Buffs only have the buy button					
 					<>

@@ -37,6 +37,9 @@ import {
 
 import Loading from 'components/widgets/screen-overlays/Loading';
 
+import EvalEditInputCell from './submission-table/EvalEditInputCell';
+
+
 
 // Styling for Leaderboard table
 const additionalStylesLeaderboard = {
@@ -70,41 +73,6 @@ function renderEval(props) {
 	);
 }
 
-function EvalEditInputCell(props) {
-	const [currVal, setCurrVal] = useState('Default');
-
-	const { id, formattedValue, field, hasFocus } = props;
-	const apiRef = useGridApiContext();
-	const ref = useRef();
-
-	const handleChange = (event, newValue) => {
-		setCurrVal(event.target.value);
-    apiRef.current.setEditCellValue({ id, field, formattedValue: currVal });
-	};
-	
-	useEnhancedEffect(() => {
-		if (hasFocus && ref.current) {
-      const input = ref.current.querySelector(`input[value="${currVal}"]`);
-      input?.focus();
-    }
-	}, [hasFocus, currVal]);
-	
-	
-	return (
-		<DropdownSelect
-			innerRef={ref} 
-			displayEmpty
-			variant="standard"
-			isDisabled={props.props.row?.hasFileDownloaded ? false : true}
-			minWidth="100%"
-			options={optionsEval}
-			handleChange={handleChange}
-			value={currVal}
-		> 
-			<MenuItem value="">Default</MenuItem>
-		</DropdownSelect>
-	)
-};
 
 const renderEvalEditInputCell = (params) => {
   return <EvalEditInputCell props={params} />;

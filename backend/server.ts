@@ -43,7 +43,7 @@ app.use(signupRoute);
 app.use(checkIfLoggedInRoute);
 app.use(adminRoutes);
 
-app.use(checkTokenMiddleware);
+// app.use(checkTokenMiddleware);
 
 app.use(teamScoreRoutes);
 app.use(powerupRoutes);

@@ -197,7 +197,7 @@ const PowerUpDetails = ({
 						marginBottom: '20px',
 					}}
 				>
-					{powerUp.fullDescription}
+					{powerUp.tier[Object.keys(powerUp.tier)[0]].description}
 				</Typography>
 				
 				{/* Power-up cost */}
@@ -209,7 +209,7 @@ const PowerUpDetails = ({
 						marginBottom: '20px',
 					}}
 				>
-					Cost: {powerUp.Cost}
+					Cost: { powerUp.code == "dispel" ? "120% of the cost of the dispelled debuff" : powerUp.code == "immune" && Object.keys(powerUp.tier)[0] == 4 ? "1000 + 10% of the team\’s current total points" : powerUp.tier[Object.keys(powerUp.tier)[0]].cost}
 				</Typography>
 				
 				{type === 'debuff' ?

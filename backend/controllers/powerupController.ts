@@ -42,7 +42,10 @@ import TeamModel, { Team } from '../models/team';
 export const get_all_powerups = async (req: Request, res: Response) => {
   try {
     const powerups: Powerup[] = await PowerupModel.find();
-    return res.send(powerups);
+    return res.send({
+      success: true,
+      message: powerups,
+    });
   } catch (error) {
     // Handle errors here
     console.error('Error fetching powerups:', error);
@@ -61,7 +64,10 @@ export const get_all_powerups = async (req: Request, res: Response) => {
 export const get_powerups_by_type = async (req: Request, res: Response) => {
   try {
     const powerups: Powerup[] = await PowerupModel.find({type: req.params.type});
-    return res.send(powerups);
+    return res.send({
+      success: true,
+      message: powerups
+    });
   } catch (error) {
     // Handle errors here
     console.error('Error fetching powerups:', error);
@@ -434,13 +440,13 @@ const remove_active_powerup = async (team_id : String) => {
 }
 
 // Run every 1 second
-setInterval(async () => {
-  try {
-    const teams = await TeamModel.find({});
-    for (const team of teams) {
-      await remove_active_powerup(team._id.toString());
-    }
-  } catch (error) {
-    console.error('Error checking for expired elements:', error);
-  }
-}, 1000);
+// setInterval(async () => {
+//   try {
+//     const teams = await TeamModel.find({});
+//     for (const team of teams) {
+//       await remove_active_powerup(team._id.toString());
+//     }
+//   } catch (error) {
+//     console.error('Error checking for expired elements:', error);
+//   }
+// }, 1000);

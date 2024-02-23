@@ -10,10 +10,12 @@ import NoEncryptionIcon from '@mui/icons-material/NoEncryption';
 import PanToolIcon from '@mui/icons-material/PanTool';
 import { Box } from '@mui/material';
 
-import { buffs, debuffs } from 'utils/dummyData';
+// import { buffs, debuffs } from 'utils/dummyData';
 
 import PowerUpDetails from './PowerUpDetails';
 import PowerUpItem from './PowerUpItem';
+import { useEffect, useRef, useState } from 'react';
+import { getFetch } from 'utils/apiRequest';
 
 
   
@@ -33,12 +35,57 @@ const PowerUpList = ({
 	handleClick,
 	selectedPowerUp
 }) => {
+	// State handler for buffs and debuffs
+	const [buffs, setBuffs] = useState([]);
+	const [debuffs, setDebuffs] = useState([]);
+
+	/*
+	 * Fetches all powerups from the database then separates it by type. 
+	 */
+	const getAllPowerups = async () => {
+		const res = await getFetch('http://localhost:5000/powerups/');
+		
+		if(res.success === true) {
+			const powerups = res.message;
+			const transformedArray = [];
+
+			let filteredDebuffs = powerups.filter((powerup) => powerup.type == 0);
+			setDebuffs(filteredDebuffs);
+			
+			const filteredBuffs = powerups.filter((powerup) => powerup.type == 1);
+			
+			/* 
+				Spread the buff tiers for each buff.
+				Filtered buffs: [{"name": "immunity", "tier": { 1: "some info", 2: "some info" }}]
+				Transformed array: [{"name": "immunity", "tier": { 1: "some info"}}, {"name": "immunity", "tier": { 2: "some info" }}] 				
+			*/
+			filteredBuffs.forEach(item => {
+				Object.keys(item.tier).forEach(key => {
+					transformedArray.push({
+						...item,
+						tier: {
+							[key]: item.tier[key]
+						}
+					});
+				});
+			});
+
+			setBuffs(transformedArray);
+		} else {
+			console.log(message);
+			return [];
+		}
+	}
+
+	useEffect(() => {
+		getAllPowerups();
+	}, []);
 
 	/**
    * Displays the icons for each power-up
    */
-	const itemIcons = ({ name }) => {
-		if (name == 'Dispel') {
+	const itemIcons = ({ code, tier }) => {
+		if (code == 'dispel') {
 			return <AutoAwesomeIcon
 				sx={{
 					marginLeft: '20px',
@@ -46,7 +93,7 @@ const PowerUpList = ({
 					color: '#85eeff',
 				}}
 			/>;
-		} else if (name === 'Immunity I') {
+		} else if (code === 'immune' && Object.keys(tier)[0] == 1) {
 			return <LooksOneIcon
 				sx={{
 					marginLeft: '20px',
@@ -54,7 +101,7 @@ const PowerUpList = ({
 					color: '#ff9cee',
 				}}
 			/>;
-		} else if (name === 'Immunity II') {
+		} else if (code === 'immune' && Object.keys(tier)[0] == 2) {
 			return <LooksTwoIcon
 				sx={{
 					marginLeft: '20px',
@@ -62,7 +109,7 @@ const PowerUpList = ({
 					color: '#b28dff',
 				}}
 			/>;
-		} else if (name === 'Immunity III') {
+		} else if (code === 'immune' && Object.keys(tier)[0] == 3) {
 			return <Looks3Icon
 				sx={{
 					marginLeft: '20px',
@@ -70,7 +117,7 @@ const PowerUpList = ({
 					color: '#e7ffac',
 				}}
 			/>;
-		} else if (name === 'Immunity IV') {
+		} else if (code === 'immune' && Object.keys(tier)[0] == 4) {
 			return <Looks4Icon
 				sx={{
 					marginLeft: '20px',
@@ -78,7 +125,7 @@ const PowerUpList = ({
 					color: '#97a2ff',
 				}}
 			/>;
-		} else if (name === 'Unchain') {
+		} else if (code === 'unchain') {
 			return <NoEncryptionIcon
 				sx={{
 					marginLeft: '20px',
@@ -86,7 +133,7 @@ const PowerUpList = ({
 					color: '#bffcc6',
 				}}
 			/>;
-		} else if (name === 'Stun') {
+		} else if (code === 'stun') {
 			return <ElectricBoltIcon
 				sx={{
 					marginLeft: '20px',
@@ -94,7 +141,7 @@ const PowerUpList = ({
 					color: '#85eeff',
 				}}
 			/>;
-		} else if (name === 'Editor') {
+		} else if (code === 'editor') {
 			return <LaptopChromebookIcon
 				sx={{
 					marginLeft: '20px',
@@ -102,7 +149,7 @@ const PowerUpList = ({
 					color: '#ff9cee',
 				}}
 			/>;
-		} else if (name === 'Frosty Hands') {
+		} else if (code === 'frosty') {
 			return <PanToolIcon
 				sx={{
 					marginLeft: '20px',

@@ -9,12 +9,21 @@ import {
 	SuccessWindow
 } from 'components';
 
+import { socketClient } from 'socket/socket';
 
-const  SubmitModal = ({ setOpen }) => {
+const  SubmitModal = ({ 
+	setOpen,
+	problemId,
+	problemTitle,
+	possiblePoints,
+	totalCases
+ }) => {
 	/**
    * State handler for the team's uploaded file.
    */
 	const [file, setFile] = useState(null);
+	const [content, setContent] = useState(null);
+	const [filename, setFilename] = useState(null);
 
 	/**
    * Purpose: Allows the file to be dropped in the designated area. Set the current file to the drop file  
@@ -32,7 +41,14 @@ const  SubmitModal = ({ setOpen }) => {
    */
 	const handleFileInputChange = (event) => {
 		const selectedFile = event.target.files[0];
-		setFile(selectedFile);
+		
+		const reader = new FileReader();
+		reader.onload = function() {
+			setFile(selectedFile);
+			setContent(reader.result);
+			setFilename(selectedFile.name);
+		};
+		reader.readAsText(selectedFile);
 	};
 
 	/**
@@ -52,6 +68,16 @@ const  SubmitModal = ({ setOpen }) => {
 		setOpen(false);
 
 		// add post request to db here
+		socketClient.emit("newupload",{
+			filename,
+			content,
+			problemId,
+			problemTitle,
+			possiblePoints,
+			"teamId": JSON.parse(localStorage.getItem("user"))._id,
+			"teamName": JSON.parse(localStorage.getItem("user")).username,
+			totalCases
+		});
     
 		// fire success window
 		SuccessWindow.fire({

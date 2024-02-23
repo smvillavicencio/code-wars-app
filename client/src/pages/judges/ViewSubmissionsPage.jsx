@@ -36,7 +36,7 @@ import {
 } from 'utils/dummyData';
 
 import Loading from 'components/widgets/screen-overlays/Loading';
-
+import { socketClient } from 'socket/socket';
 
 // Styling for Leaderboard table
 const additionalStylesLeaderboard = {
@@ -57,7 +57,6 @@ const additionalStylesSubmissions = {
 
 
 function renderEval(props) {
-	// console.log(props)
 	return (
 		<DropdownSelect
 			readOnly
@@ -79,7 +78,7 @@ function EvalEditInputCell(props) {
 
 	const handleChange = (event, newValue) => {
 		setCurrVal(event.target.value);
-    apiRef.current.setEditCellValue({ id, field, formattedValue: currVal });
+    apiRef.current.setEditCellValue({ id, field, formattedValue: event.target.value });
 	};
 	
 	useEnhancedEffect(() => {
@@ -253,14 +252,29 @@ const ViewSubmissionsPage = ({
 			navigate('/admin/general');
 		}
 		else if (usertype == "judge") {
-			checkIfLoggedIn();	
+			checkIfLoggedIn();
 		}
 		else {
 			setIsLoggedIn(false);
 		}
+		console.log("before socketClient");
+		if (!socketClient) return;
+		console.log("after socketClient");
+
+		socketClient.on("newitemtojudge", (arg)=>{
+			console.log("NEW SUBMISSION");
+		});
+		socketClient.on("hello", (arg) => {
+			console.log(arg); // world
+		});
+
+		return () => {
+			socketClient.off("newitemtojudge");
+			socketClient.off("hello");
+		}
 		
 	}, []);
-
+	
 	return (
 		<>
 		{ isLoggedIn ?

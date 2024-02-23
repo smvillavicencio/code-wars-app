@@ -78,9 +78,10 @@ const LoginPage = () => {
 				"authToken",
 				loginResponse.token,
 				{
+					secure: true,
 					path: "/",
 					age: 60*60*24,
-					sameSite: "lax"
+					sameSite: "none"
 				}
 			);
 		}

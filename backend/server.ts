@@ -17,7 +17,7 @@ import submissionRoutes from './routes/submissionRoutes';
 import adminRoutes from './routes/adminRoutes';
 import { checkTokenMiddleware } from "./controllers/authController";
 
-import './sockets/socket.js';
+import './sockets/socket';
 
 const cors = require("cors");
 const app = express();
@@ -43,7 +43,7 @@ app.use(signupRoute);
 app.use(checkIfLoggedInRoute);
 app.use(adminRoutes);
 
-app.use(checkTokenMiddleware);
+//app.use(checkTokenMiddleware);
 
 app.use(teamScoreRoutes);
 app.use(powerupRoutes);

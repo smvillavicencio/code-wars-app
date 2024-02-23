@@ -33,8 +33,7 @@ const uploadSubmission = async (arg: any) => {
     const possiblePoints = arg.possiblePoints;
     const teamId = arg.teamId;
     const teamName = arg.teamName;
-    const totalCases = arg.totalCases;
-    
+    const totalCases = arg.totalCases;    
 
     const prevSubmissions = await Submission.find({ team_id: teamId, problem_id: problemId })?.sort({ timestamp: 1 });
     let prevMaxScore;
@@ -53,14 +52,14 @@ const uploadSubmission = async (arg: any) => {
     const newSubmission = new Submission({
         team_id: teamId,
         team_name: teamName,
-        judge_id: "pending",//judgeId
-        judge_name: "pending",//judgeName
+        judge_id: "",//judgeId
+        judge_name: "Unassigned",//judgeName
         problem_id: problemId,
         problem_title: problemTitle,
         possible_points: possiblePoints,
-        status: "pending",
+        status: "Pending",
         score: 0,
-        evaluation: "pending",
+        evaluation: "-",
         timestamp: new Date(),
         content: content,
         prev_max_score: prevMaxScore,
@@ -69,7 +68,7 @@ const uploadSubmission = async (arg: any) => {
         filename
     })
     // status : checked, error, pending
-    // evaluation: correct, partial, wrong, error, pending
+    // evaluation: correct, partially correct, incorrect solution, error, pending
 
     try {
         let submission = await newSubmission.save();
@@ -111,7 +110,7 @@ const downloadSubmission = async (req: Request, res: Response) => {
 
 /*
  * Purpose: Check or grade  (changes fields status, evaluation, and score)
- * Params (in the Request): submissionId, evaluation (correct, partial, wrong, error), judgeId, judgeName, correctCases, possiblePoints
+ * Params (in the Request): submissionId, evaluation (correct, partially correct, incorrect solution, error, pending), judgeId, judgeName, correctCases, possiblePoints
  * Returns (in the Response): 
  *      Object with fields success and the corresponding results
  */
@@ -124,7 +123,7 @@ const checkSubmission = async (req: Request, res: Response) => {
     const possiblePoints = parseInt(req.body.possiblePoints);
 
     // status : checked, error, pending
-    // evaluation: correct, partial, wrong, error, pending
+    // evaluation: correct, partially correct, incorrect solution, error, pending
     let submission = await Submission.findById(submissionId);
 
     if (submission) {

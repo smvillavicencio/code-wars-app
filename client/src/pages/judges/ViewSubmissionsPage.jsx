@@ -38,6 +38,9 @@ import {
 import Loading from 'components/widgets/screen-overlays/Loading';
 import { socketClient } from 'socket/socket';
 
+import { baseURL } from 'utils/constants';
+import { getFetch } from 'utils/apiRequest';
+
 // Styling for Leaderboard table
 const additionalStylesLeaderboard = {
 	// modify column header typography
@@ -121,6 +124,7 @@ const ViewSubmissionsPage = ({
 	// state handler for overall leaderboard modal
 	const [open, setOpen] = useState(false);
 
+	const [fetchAllPrevious, setFetchAllPrevious] = useState(false);
 	const [submissionsList, setSubmissionsList] = useState([]);
 
 	// default values are given to make the component a controlled component
@@ -266,6 +270,13 @@ const ViewSubmissionsPage = ({
 	const navigate = useNavigate();
 
 	const handleSocket = () => {
+		
+		if (!socketClient) {
+			console.log("There is a problem with the socketClient")
+			return;
+		} else {
+			console.log("socketClient is present")
+		}
 
 		socketClient.on('newitemtojudge', (arg)=>{
 			console.log("NEW SUBMISSION");
@@ -304,6 +315,30 @@ const ViewSubmissionsPage = ({
 
     }; 
 
+	const getSubmissions = async () => {
+		const submissions = await getFetch(`${baseURL}/getallsubmissions`,);
+
+		let allSubmissionsList = [];
+
+		submissions.results?.map((arg)=>{
+			let newsubmission = {};
+
+			newsubmission.id = arg._id;
+			newsubmission.teamName = arg.team_name;
+			newsubmission.problemTitle = arg.problem_title;
+			newsubmission.submittedAt = new Date(arg.timestamp).toLocaleString();
+			newsubmission.uploadedFile = arg.filename;
+			newsubmission.evaluation = arg.evaluation;
+			newsubmission.checkedBy = arg.judge_name;
+			newsubmission.content = arg.content;
+
+			allSubmissionsList.push(newsubmission);
+		});
+
+		setSubmissionsList(allSubmissionsList);
+		setFetchAllPrevious(true);
+	}
+
 	useEffect(() => { 
 		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
 		if (usertype == "participant") {
@@ -319,7 +354,12 @@ const ViewSubmissionsPage = ({
 			setIsLoggedIn(false);
 		}
 
-		handleSocket();
+
+		if (fetchAllPrevious) {
+			handleSocket();
+		} else {
+			getSubmissions();
+		}
 		
 	}, []);
 	

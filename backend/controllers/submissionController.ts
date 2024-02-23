@@ -11,6 +11,7 @@ const Team = mongoose.model("Team");
     - downloadSubmission
     - checkSubmission
     - viewSubmissionsTP (based on Team and current Problem)
+    - getAllSubmissions
 */
 
 // SAMPLE FLOW UPON UPLOADING AND CHECKING SUBMISSIONS
@@ -207,4 +208,12 @@ const viewSubmissionsTP = async (req: Request, res: Response) => {
     });
 }
 
-export { uploadSubmission, downloadSubmission, checkSubmission, viewSubmissionsTP };
+const getAllSubmissions = async (req: Request, res: Response) => {
+    const results = await Submission.find().sort({ timestamp: 1 });
+
+    return res.send({
+        results: results
+    });
+}
+
+export { uploadSubmission, downloadSubmission, checkSubmission, viewSubmissionsTP, getAllSubmissions };

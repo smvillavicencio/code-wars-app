@@ -203,7 +203,9 @@ export const rowsProblems = [
 export const optionsEval = [
 	'Correct',
 	'Partially Correct',
-	'Incorrect Solution'
+	'Incorrect Solution',
+	'Error',
+	'Pending'
 ];
 
 

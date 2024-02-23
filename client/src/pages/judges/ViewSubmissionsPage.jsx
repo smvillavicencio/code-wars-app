@@ -121,6 +121,8 @@ const ViewSubmissionsPage = ({
 	// state handler for overall leaderboard modal
 	const [open, setOpen] = useState(false);
 
+	const [submissionsList, setSubmissionsList] = useState([]);
+
 	// default values are given to make the component a controlled component
 	// state handler for team dropdown select
 	const [selectedTeam, setSelectedTeam] = useState('');
@@ -129,7 +131,27 @@ const ViewSubmissionsPage = ({
 
 	const handleDownload = (e, params) => {
 		e.preventDefault();
+		console.log(params);
+		downloadFile(params.row.uploadedFile, params.row.content);
+
 		params.row.hasFileDownloaded = true;
+	}
+
+	const downloadFile = (filename, data) => {
+		const blob = new Blob([data]);
+		// if(window.navigator.msSaveOrOpenBlob) {
+		// 	window.navigator.msSaveBlob(blob, filename);
+		// }
+		// else{
+			const elem = window.document.createElement('a');
+			elem.href = window.URL.createObjectURL(blob);
+			elem.download = filename;      
+			elem.style.display = 'none';  
+			document.body.appendChild(elem);
+			elem.click();        
+			document.body.removeChild(elem);
+			window.URL.revokeObjectURL(elem.href);
+		//}
 	}
 
 	// adding dropdown selects for evaluation column of submission table
@@ -243,6 +265,45 @@ const ViewSubmissionsPage = ({
 	// used for client-side routing to other pages
 	const navigate = useNavigate();
 
+	const handleSocket = () => {
+
+		socketClient.on('newitemtojudge', (arg)=>{
+			console.log("NEW SUBMISSION");
+			console.log(arg);
+
+			let newsubmission = {};
+			newsubmission.id = arg._id;
+			newsubmission.teamName = arg.team_name;
+			newsubmission.problemTitle = arg.problem_title;
+			newsubmission.submittedAt = new Date(arg.timestamp).toLocaleString();
+			newsubmission.uploadedFile = arg.filename;
+			newsubmission.evaluation = arg.evaluation;
+			newsubmission.checkedBy = arg.judge_name;
+			newsubmission.content = arg.content;
+
+			let newSubmissionsList = [];
+
+			let present = false;
+			submissionsList?.map((submission)=>{
+				if (submission.id == newsubmission.id) {
+					present = true;
+				} else {
+					newSubmissionsList.push(submission);
+				}
+			});
+			newSubmissionsList.push(newsubmission);
+
+			if (!present) {
+				setSubmissionsList(newSubmissionsList);
+			}
+		});   
+  
+		return () => {
+			socketClient.off('newitemtojudge');
+		};
+
+    }; 
+
 	useEffect(() => { 
 		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
 		if (usertype == "participant") {
@@ -257,21 +318,8 @@ const ViewSubmissionsPage = ({
 		else {
 			setIsLoggedIn(false);
 		}
-		console.log("before socketClient");
-		if (!socketClient) return;
-		console.log("after socketClient");
 
-		socketClient.on("newitemtojudge", (arg)=>{
-			console.log("NEW SUBMISSION");
-		});
-		socketClient.on("hello", (arg) => {
-			console.log(arg); // world
-		});
-
-		return () => {
-			socketClient.off("newitemtojudge");
-			socketClient.off("hello");
-		}
+		handleSocket();
 		
 	}, []);
 	
@@ -329,7 +377,7 @@ const ViewSubmissionsPage = ({
 
 				{/* Submission Entry Table */}
 				<Table
-					rows={getFilteredRows(rowsSubmissions)}// useMemo(() => {return getFilteredRows(rowsSubmissions)}, [selectedTeam, selectedProblem] ) // Replaced original for now due to error happening when # of hooks used change between renders
+					rows={getFilteredRows(submissionsList)}// useMemo(() => {return getFilteredRows(rowsSubmissions)}, [selectedTeam, selectedProblem] ) // Replaced original for now due to error happening when # of hooks used change between renders
 					columns={modifiedSubmissionColumns}// useMemo(() => {return modifiedSubmissionColumns}, [] )
 					hideFields={[]}
 					additionalStyles={additionalStylesSubmissions}

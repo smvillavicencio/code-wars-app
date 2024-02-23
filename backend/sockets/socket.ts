@@ -10,13 +10,20 @@ let io = require("socket.io")(8000, {
 
 io.on("connection", (socket: any) => {
   //ADD SOCKET EVENTS HERE
-  socket.emit("hello", "world");
+  
+  socket.on("newupload", (arg: any)=>{
+    setTimeout( async ()=>{
+      try {
+        let response = await uploadSubmission(arg);
+      
+        if (response.success) {
+          console.log("||||||");
+          socket.emit("newitemtojudge", response.submission);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }, 20000);
 
-  socket.on("newupload",  (arg: any)=>{
-    let response = "huhu"//await uploadSubmission(arg);
-
-    
-    socket.emit("newitemtojudge", response);
-    
   });
 });

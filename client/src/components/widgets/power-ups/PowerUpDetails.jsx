@@ -14,6 +14,7 @@ import {
 	ConfirmWindow,
 	DropdownSelect,
 	SuccessWindow,
+	ErrorWindow
 } from 'components';
 import { socketClient } from 'socket/socket';
 import { getFetch } from 'utils/apiRequest';
@@ -39,6 +40,10 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 	 * State handler for user details (from local storage)
 	 */
 	const [userDetails, setUserDetails] = useState();
+	/**
+	 * State handler for enemy team details (from database)
+	 */
+	const [enemyTeamDetails, setEnemyTeamDetails] = useState([]);
 	/** 
 	 * State handler for user's active debuffs
 	*/
@@ -84,6 +89,7 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 				const activeDebuffListOptions = userTeamInfo.debuffs_received.length > 0 ? userTeamInfo.debuffs_received.map(debuff => debuff.name) : ['No Active Debuffs'];
 
 				// update states
+				setEnemyTeamDetails(enemyTeams);
 				setTeamOptions(teamListOptions);
 				setSelectedTeam(teamListOptions[0]);
 				setActiveDebuffs(activeDebuffListOptions);
@@ -125,11 +131,23 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 				socketClient.emit("applyDebuff", {
 					"powerUp": powerUp,
 					"userTeam": userDetails,
-					"recipientTeam": selectedTeam
+					"recipientTeam": enemyTeamDetails.find((team) => team.team_name === selectedTeam)
 				});
 
-				SuccessWindow.fire({
-					text: 'Successfully used '+`${powerUp.name}`+' on '+`${selectedTeam}`+'!'
+				socketClient.on("scenarioCheckerDebuff", (scenario) => {
+					if(scenario === 'existing'){
+						ErrorWindow.fire({
+							text: `${selectedTeam} has an active debuff ${powerUp.name}. Stacking of debuffs is not allowed!`
+						});
+					} else if (scenario === 'insufficient_funds') {
+						ErrorWindow.fire({
+							text: `You have insufficient points to buy ${powerUp.name}!`
+						});
+					} else {
+						SuccessWindow.fire({
+							text: 'Successfully used '+`${powerUp.name}`+' on '+`${selectedTeam}`+'!'
+						});
+					}
 				});
 
 				// reset values

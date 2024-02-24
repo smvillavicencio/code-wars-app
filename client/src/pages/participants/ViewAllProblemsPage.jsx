@@ -44,17 +44,18 @@ import 'react-toastify/dist/ReactToastify.css';
 const ViewAllProblemsPage = ({
 	isLoggedIn,
 	setIsLoggedIn,
-	checkIfLoggedIn
+	checkIfLoggedIn,
+	currRound,
+	setCurrRound
 }) => {
 
-	/**
-	 * State handler for current round
-	 */
-	const [currRound, setCurrRound] = useState('EASY');
+	
 	/**
 	 * State handler for viewing buy power-up popover
 	 */
 	const [open, setOpen] = useState(false);
+
+	const [currQuestions, setCurrQuestions] = useState([]);
 	
 	// options for rounds
 	const rounds = ['EASY', 'MEDIUM', 'WAGER', 'HARD'];
@@ -63,6 +64,28 @@ const ViewAllProblemsPage = ({
 	const [showDebuffs, setShowDebuffs] = useState(false);
 	const [seeDetails, setSeeDetails] = useState(false);
 	const [selectedPowerUp, setSelectedPowerUp] = useState(null);
+
+	const getRoundQuestions = async () => {
+		const qResponse = await postFetch(`${baseURL}/viewquestionsdiff`, {
+			difficulty: currRound.toLowerCase()
+		});
+
+		let newQuestions = [];
+
+		qResponse.questions?.map((question)=>{
+			let formattedQuestion = {};
+			formattedQuestion.problemTitle = question.title;
+			formattedQuestion.id = newQuestions.length;
+			formattedQuestion.status = "Pending";
+			formattedQuestion.score = 0;
+			formattedQuestion.checkedBy = "";
+
+			newQuestions.push(formattedQuestion);
+		})
+
+		//console.log(qResponse);
+		setCurrQuestions(newQuestions);
+	}
 
 	useEffect(() => {
 		setSeeDetails(false);
@@ -83,6 +106,9 @@ const ViewAllProblemsPage = ({
 		else {
 			setIsLoggedIn(false);
 		}
+
+		getRoundQuestions();
+		
 	}, []);
 
 
@@ -208,7 +234,7 @@ const ViewAllProblemsPage = ({
 								minWidth: 325,
 							}}
 						>
-							<RoundTimer />
+							<RoundTimer  />
 							<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
 							<SponsorCarousel />
 						</Stack>
@@ -255,7 +281,7 @@ const ViewAllProblemsPage = ({
 
 							{/* Problem List Table for the round */}
 							<Table
-								rows={rowsProblems}
+								rows={currQuestions} //rowsProblems
 								columns={columnsProblems}
 								hideFields={[]}
 								additionalStyles={additionalStyles}

@@ -1,7 +1,6 @@
 /* eslint-disable */ 
 import {
 	useMemo,
-	useRef,
 	useState,
 	useEffect
 } from 'react';
@@ -13,8 +12,6 @@ import {
 	Stack,
 	Typography
 } from '@mui/material';
-import { useGridApiContext } from '@mui/x-data-grid';
-import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/utils';
 import { Link, useNavigate } from 'react-router-dom';
 
 import seal from 'assets/UPLB COSS.png';
@@ -25,18 +22,22 @@ import {
 	TopBar
 } from 'components/';
 
+import getLeaderboard from 'components/widgets/leaderboard/getLeaderboard';
+
 import {
 	columnsSubmissions,
 	columnsLeaderboard,
-	optionsEval,
 	optionsTeam,
 	optionsProblems,
-	rowsSubmissions,
-	rowsLeaderboard
 } from 'utils/dummyData';
 
+import renderEval from './submission-entries/EvalViewInputCell';
+import EvalEditInputCell from './submission-entries/EvalEditInputCell';
 import Loading from 'components/widgets/screen-overlays/Loading';
+import { socketClient } from 'socket/socket';
 
+import { baseURL } from 'utils/constants';
+import { getFetch } from 'utils/apiRequest';
 
 // Styling for Leaderboard table
 const additionalStylesLeaderboard = {
@@ -55,60 +56,10 @@ const additionalStylesSubmissions = {
 	paddingX: 2,
 }
 
-
-function renderEval(props) {
-	// console.log(props)
-	return (
-		<DropdownSelect
-			readOnly
-			variant="standard"
-			minWidth="100%"
-			options={optionsEval}
-			isDisabled={props.row.hasFileDownloaded ? false : true}
-			value={props.formattedValue}
-		/>
-	);
-}
-
-function EvalEditInputCell(props) {
-	const [currVal, setCurrVal] = useState('Default');
-
-	const { id, formattedValue, field, hasFocus } = props;
-	const apiRef = useGridApiContext();
-	const ref = useRef();
-
-	const handleChange = (event, newValue) => {
-		setCurrVal(event.target.value);
-    apiRef.current.setEditCellValue({ id, field, formattedValue: currVal });
-	};
-	
-	useEnhancedEffect(() => {
-		if (hasFocus && ref.current) {
-      const input = ref.current.querySelector(`input[value="${currVal}"]`);
-      input?.focus();
-    }
-	}, [hasFocus, currVal]);
-	
-	
-	return (
-		<DropdownSelect
-			innerRef={ref} 
-			displayEmpty
-			variant="standard"
-			isDisabled={props.props.row?.hasFileDownloaded ? false : true}
-			minWidth="100%"
-			options={optionsEval}
-			handleChange={handleChange}
-			value={currVal}
-		> 
-			<MenuItem value="">Default</MenuItem>
-		</DropdownSelect>
-	)
-};
-
 const renderEvalEditInputCell = (params) => {
   return <EvalEditInputCell props={params} />;
 };
+
 
 /**
  * Purpose: Displays the View Submissions Page for judges.
@@ -122,6 +73,12 @@ const ViewSubmissionsPage = ({
 	// state handler for overall leaderboard modal
 	const [open, setOpen] = useState(false);
 
+	const [fetchAllPrevious, setFetchAllPrevious] = useState(false);
+	const [submissionsList, setSubmissionsList] = useState([]);
+
+	// state handler for rows of overall leaderboard
+	const [leaderboardRows, setLeaderboardRows] = useState([]);
+
 	// default values are given to make the component a controlled component
 	// state handler for team dropdown select
 	const [selectedTeam, setSelectedTeam] = useState('');
@@ -130,7 +87,27 @@ const ViewSubmissionsPage = ({
 
 	const handleDownload = (e, params) => {
 		e.preventDefault();
+		console.log(params);
+		downloadFile(params.row.uploadedFile, params.row.content);
+
 		params.row.hasFileDownloaded = true;
+	}
+
+	const downloadFile = (filename, data) => {
+		const blob = new Blob([data]);
+		// if(window.navigator.msSaveOrOpenBlob) {
+		// 	window.navigator.msSaveBlob(blob, filename);
+		// }
+		// else{
+			const elem = window.document.createElement('a');
+			elem.href = window.URL.createObjectURL(blob);
+			elem.download = filename;      
+			elem.style.display = 'none';  
+			document.body.appendChild(elem);
+			elem.click();        
+			document.body.removeChild(elem);
+			window.URL.revokeObjectURL(elem.href);
+		//}
 	}
 
 	// adding dropdown selects for evaluation column of submission table
@@ -152,7 +129,6 @@ const ViewSubmissionsPage = ({
 							target="_blank"
 							download
 							onClick={(e) => {handleDownload(e, params)}}
-							// to={'/'}
 						>
 							{params.value}
 						</Link>
@@ -244,6 +220,78 @@ const ViewSubmissionsPage = ({
 	// used for client-side routing to other pages
 	const navigate = useNavigate();
 
+	const handleSocket = () => {
+		
+		if (!socketClient) {
+			console.log("There is a problem with the socketClient")
+			return;
+		} else {
+			console.log("socketClient is present")
+		}
+
+		socketClient.on('newitemtojudge', (arg)=>{
+			// console.log("NEW SUBMISSION");
+			console.log(arg);
+
+			let newsubmission = {};
+			newsubmission.id = submissionsList.length;
+			newsubmission.teamName = arg.team_name;
+			newsubmission.problemTitle = arg.problem_title;
+			newsubmission.submittedAt = new Date(arg.timestamp).toLocaleString();
+			newsubmission.uploadedFile = arg.filename;
+			newsubmission.evaluation = arg.evaluation;
+			newsubmission.checkedBy = arg.judge_name;
+			newsubmission.content = arg.content;
+
+			let newSubmissionsList = [];
+
+			let present = false;
+			submissionsList?.map((submission)=>{
+				if (submission.id == newsubmission.id) {
+					present = true;
+				} else {
+					newSubmissionsList.push(submission);
+				}
+			});
+			newSubmissionsList.push(newsubmission);
+
+			if (!present) {
+				setSubmissionsList(newSubmissionsList);
+			}
+		});   
+  
+		return () => {
+			socketClient.off('newitemtojudge');
+		};
+
+    }; 
+
+	const getSubmissions = async () => {
+		const submissions = await getFetch(`${baseURL}/getallsubmissions`,);
+
+		let allSubmissionsList = [];
+
+		submissions.results?.map((arg) => {
+			let newsubmission = {};
+
+			newsubmission.id = allSubmissionsList.length;
+			newsubmission.teamName = arg.team_name;
+			newsubmission.problemTitle = arg.problem_title;
+			newsubmission.submittedAt = new Date(arg.timestamp).toLocaleString();
+			newsubmission.uploadedFile = arg.filename;
+			newsubmission.evaluation = arg.evaluation;
+			newsubmission.checkedBy = arg.judge_name;
+			newsubmission.content = arg.content;
+			newsubmission.possible_points = arg.possible_points;
+
+
+			allSubmissionsList.push(newsubmission);
+		});
+
+		setSubmissionsList(allSubmissionsList);
+		setFetchAllPrevious(true);
+	}
+
 	useEffect(() => { 
 		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
 		if (usertype == "participant") {
@@ -253,14 +301,31 @@ const ViewSubmissionsPage = ({
 			navigate('/admin/general');
 		}
 		else if (usertype == "judge") {
-			checkIfLoggedIn();	
+			checkIfLoggedIn();
 		}
 		else {
 			setIsLoggedIn(false);
 		}
+
+
+		if (fetchAllPrevious) {
+			handleSocket();
+		} else {
+			getSubmissions();
+		}
+
+		/**
+	   * Fetch overall leaderboard data
+	   */
+		async function fetchData() {
+			let currLeaderboard = await getLeaderboard()
+			setLeaderboardRows(currLeaderboard);
+		}
+
+		fetchData()
 		
 	}, []);
-
+	
 	return (
 		<>
 		{ isLoggedIn ?
@@ -315,7 +380,7 @@ const ViewSubmissionsPage = ({
 
 				{/* Submission Entry Table */}
 				<Table
-					rows={getFilteredRows(rowsSubmissions)}// useMemo(() => {return getFilteredRows(rowsSubmissions)}, [selectedTeam, selectedProblem] ) // Replaced original for now due to error happening when # of hooks used change between renders
+					rows={getFilteredRows(submissionsList)}// useMemo(() => {return getFilteredRows(rowsSubmissions)}, [selectedTeam, selectedProblem] ) // Replaced original for now due to error happening when # of hooks used change between renders
 					columns={modifiedSubmissionColumns}// useMemo(() => {return modifiedSubmissionColumns}, [] )
 					hideFields={[]}
 					additionalStyles={additionalStylesSubmissions}
@@ -343,16 +408,12 @@ const ViewSubmissionsPage = ({
 			<CustomModal isOpen={open} setOpen={setOpen} windowTitle="Leaderboard">
 				<Table
 					editMode="row" 
-					rows={rowsLeaderboard}
+					rows={leaderboardRows}
 					columns={columnsLeaderboard}
 					hideFields={['id', 'totalSpent']}
 					additionalStyles={additionalStylesLeaderboard}
 					pageSize={5}
-					// processRowUpdate={(updatedRow, originalRow) =>
-					// 	mySaveOnServerFunction(updatedRow);
-					// }
-					// onProcessRowUpdateError={handleProcessRowUpdateError}
-					// isCellEditable={(params) => console.log(params)}
+					pageSizeOptions={[5, 10]}
 					initialState={{
 						pagination: { paginationModel: { pageSize: 5 } },
 					}}

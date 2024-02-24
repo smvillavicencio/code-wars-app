@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { viewQuestions } from '../controllers/questionsController';
+import { viewQuestions, getQuestionsBasedOnDifficulty, getQuestionContent } from '../controllers/questionsController';
 
 const router = Router();
 
-router.get('/viewQuestions', viewQuestions);
+router.get('/viewquestions', viewQuestions);
+router.post('/viewquestionsdiff', getQuestionsBasedOnDifficulty);
+router.post('/viewquestioncontent', getQuestionContent);
 
 export default router;

@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import { ToastContainer } from "react-toastify";
 
 const ToastContainerConfig = () => {

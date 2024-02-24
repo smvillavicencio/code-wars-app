@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
+import { startRoundTimer } from '../sockets/socket';
 
 var command = "normal";
+var round = "start";
+var counter = 0;
 
 const commandChannel = (req: Request, res: Response) => {
     console.log("Connected channel for admin commands.");
@@ -14,7 +17,19 @@ const commandChannel = (req: Request, res: Response) => {
       res.flushHeaders();
     
       const interval = setInterval(() => {
-          res.write(`data: ${command}\n\n`);
+          res.write(`data: ${JSON.stringify({
+            command,
+            round
+          })}\n\n`);
+
+          if (command == "logout") {
+            counter += 1;
+
+            if (counter > 5) {
+              command = "normal";
+              counter = 0;
+            }
+          }
       }, 500);
     
       res.on("close", () => {
@@ -25,9 +40,37 @@ const commandChannel = (req: Request, res: Response) => {
 
 const setAdminCommand = (req: Request, res: Response) => {
     const newcommand = req.body.command;
+    const newround = req.body.round;
+
+    if (newround != round) {
+      console.log(newround);
+      let duration: number;
+
+      if (newround == 'EASY') {
+        duration = 60 * 30;
+      }
+      else if (newround == 'MEDIUM') {
+        duration = 60 * 45;
+      }
+      else if (newround == 'WAGER') {
+        duration = 60 * 15;
+      }
+      else if (newround == 'HARD') {
+        duration = 60 * 30;
+      } else {
+        duration = 0;
+      }
+
+      if (duration > 0) {
+        startRoundTimer(duration);
+      }
+    }
 
     command = newcommand;
-    return res.send();
+    round = newround;
+    return res.send(
+      { ok: true }
+    );
 }
 
-export { commandChannel, setAdminCommand };
+export { commandChannel, setAdminCommand, round };

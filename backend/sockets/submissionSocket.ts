@@ -5,15 +5,6 @@ import mongoose from 'mongoose';
 const Submission = mongoose.model("Submission");
 const Team = mongoose.model("Team");
 
-/*
-    ENDPOINTS:
-    - uploadSubmission
-    - downloadSubmission
-    - checkSubmission
-    - viewSubmissionsTP (based on Team and current Problem)
-    - getAllSubmissions
-*/
-
 // SAMPLE FLOW UPON UPLOADING AND CHECKING SUBMISSIONS
 // For a problem with a total of 500 points:
 // 1st submission: prevMaxScore=0,		score=200	[+200 team points]
@@ -30,15 +21,19 @@ const Team = mongoose.model("Team");
  *      Object with fields success and the corresponding results
  */
 
-const uploadSubmission = async (req: Request, res: Response) => {
-    const problemId = req.body.problemId;
-    const teamId = req.body.teamId;
-    const teamName = req.body.teamName;
-    // const judgeId = req.body.judgeId;
-    // const judgeName = req.body.judgeName; // Judge set when submission is checked
-    const possiblePoints = req.body.possiblePoints;
-    const content = req.body.content;
-    const totalCases = req.body.totalCases;
+const uploadSubmission = async (arg: any) => {
+    // console.log(arg);
+    
+    // const judgeId = arg.judgeId;
+    // const judgeName = arg.judgeName; // Judge set when submission is checked
+    const filename = arg.filename;
+    const content = arg.content;
+    const problemId = arg.problemId;
+    const problemTitle = arg.problemTitle;
+    const possiblePoints = arg.possiblePoints;
+    const teamId = arg.teamId;
+    const teamName = arg.teamName;
+    const totalCases = arg.totalCases;    
 
     const prevSubmissions = await Submission.find({ team_id: teamId, problem_id: problemId })?.sort({ timestamp: 1 });
     let prevMaxScore;
@@ -57,36 +52,36 @@ const uploadSubmission = async (req: Request, res: Response) => {
     const newSubmission = new Submission({
         team_id: teamId,
         team_name: teamName,
-        judge_id: "pending",//judgeId
-        judge_name: "pending",//judgeName
+        judge_id: "Unassigned",//judgeId
+        judge_name: "Unassigned",//judgeName
         problem_id: problemId,
+        problem_title: problemTitle,
         possible_points: possiblePoints,
-        status: "pending",
+        status: "Pending",
         score: 0,
-        evaluation: "pending",
+        evaluation: "Pending",
         timestamp: new Date(),
         content: content,
         prev_max_score: prevMaxScore,
         total_test_cases: totalCases,
-        curr_correct_cases: 0
+        curr_correct_cases: 0,
+        filename
     })
     // status : checked, error, pending
     // evaluation: correct, partially correct, incorrect solution, error, pending
 
-    let results;
     try {
-        results = await newSubmission.save();
+        let submission = await newSubmission.save();
+        return {
+            submission,
+            success: true
+        };
     } catch (error) {
-        return res.send({
-            success: false,
-            results: error
-        });
+        console.log(error);
+        return {
+            success: false
+        };
     }
-    
-    return res.send({
-        success: true,
-        results: results
-    });
 }
 
 /*
@@ -119,13 +114,13 @@ const downloadSubmission = async (req: Request, res: Response) => {
  * Returns (in the Response): 
  *      Object with fields success and the corresponding results
  */
-const checkSubmission = async (req: Request, res: Response) => {
-    const submissionId = req.body.submissionId;
-    const evaluation = req.body.evaluation;
-    const judgeId = req.body.judgeId;
-    const judgeName = req.body.judgeName;
-    const correctCases = parseInt(req.body.currentCases);
-    const possiblePoints = parseInt(req.body.possiblePoints);
+const checkSubmission = async (arg: any) => {
+    const submissionId = arg.submissionId;
+    const evaluation = arg.evaluation;
+    const judgeId = arg.judgeId;
+    const judgeName = arg.judgeName;
+    const correctCases = arg.correctCases;
+    const possiblePoints = arg.possiblePoints;
 
     // status : checked, error, pending
     // evaluation: correct, partially correct, incorrect solution, error, pending
@@ -137,6 +132,7 @@ const checkSubmission = async (req: Request, res: Response) => {
         submission.judge_name = judgeName;
         submission.curr_correct_cases = correctCases;
         
+        console.log(correctCases)
         let status;
         let score = 0;
 
@@ -150,15 +146,15 @@ const checkSubmission = async (req: Request, res: Response) => {
         
         let pointsToAdd = score - submission.prev_max_score;
         if (pointsToAdd > 0) {
+            
             const team = await Team.findById(submission.team_id);
-
             team.score = team.score + pointsToAdd;
 
             try {
                 team.save()
 
             } catch (error) {
-                return res.send({
+                return ({
                     success: false,
                     results: "Failed updating team score"
                 });
@@ -171,20 +167,22 @@ const checkSubmission = async (req: Request, res: Response) => {
         try {
             submission.save();
 
-            return res.send({
+            return ({
                 success: true,
+                status: status,
+                pointsToAdd: pointsToAdd,
                 results: submission
             });
 
         } catch (error) {
-            return res.send({
+            return ({
                 success: false,
                 results: "Failed checking submission"
             });
         }
 
     } else {
-        return res.send({
+        return ({
             success: false,
             results: "Submission not found"
         });
@@ -208,35 +206,4 @@ const viewSubmissionsTP = async (req: Request, res: Response) => {
     });
 }
 
-const getLastSubmissionByTeamOfProblem = async (req: Request, res: Response) => {
-    const problemId = req.body.problemId;
-    const teamId = req.body.teamId;
-
-    const result = await Submission.find({ team_id: teamId, problem_id: problemId });
-
-    let lastSubmission = null;
-    let higherScore = 0;
-    if (result.length > 0) {
-        lastSubmission = result[result.length - 1];
-        console.log(lastSubmission);
-        if (lastSubmission.prev_max_score >= lastSubmission.score) {
-            higherScore = lastSubmission.prev_max_score;
-        } else {
-            higherScore = lastSubmission.score;
-        }
-    } 
-
-    return res.send({
-        higherScore
-    });
-}
-
-const getAllSubmissions = async (req: Request, res: Response) => {
-    const results = await Submission.find().sort({ timestamp: 1 });
-
-    return res.send({
-        results: results
-    });
-}
-
-export { uploadSubmission, downloadSubmission, checkSubmission, viewSubmissionsTP, getAllSubmissions, getLastSubmissionByTeamOfProblem };
+export { uploadSubmission, checkSubmission };

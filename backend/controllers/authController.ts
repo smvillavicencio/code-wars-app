@@ -186,6 +186,7 @@ const checkIfLoggedIn = (req: Request, res: Response) => {
     for (let i = 0; i < cookies!.length; i++) {
       cookieDict[cookies[i].split("=")[0]] = cookies[i].split("=")[1];
     } 
+    //console.log(cookieDict);
     if (!cookieDict.authToken) {
       // Scenario 1: FAIL - No cookies / no authToken cookie sent
       return res.send({ isLoggedIn: false, scenario: 1 });

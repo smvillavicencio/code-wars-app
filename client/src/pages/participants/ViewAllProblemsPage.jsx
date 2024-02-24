@@ -229,7 +229,7 @@ const ViewAllProblemsPage = ({
 								minWidth: 325,
 							}}
 						>
-							<RoundTimer />
+							<RoundTimer  />
 							<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
 							<SponsorCarousel />
 						</Stack>

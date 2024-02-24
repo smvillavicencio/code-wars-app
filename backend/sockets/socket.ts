@@ -1,6 +1,8 @@
 // ADD YOUR FILE EXPORTS HERE
 import { uploadSubmission } from './submissionSocket'
 
+var roundStartTime: any;
+
 let io = require("socket.io")(8000, {
   cors: {
     origin: ["http://localhost:3000", process.env.FRONTEND_URL || "", process.env.DEV_FRONTEND_URL || "", process.env.PROD_FRONTEND_URL || ""],
@@ -60,3 +62,37 @@ io.on("connection", (socket: any) => {
 
   
 });
+
+const startRoundTimer = (seconds: number) => {
+  console.log("Started round timer");
+  roundStartTime = new Date().getTime();
+
+  function getRemainingTime() {
+    if (roundStartTime) {
+      const elapsedTime = (new Date().getTime() - roundStartTime) / 1000;
+      const remainingTime = Math.max(seconds - elapsedTime, 0);
+      return { remainingTime: Math.round(remainingTime) };
+    } else {
+      return { remainingTime: 0 };
+    }
+  }
+
+  io.emit('update', getRemainingTime());
+  console.log(getRemainingTime());
+
+  setInterval(() => {
+    if (roundStartTime) {
+      io.emit('update', getRemainingTime());
+      console.log(getRemainingTime());
+    }
+  }, 1000);
+
+  // Set a timeout to end the round after the specified duration
+  setTimeout(() => {
+    roundStartTime = null;
+    io.emit('update', getRemainingTime());
+    console.log(getRemainingTime());
+  }, seconds * 1000);
+}
+
+export { startRoundTimer };

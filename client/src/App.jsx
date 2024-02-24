@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useContext } from 'react';
 import { ThemeProvider } from '@emotion/react';
 import { Box } from '@mui/material';
-import { Outlet, BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Outlet, BrowserRouter as Router, Routes, Route, useFetcher } from 'react-router-dom';
 
 import GeneralBackground from 'assets/GeneralBackground.png';
 import { FreezeOverlay, ToastContainerConfig } from 'components';
@@ -23,8 +23,7 @@ import { baseURL } from 'utils/constants';
 import { postFetch } from 'utils/apiRequest';
 import { UserDetailsProvider } from 'utils/UserDetailsProvider.js';
 import Cookies from "universal-cookie";
-
-
+import { socketClient } from 'socket/socket';
 
 var immortalHTML = '<div class="MuiBox-root css-1ato3wx"><div class="MuiBox-root css-1xpmd5v"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium fOverlay css-i4bv87-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="HourglassFullTwoToneIcon" style="font-size: 10rem; align-self: center;"><path d="m8 7.5 4 4 4-4V4H8zm0 9V20h8v-3.5l-4-4z" opacity=".3"></path><path d="M18 2H6v6h.01L6 8.01 10 12l-4 4 .01.01H6V22h12v-5.99h-.01L18 16l-4-4 4-3.99-.01-.01H18zm-2 14.5V20H8v-3.5l4-4zm0-9-4 4-4-4V4h8z"></path></svg><br><h4 class="MuiTypography-root MuiTypography-h4 fOverlay css-1cvibvw-MuiTypography-root">Your screen has been frozen. <br>Please Wait.</h4></div></div>';
 
@@ -44,6 +43,7 @@ function App() {
 
 	// State handler for toggle switch state
 	const [checked, setChecked] = useState(false);
+
 
 	const checkIfLoggedIn = async () => {
 		let response = await postFetch(`${baseURL}/checkifloggedin`, {});
@@ -173,6 +173,7 @@ function App() {
 									checkIfLoggedIn={checkIfLoggedIn}
 									currRound={currRound}
 									setCurrRound={setCurrRound}
+									//seconds={sec}
 									 />} />
 							<Route path="participant/view-specific-problem" element={<ViewSpecificProblemPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
 							<Route path="judge/submissions" element={<ViewSubmissionsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />

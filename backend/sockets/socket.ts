@@ -1,5 +1,5 @@
 // ADD YOUR FILE EXPORTS HERE
-import { uploadSubmission } from './submissionSocket'
+import { uploadSubmission, checkSubmission } from './submissionSocket'
 
 let io = require("socket.io")(8000, {
   cors: {
@@ -15,7 +15,7 @@ io.on("connection", (socket: any) => {
     setTimeout( async ()=>{
       try {
         let response = await uploadSubmission(arg);
-      
+        console.log(response.submission)
         if (response.success) {
           console.log("||||||");
           socket.emit("newitemtojudge", response.submission);
@@ -57,6 +57,21 @@ io.on("connection", (socket: any) => {
     console.log("Team " + userTeam + " has bought a debuff to be used against " + recipientTeam)
   })
 
+  socket.on("submitEval", async (arg: any) => {
+    try {
+      let response = await checkSubmission(arg);
 
-  
+      if (response.success) {
+        console.log(response.results)
+        // emit to leaderboards
+        // socket.emit("updateLeaderboard", response.results)
+
+        // emit to problem list table
+        // socket.emit("")
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  })
 });

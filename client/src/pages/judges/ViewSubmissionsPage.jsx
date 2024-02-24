@@ -268,7 +268,7 @@ const ViewSubmissionsPage = ({
 
 		let allSubmissionsList = [];
 
-		submissions.results?.map((arg)=>{
+		submissions.results?.map((arg) => {
 			let newsubmission = {};
 
 			newsubmission.id = arg._id;
@@ -279,6 +279,8 @@ const ViewSubmissionsPage = ({
 			newsubmission.evaluation = arg.evaluation;
 			newsubmission.checkedBy = arg.judge_name;
 			newsubmission.content = arg.content;
+			newsubmission.possible_points = arg.possible_points;
+
 
 			allSubmissionsList.push(newsubmission);
 		});

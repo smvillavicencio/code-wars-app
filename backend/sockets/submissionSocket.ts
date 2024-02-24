@@ -59,7 +59,7 @@ const uploadSubmission = async (arg: any) => {
         possible_points: possiblePoints,
         status: "Pending",
         score: 0,
-        evaluation: "-",
+        evaluation: "Pending",
         timestamp: new Date(),
         content: content,
         prev_max_score: prevMaxScore,
@@ -114,13 +114,13 @@ const downloadSubmission = async (req: Request, res: Response) => {
  * Returns (in the Response): 
  *      Object with fields success and the corresponding results
  */
-const checkSubmission = async (req: Request, res: Response) => {
-    const submissionId = req.body.submissionId;
-    const evaluation = req.body.evaluation;
-    const judgeId = req.body.judgeId;
-    const judgeName = req.body.judgeName;
-    const correctCases = parseInt(req.body.currentCases);
-    const possiblePoints = parseInt(req.body.possiblePoints);
+const checkSubmission = async (arg: any) => {
+    const submissionId = arg.submissionId;
+    const evaluation = arg.evaluation;
+    const judgeId = arg.judgeId;
+    const judgeName = arg.judgeName;
+    const correctCases = arg.correctCases;
+    const possiblePoints = arg.possiblePoints;
 
     // status : checked, error, pending
     // evaluation: correct, partially correct, incorrect solution, error, pending
@@ -132,6 +132,7 @@ const checkSubmission = async (req: Request, res: Response) => {
         submission.judge_name = judgeName;
         submission.curr_correct_cases = correctCases;
         
+        console.log(correctCases)
         let status;
         let score = 0;
 
@@ -145,15 +146,15 @@ const checkSubmission = async (req: Request, res: Response) => {
         
         let pointsToAdd = score - submission.prev_max_score;
         if (pointsToAdd > 0) {
+            
             const team = await Team.findById(submission.team_id);
-
             team.score = team.score + pointsToAdd;
 
             try {
                 team.save()
 
             } catch (error) {
-                return res.send({
+                return ({
                     success: false,
                     results: "Failed updating team score"
                 });
@@ -166,20 +167,22 @@ const checkSubmission = async (req: Request, res: Response) => {
         try {
             submission.save();
 
-            return res.send({
+            return ({
                 success: true,
+                status: status,
+                pointsToAdd: pointsToAdd,
                 results: submission
             });
 
         } catch (error) {
-            return res.send({
+            return ({
                 success: false,
                 results: "Failed checking submission"
             });
         }
 
     } else {
-        return res.send({
+        return ({
             success: false,
             results: "Submission not found"
         });
@@ -203,4 +206,4 @@ const viewSubmissionsTP = async (req: Request, res: Response) => {
     });
 }
 
-export { uploadSubmission };
+export { uploadSubmission, checkSubmission };

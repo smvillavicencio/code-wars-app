@@ -15,6 +15,7 @@ export interface Powerup extends Document {
 
 export interface PowerupInfo {
   _id: string;
+  name: string;
   code: string;
   type: number;
   tier: string;
@@ -22,7 +23,8 @@ export interface PowerupInfo {
   cost: number;
   from?: string;
   target?: string;
-  timestamp: Date;
+  startTime: Date;
+  endTime: Date;
 }
 
 const PowerupSchema = new Schema<Powerup>({

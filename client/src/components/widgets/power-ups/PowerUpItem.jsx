@@ -42,7 +42,7 @@ const PowerUpItem = ({ icon, item, handleClick }) => {
 					{icon}
 
 					<Typography sx={{ fontSize: '.9rem', color: 'white.main' }} >
-						{item.name}
+						{item.code === 'immune' ? item.name + " " + Object.keys(item.tier)[0] : item.name}
 					</Typography>
 				</Box>
         

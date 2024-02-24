@@ -1,4 +1,5 @@
 // ADD YOUR FILE EXPORTS HERE
+import TeamModel, { Team } from '../models/team';
 import { uploadSubmission, checkSubmission } from './submissionSocket'
 
 var roundStartTime: any;
@@ -12,7 +13,11 @@ let io = require("socket.io")(8000, {
 
 io.on("connection", (socket: any) => {
   //ADD SOCKET EVENTS HERE
-  
+  socket.on("join", (user:any) => {
+    socket.join("user:" + user._id);
+    console.log("joined user:" + user._id);
+  });
+
   socket.on("newupload", (arg: any)=>{
     setTimeout( async ()=>{
       try {
@@ -41,23 +46,78 @@ io.on("connection", (socket: any) => {
     socket.emit("newBuff", powerUp)
   })
 
-  socket.on("applyDebuff", (data: any) => {
-    let powerUp = data.powerUp
-    let userTeam = data.userTeam.user
-    let recipientTeam = data.recipientTeam
+  socket.on("applyDebuff", async (data: any) => {
+    try{
+      const powerUp = data.powerUp;
+      const userTeam = data.userTeam;
+      const recipientTeam = data.recipientTeam;
 
-    // insert backend function for applying debuff to chosen team
-    
-    // for toast notif
-    // ilalagay to dun sa applying debuff to chosen team na functionality
-    // settimeout ay for testing lang - iisang laptop ang userTeam and recipientTeam
-    setTimeout(() => {
-      socket.emit("newDebuff", powerUp)
-    }, 20000)
-
-    // lalabas to sa side ng userTeam
-    console.log("Team " + userTeam + " has bought a debuff to be used against " + recipientTeam)
-  })
+      // Check if recipient/target has the same debuff active
+      if (
+        recipientTeam.debuffs_received.some((debuff:any) => debuff._id == powerUp._id)
+      ) {
+        socket.emit("scenarioCheckerDebuff", 'existing');
+      } else {
+        const team : Team | null = await TeamModel.findById(userTeam._id);
+        const tier_no = Object.keys(powerUp.tier)[0]; 
+        
+        if(team && team.score < powerUp.tier[tier_no].cost){
+          socket.emit("scenarioCheckerDebuff", 'insufficient_funds');
+        } else {
+          socket.emit("scenarioCheckerDebuff", 'success');
+          const startTime: Date = new Date();
+          const endTime: Date = new Date(startTime.getTime() + powerUp.tier[tier_no].duration);
+          
+          // Adjust total points used and score accordingly
+          await TeamModel.updateOne({ _id: userTeam._id }, { 
+            $inc: { 
+              score: -powerUp.tier[tier_no].cost, 
+              total_points_used: powerUp.tier[tier_no].cost 
+            }, 
+            $push: { "activated_powerups": {
+              _id: powerUp._id,
+              name: powerUp.name,
+              code: powerUp.code,
+              type: powerUp.type,
+              tier: tier_no,
+              duration: powerUp.tier[tier_no].duration,
+              cost: powerUp.tier[tier_no].cost,
+              target: recipientTeam._id,
+              startTime: startTime,
+              endTime: endTime
+            }}
+          });
+  
+          //  apply debuffs_received and show toast if there is no immunity active
+          if(!recipientTeam.active_buffs.find((buff: any) => buff.code === 'immune')){
+            socket.to("user:" + recipientTeam._id).emit("newDebuff", powerUp);
+            await TeamModel.updateOne({ _id: recipientTeam._id }, {
+              $push: { "debuffs_received": {
+                _id: powerUp._id,
+                name: powerUp.name,
+                code: powerUp.code,
+                type: powerUp.type,
+                tier: tier_no,
+                duration: powerUp.tier[tier_no].duration,
+                cost: powerUp.tier[tier_no].cost,
+                from: recipientTeam._id,
+                startTime: startTime,
+                endTime: endTime
+              }}
+            });
+          }
+  
+          console.log(
+            userTeam.username +
+              " has bought a debuff to be used against " +
+              recipientTeam.team_name
+          );
+        }
+      }
+    } catch(err){
+      console.log(err);
+    }
+  });
 
   socket.on("submitEval", async (arg: any) => {
     try {

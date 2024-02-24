@@ -245,6 +245,9 @@ export const buy_powerup = async (req: Request, res: Response) => {
               }
             }
             
+            const startTime: Date = new Date();
+            const endTime: Date = new Date(startTime.getTime() + powerup.tier[tier_no].duration);
+            
             // Adjust total points used and score accordingly
             await TeamModel.updateOne({ _id: team_id }, { 
               $inc: { 
@@ -253,13 +256,15 @@ export const buy_powerup = async (req: Request, res: Response) => {
               }, 
               $push: { "activated_powerups": {
                 _id: powerup._id,
+                name: powerup.name,
                 code: powerup.code,
                 type: powerup.type,
                 tier: tier_no,
                 duration: powerup.tier[tier_no].duration,
                 cost: powerup.tier[tier_no].cost,
                 target: target_id,
-                timestamp: new Date()
+                startTime: startTime,
+                endTime: endTime
               }}
             });
 
@@ -267,13 +272,15 @@ export const buy_powerup = async (req: Request, res: Response) => {
               await TeamModel.updateOne({ _id: target_id }, {
                 $push: { "debuffs_received": {
                   _id: powerup._id,
+                  name: powerup.name,
                   code: powerup.code,
                   type: powerup.type,
                   tier: tier_no,
                   duration: powerup.tier[tier_no].duration,
                   cost: powerup.tier[tier_no].cost,
                   from: team_id,
-                  timestamp: new Date()
+                  startTime: startTime,
+                  endTime: endTime
                 }}
               });
 
@@ -313,13 +320,14 @@ export const buy_powerup = async (req: Request, res: Response) => {
               }, 
               $push: { "activated_powerups": {
                 _id: powerup._id,
+                name: powerup.name,
                 code: powerup.code,
                 type: powerup.type,
                 tier: tier_no,
                 duration: powerup.tier[tier_no].duration,
                 cost: powerup.tier[tier_no].cost,
                 target: target_id,
-                timestamp: new Date()
+                startTime: new Date()
               }},
               $pull: { "debuffs_received": {
                 _id: debuff_to_dispel_id
@@ -342,15 +350,20 @@ export const buy_powerup = async (req: Request, res: Response) => {
           } else {
             var cost: number = powerup.tier[tier_no].cost;
           }
+          
+          const startTime: Date = new Date();
+          const endTime: Date = new Date(startTime.getTime() + powerup.tier[tier_no].duration);
 
           const info: PowerupInfo = {
             _id: powerup._id,
+            name: powerup.name,
             code: powerup.code,
             type: powerup.type,
             tier: tier_no,
             duration: powerup.tier[tier_no].duration,
             cost: powerup.tier[tier_no].cost,
-            timestamp: new Date()
+            startTime: startTime,
+            endTime: endTime,
           }
 
           await TeamModel.updateOne({ _id: team_id }, { 
@@ -418,15 +431,13 @@ const remove_active_powerup = async (team_id : String) => {
         if(buff.code == "immune" && buff.tier == "4") { // immunity tier 4 are immunity for the whole round.
           return true;
         } else {
-          const expirationTime = new Date(buff.timestamp.getTime() + buff.duration*1000);
-          return expirationTime > currentTime;
+          return buff.endTime > currentTime;
         }
       });
 
       //Filter out expired debuffs
       team.debuffs_received = team.debuffs_received.filter((debuff) => {
-        const expirationTime = new Date(debuff.timestamp.getTime() + debuff.duration*1000);
-        return expirationTime > currentTime;
+        return debuff.endTime > currentTime;
       });
       
       await team.save();
@@ -440,13 +451,13 @@ const remove_active_powerup = async (team_id : String) => {
 }
 
 // Run every 1 second
-// setInterval(async () => {
-//   try {
-//     const teams = await TeamModel.find({});
-//     for (const team of teams) {
-//       await remove_active_powerup(team._id.toString());
-//     }
-//   } catch (error) {
-//     console.error('Error checking for expired elements:', error);
-//   }
-// }, 1000);
+setInterval(async () => {
+  try {
+    const teams = await TeamModel.find({});
+    for (const team of teams) {
+      await remove_active_powerup(team._id.toString());
+    }
+  } catch (error) {
+    console.error('Error checking for expired elements:', error);
+  }
+}, 1000);

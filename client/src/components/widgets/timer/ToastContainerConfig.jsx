@@ -12,6 +12,7 @@ const ToastContainerConfig = () => {
       pauseOnFocusLoss={false}
       draggable={false}
       pauseOnHover={false}
+      closeButton={false}
       theme="dark"
     />
   )

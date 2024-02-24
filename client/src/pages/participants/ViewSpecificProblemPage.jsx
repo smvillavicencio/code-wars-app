@@ -25,6 +25,9 @@ import {
 
 import SubmitModal from './modals/SubmitModal';
 import Loading from 'components/widgets/screen-overlays/Loading';
+import { Bounce, toast } from 'react-toastify';
+import { socketClient } from 'socket/socket';
+import 'react-toastify/dist/ReactToastify.css';
 import { baseURL } from 'utils/constants';
 import { postFetch } from 'utils/apiRequest';
 
@@ -105,6 +108,56 @@ const ViewSpecificProblemPage = ({
 		getQuestionContent();
 
 	}, []);
+
+	// websocket listener for power-ups toast notifs
+	useEffect(() => {
+		if (!socketClient) return;
+		
+		const user = JSON.parse(localStorage?.getItem("user"));
+		socketClient.emit("join", user);
+
+		// listener for buffs
+		socketClient.on("newBuff", (powerUp) => {
+			const duration = powerUp.duration
+			const powerUpName = powerUp.name
+
+			toast.info('🚀 New buff ' + powerUpName + ' applied on your team!', {
+				position: "bottom-right",
+				autoClose: duration,
+				hideProgressBar: false,
+				closeOnClick: false,
+				pauseOnHover: false,
+				draggable: false,
+				progress: undefined,
+				theme: "dark",
+				transition: Bounce,
+			});
+		});
+
+		// listener for debuffs
+		socketClient.on("newDebuff", (powerUp) => {
+			console.log(powerUp);
+			const duration = powerUp.duration
+			const powerUpName = powerUp.name
+
+			toast.warn('New debuff ' + powerUpName + ' has been applied to your team!', {
+				position: "bottom-right",
+				autoClose: duration,
+				hideProgressBar: false,
+				closeOnClick: false,
+				pauseOnHover: false,
+				draggable: false,
+				progress: undefined,
+				theme: "dark",
+				transition: Bounce,
+			});
+		});
+
+		return () => {
+			socketClient.off("newBuff");
+			socketClient.off("newDebuff");
+		};
+	});
 
 	return (
 		<>

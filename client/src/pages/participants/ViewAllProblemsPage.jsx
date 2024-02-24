@@ -34,7 +34,7 @@ import { baseURL } from 'utils/constants';
 import { postFetch } from 'utils/apiRequest';
 import { Bounce, toast } from 'react-toastify';
 import { socketClient } from 'socket/socket';
-import 'react-toastify/dist/ReactToastify.css'
+import 'react-toastify/dist/ReactToastify.css';
 
 
 /*
@@ -116,6 +116,9 @@ const ViewAllProblemsPage = ({
 	useEffect(() => {
 		if (!socketClient) return;
 
+		const user = JSON.parse(localStorage?.getItem("user"));
+		socketClient.emit("join", user);
+
 		// listener for buffs
 		socketClient.on("newBuff", (powerUp) => {
 			const duration = powerUp.duration
@@ -136,8 +139,9 @@ const ViewAllProblemsPage = ({
 
 		// listener for debuffs
 		socketClient.on("newDebuff", (powerUp) => {
-			const duration = powerUp.duration
-			const powerUpName = powerUp.name
+			const tierKey = Object.keys(powerUp.tier)[0];
+			const duration = powerUp.tier[tierKey].duration;
+			const powerUpName = powerUp.name;
 
 			toast.warn('New debuff ' + powerUpName + ' has been applied to your team!', {
 				position: "bottom-right",
@@ -151,6 +155,7 @@ const ViewAllProblemsPage = ({
 				transition: Bounce,
 			});
 		});
+
 
 		return () => {
 			socketClient.off("newBuff");

@@ -1,4 +1,4 @@
 /* eslint-disable */ 
-const baseURL = "http://code-wars-app.onrender.com";
+const baseURL = "http://localhost:5000";
 
 export { baseURL };

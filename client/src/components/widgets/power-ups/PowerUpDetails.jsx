@@ -14,6 +14,7 @@ import {
 	ConfirmWindow,
 	DropdownSelect,
 	SuccessWindow,
+	ErrorWindow
 } from 'components';
 import { socketClient } from 'socket/socket';
 import { getFetch } from 'utils/apiRequest';
@@ -30,11 +31,23 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 	/**
 	 * State handler for selected team recipient for debuff
 	 */
-	const [selectedTeam, setSelectedTeam] = useState('Team1');
+	const [selectedTeam, setSelectedTeam] = useState('');
 	/**
-	 * State handler for user details
+	 * State handler for selected team recipient for debuff
+	 */
+	const [selectedDebuff, setSelectedDebuff] = useState('');
+	/**
+	 * State handler for user details (from local storage)
 	 */
 	const [userDetails, setUserDetails] = useState();
+	/**
+	 * State handler for enemy team details (from database)
+	 */
+	const [enemyTeamDetails, setEnemyTeamDetails] = useState([]);
+	/** 
+	 * State handler for user's active debuffs
+	*/
+	const [activeDebuffs, setActiveDebuffs] = useState([]);
 	/**
 	 * State handler for team options
 	 */
@@ -43,13 +56,10 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 
 	useEffect(() => {
 		// get user details of current session from localStorage
-		let userDetails = {
-			user: JSON.parse(localStorage?.getItem("user")).username,
-			role: JSON.parse(localStorage?.getItem("user")).usertype
-		};
+		const user = JSON.parse(localStorage?.getItem("user")); 
 
-		getAllTeams(userDetails.user);
-		setUserDetails(userDetails);
+		getAllTeams(user);
+		setUserDetails(user);
 	}, []); 
 
 
@@ -60,17 +70,30 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 		try{
 			const res = await getFetch("http://localhost:5000/teams");
 			if (res.success) {
-				// filter user from list of all teams
-				const updatedTeams = res.teams.filter(team => {
-					return team._id !== user?._id;
+				let userTeamInfo = {};
+				let enemyTeams = [];
+
+				// filter user team from enemy teams
+				res.teams.forEach(team => {
+					if(team._id === user?._id){
+						userTeamInfo = team;
+					} else {
+						enemyTeams.push(team);
+					}
 				});
 
 				// create array consisting only of team names - to be used for dropdown select options
-				const teamListOptions = updatedTeams.map(team => team.team_name);
+				const teamListOptions = enemyTeams.map(team => team.team_name);
+
+				// create array consisting only of active debuff names - to be used for dropdown select options
+				const activeDebuffListOptions = userTeamInfo.debuffs_received.length > 0 ? userTeamInfo.debuffs_received.map(debuff => debuff.name) : ['No Active Debuffs'];
 
 				// update states
+				setEnemyTeamDetails(enemyTeams);
 				setTeamOptions(teamListOptions);
 				setSelectedTeam(teamListOptions[0]);
+				setActiveDebuffs(activeDebuffListOptions);
+				setSelectedDebuff(activeDebuffListOptions[0]);
 			} else {
 				console.log(res.message);
 				return [];
@@ -88,6 +111,13 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 	};
 
 	/**
+	* Sets state of selectedDebuff when buying dispel.
+	*/
+	const handleDispel = (e) => {
+		setSelectedDebuff(e.target.value);
+	};
+
+	/**
 	 * Apply the debuff to the selected team.
 	 */
 	const applyDebuff = (powerUp) => {
@@ -101,11 +131,23 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 				socketClient.emit("applyDebuff", {
 					"powerUp": powerUp,
 					"userTeam": userDetails,
-					"recipientTeam": selectedTeam
+					"recipientTeam": enemyTeamDetails.find((team) => team.team_name === selectedTeam)
 				});
 
-				SuccessWindow.fire({
-					text: 'Successfully used '+`${powerUp.name}`+' on '+`${selectedTeam}`+'!'
+				socketClient.on("scenarioCheckerDebuff", (scenario) => {
+					if(scenario === 'existing'){
+						ErrorWindow.fire({
+							text: `${selectedTeam} has an active debuff ${powerUp.name}. Stacking of debuffs is not allowed!`
+						});
+					} else if (scenario === 'insufficient_funds') {
+						ErrorWindow.fire({
+							text: `You have insufficient points to buy ${powerUp.name}!`
+						});
+					} else {
+						SuccessWindow.fire({
+							text: 'Successfully used '+`${powerUp.name}`+' on '+`${selectedTeam}`+'!'
+						});
+					}
 				});
 
 				// reset values
@@ -131,7 +173,7 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 	const handleBuy = (powerUp) => {
 		// ask for confirmation of action
 		ConfirmWindow.fire({
-			text: 'Are you sure you want to use ' + `${powerUp.name}` + ' on your team?',
+			text: 'Are you sure you want to use ' + `${powerUp.code === 'immune' ? powerUp.name + " " + Object.keys(powerUp.tier)[0] : powerUp.name}` + ' on your team?',
 			
 		}).then((res) => {
 			if (res['isConfirmed']) {
@@ -142,7 +184,7 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 				});
 
 				SuccessWindow.fire({
-					text: 'Successfully used '+`${powerUp.name}`+' on your team!'
+					text: 'Successfully used '+`${powerUp.code === 'immune' ? powerUp.name + " " + Object.keys(powerUp.tier)[0] : powerUp.name}`+' on your team!'
 				});
 
 				// reset values
@@ -210,7 +252,7 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 						marginBottom: '10px',
 					}}
 				>
-					{powerUp.name}
+					{powerUp.code === 'immune' ? powerUp.name + " " + Object.keys(powerUp.tier)[0] : powerUp.name}
 				</Typography>
 				
 				{/* Power-up description */}
@@ -270,12 +312,12 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 						{/* Select team dropdown select */}
 						<DropdownSelect
 							isDisabled={false}
-							label="Debuffs"
+							label="Active Debuffs"
 							minWidth="100%"
 							variant="filled"
-							options={teamOptions}
-							handleChange={handleTeams}
-							value={selectedTeam}
+							options={activeDebuffs}
+							handleChange={handleDispel}
+							value={selectedDebuff}
 						/>
 
 						{/* Button to inflict the debuff */}
@@ -288,8 +330,9 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 								height: '40px',
 								fontSize: '14px',
 							}}
+							disabled={activeDebuffs[0] === 'No Active Debuffs'}
 						>
-							Dispel debuff to {selectedTeam}
+							Dispel {selectedDebuff}
 						</Button>
 					</> :
 					// Buffs only have the buy button					

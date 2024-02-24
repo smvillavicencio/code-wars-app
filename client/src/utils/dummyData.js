@@ -95,10 +95,11 @@ export const teamsList = [
 // options for rounds dropdown select
 // used in admin - general options page
 export const optionsRounds = [
-	'Easy',
-	'Medium',
-	'Wager',
-	'Hard',
+	'START',
+	'EASY',
+	'MEDIUM',
+	'WAGER',
+	'HARD',
 ];
 
 // options for teams dropdown select

@@ -44,13 +44,12 @@ import 'react-toastify/dist/ReactToastify.css'
 const ViewAllProblemsPage = ({
 	isLoggedIn,
 	setIsLoggedIn,
-	checkIfLoggedIn
+	checkIfLoggedIn,
+	currRound,
+	setCurrRound
 }) => {
 
-	/**
-	 * State handler for current round
-	 */
-	const [currRound, setCurrRound] = useState('EASY');
+	
 	/**
 	 * State handler for viewing buy power-up popover
 	 */

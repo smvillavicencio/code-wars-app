@@ -402,6 +402,9 @@ const ViewSubmissionsPage = ({
 					pageSize={5}
 					initialState={{
 						pagination: { paginationModel: { pageSize: 5 } },
+						sorting: {
+							sortModel: [{ field: 'score', sort: 'desc' }],
+						},
 					}}
 				/>
 			</CustomModal>

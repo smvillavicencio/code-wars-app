@@ -246,6 +246,9 @@ const GeneralOptionsPage = ({
 								autoHeight
 								initialState={{
 									pagination: { paginationModel: { pageSize: 7 } },
+									sorting: {
+										sortModel: [{ field: 'score', sort: 'desc' }],
+									},
 								}}
 							/>
 						</Box>

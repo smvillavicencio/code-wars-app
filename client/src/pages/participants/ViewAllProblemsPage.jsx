@@ -75,8 +75,8 @@ const ViewAllProblemsPage = ({
 		qResponse.questions?.map((question)=>{
 			let formattedQuestion = {};
 			formattedQuestion.problemTitle = question.title;
-			formattedQuestion.id = question._id;
-			formattedQuestion.status = "pending";
+			formattedQuestion.id = newQuestions.length;
+			formattedQuestion.status = "Pending";
 			formattedQuestion.score = 0;
 			formattedQuestion.checkedBy = "";
 
@@ -229,7 +229,7 @@ const ViewAllProblemsPage = ({
 								minWidth: 325,
 							}}
 						>
-							<RoundTimer />
+							<RoundTimer  />
 							<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
 							<SponsorCarousel />
 						</Stack>

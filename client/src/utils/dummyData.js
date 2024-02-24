@@ -204,7 +204,9 @@ export const rowsProblems = [
 export const optionsEval = [
 	'Correct',
 	'Partially Correct',
-	'Incorrect Solution'
+	'Incorrect Solution',
+	'Error',
+	'Pending'
 ];
 
 
@@ -215,33 +217,33 @@ export const columnsSubmissions = [
 	{
 		field: 'id',
 		headerName: 'ID',
-		width: 50,
+		width: 75,
 	},
 	{
 		field: 'teamName',
 		headerName: 'Team Name',
-		minWidth: 300,
+		minWidth: 250,
 		flex: 1,
 	},
 	{
 		field: 'problemTitle',
 		headerName: 'Problem Title',
-		minWidth: 400,
+		minWidth: 300,
 		// maxWidth: 500,
 		flex: 1,
 	},
 	{
 		field: 'submittedAt',
 		headerName: 'Submitted At',
-		minWidth: 150,
+		minWidth: 200,
 		// maxWidth: 200,
 		flex: 1,
 	},
 	{
 		field: 'uploadedFile',
 		headerName: 'Uploaded File',
-		minWidth: 100,
-		maxWidth: 200,
+		minWidth: 250,
+		// maxWidth: 200,
 		headerAlign: 'left',
 		align: 'left',
 		flex: 1,
@@ -249,7 +251,7 @@ export const columnsSubmissions = [
 	{
 		field: 'evaluation',
 		headerName: 'Evaluation',
-		minWidth: 200,
+		minWidth: 175,
 		// maxWidth: 250,
 		flex: 1,
 
@@ -261,7 +263,7 @@ export const columnsSubmissions = [
 	{
 		field: 'checkedBy',
 		headerName: 'Judge',
-		minWidth: 200,
+		minWidth: 275,
 		// maxWidth: 250,
 		flex: 1,
 	},
@@ -297,10 +299,10 @@ export const columnsLeaderboard = [
 		flex: 1,
 	},
 	{
-		field: 'teamName',
+		field: 'team_name',
 		headerName: 'Team Name',
-		minWidth: 250,
-		maxWidth: 600,
+		minWidth: 200,
+		// maxWidth: 300,
 		flex: 1,
 	},
 	{
@@ -311,10 +313,9 @@ export const columnsLeaderboard = [
 		flex: 1,
 	},
 	{
-		field: 'totalSpent',
+		field: 'total_points_used',
 		headerName: 'Total Spent',
-		minWidth: 100,
-		maxWidth: 150,
+		minWidth: 180,
 		headerAlign: 'left',
 		align: 'left',
 		flex: 1,
@@ -322,17 +323,18 @@ export const columnsLeaderboard = [
 ];
 
 // leaderboard rows
+// replaced with getLeaderboard.js
 export const rowsLeaderboard = [
-	{ id: 1, rank: 1, teamName: 'Team One', score: 0/200, totalSpent: 1500},
-	{ id: 2, rank: 2, teamName: 'Team Two', score: 0/400, totalSpent: 1300},
-	{ id: 3, rank: 3, teamName: 'Team Three', score: 0/400, totalSpent: 1800},
-	{ id: 4, rank: 4, teamName: 'Team Four', score: 500/500, totalSpent: 1000},
-	{ id: 5, rank: 5, teamName: 'Team Five', score: 300/700, totalSpent: 650},
-	{ id: 6, rank: 6, teamName: 'Team Six', score: 0/1000, totalSpent: 800},
-	{ id: 7, rank: 7, teamName: 'Team Seven', score: 0 / 2800, totalSpent: 750 },
-	{ id: 8, rank: 8, teamName: 'Team Five', score: 300/700, totalSpent: 650},
-	{ id: 9, rank: 9, teamName: 'Team Six', score: 0/1000, totalSpent: 800},
-	{ id: 10, rank: 10, teamName: 'Team Seven', score: 0/2800, totalSpent: 750},
+	{ id: 1, rank: 1, team_name: 'Team One', score: 0/200, total_points_used: 1500},
+	{ id: 2, rank: 2, team_name: 'Team Two', score: 0/400, total_points_used: 1300},
+	{ id: 3, rank: 3, team_name: 'Team Three', score: 0/400, total_points_used: 1800},
+	{ id: 4, rank: 4, team_name: 'Team Four', score: 500/500, total_points_used: 1000},
+	{ id: 5, rank: 5, team_name: 'Team Five', score: 300/700, total_points_used: 650},
+	{ id: 6, rank: 6, team_name: 'Team Six', score: 0/1000, total_points_used: 800},
+	{ id: 7, rank: 7, team_name: 'Team Seven', score: 0 / 2800, total_points_used: 750 },
+	{ id: 8, rank: 8, team_name: 'Team Five', score: 300/700, total_points_used: 650},
+	{ id: 9, rank: 9, team_name: 'Team Six', score: 0/1000, total_points_used: 800},
+	{ id: 10, rank: 10, team_name: 'Team Seven', score: 0/2800, total_points_used: 750},
 ];
 
 

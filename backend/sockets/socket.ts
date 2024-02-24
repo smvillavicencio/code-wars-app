@@ -1,5 +1,7 @@
 // ADD YOUR FILE EXPORTS HERE
-import { uploadSubmission } from './submissionSocket'
+import { uploadSubmission, checkSubmission } from './submissionSocket'
+
+var roundStartTime: any;
 
 let io = require("socket.io")(8000, {
   cors: {
@@ -15,7 +17,7 @@ io.on("connection", (socket: any) => {
     setTimeout( async ()=>{
       try {
         let response = await uploadSubmission(arg);
-      
+        console.log(response.submission)
         if (response.success) {
           console.log("||||||");
           socket.emit("newitemtojudge", response.submission);
@@ -57,6 +59,55 @@ io.on("connection", (socket: any) => {
     console.log("Team " + userTeam + " has bought a debuff to be used against " + recipientTeam)
   })
 
+  socket.on("submitEval", async (arg: any) => {
+    try {
+      let response = await checkSubmission(arg);
 
-  
+      if (response.success) {
+        console.log(response.results)
+        // emit to leaderboards
+        // socket.emit("updateLeaderboard", response.results)
+
+        // emit to problem list table
+        // socket.emit("")
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  })
 });
+
+const startRoundTimer = (seconds: number) => {
+  console.log("Started round timer");
+  roundStartTime = new Date().getTime();
+
+  function getRemainingTime() {
+    if (roundStartTime) {
+      const elapsedTime = (new Date().getTime() - roundStartTime) / 1000;
+      const remainingTime = Math.max(seconds - elapsedTime, 0);
+      return { remainingTime: Math.round(remainingTime) };
+    } else {
+      return { remainingTime: 0 };
+    }
+  }
+
+  io.emit('update', getRemainingTime());
+  console.log(getRemainingTime());
+
+  setInterval(() => {
+    if (roundStartTime) {
+      io.emit('update', getRemainingTime());
+      console.log(getRemainingTime());
+    }
+  }, 1000);
+
+  // Set a timeout to end the round after the specified duration
+  setTimeout(() => {
+    roundStartTime = null;
+    io.emit('update', getRemainingTime());
+    console.log(getRemainingTime());
+  }, seconds * 1000);
+}
+
+export { startRoundTimer };

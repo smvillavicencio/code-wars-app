@@ -7,6 +7,8 @@ import {
   Typography
 } from '@mui/material';
 import { CustomModal } from 'components';
+import { socketClient } from 'socket/socket';
+import { SuccessWindow } from 'components';
 
 
 /**
@@ -15,9 +17,14 @@ import { CustomModal } from 'components';
  * 		<Boolean>		open - tells whether to open the modal
  *    <Function>  setOpen - function to control modal opening/closing
  */
-const EvaluationModal = ({ open, setOpen }) => {
-	// state handler for input field value
-	const [value, setValue] = useState('');
+const EvaluationModal = ({
+	open,
+	setOpen,
+	currEval,
+	value,
+	rowValues,
+	handleValue
+}) => {
 	// state handler for first-time focusing on input field
 	const [firstClick, setFirstClick] = useState(true);
 	
@@ -33,14 +40,32 @@ const EvaluationModal = ({ open, setOpen }) => {
 	 */
 	const handleSubmit = () => { 
 		// pass value to parent component? to edit row value
-		console.log(value);
+		console.log(rowValues);
+		setOpen(false);
+
+		let judgeID = JSON.parse(localStorage?.getItem("user"))?._id;
+		let judgeName = JSON.parse(localStorage?.getItem("user"))?.username;
+	
+		// websocket emit
+		socketClient.emit("submitEval", {
+			submissionId: rowValues.id,
+			evaluation: currEval,
+			judgeId: judgeID,
+			judgeName: judgeName,
+			correctCases: value,
+			possiblePoints: rowValues.possible_points
+		})
+
+		SuccessWindow.fire({
+			text: 'Successfully submitted evaluation!'
+		});
 	}
 
 	/**
 	 * Purpose: Handles change in input field
 	 */
 	const handleChange = (e) => {
-		setValue(e.target.value);
+		handleValue(e.target.value);
 	}
 
 
@@ -68,9 +93,10 @@ const EvaluationModal = ({ open, setOpen }) => {
 					fullWidth
 					error={value === ''}
 					value={value}
-					onChange={handleChange}
+					onChange={(e) => handleValue(e.target.value)}
 					onFocus={() => setFirstClick(false)}
 					InputLabelProps={{ shrink: true }}
+					InputProps={{ min: 0, max: 10 }}
 					
 					type="number"
 					defaultValue="0"
@@ -89,7 +115,6 @@ const EvaluationModal = ({ open, setOpen }) => {
 					{/* Submit button */}
 					<Button 
 						variant='contained' 
-						type='submit'
 						size="large"
 						disabled={value === ''}
 						onClick={handleSubmit}

@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
+import { startRoundTimer } from '../sockets/socket';
 
 var command = "normal";
-var round = "easy";
+var round = "start";
 var counter = 0;
 
 const commandChannel = (req: Request, res: Response) => {
@@ -41,6 +42,30 @@ const setAdminCommand = (req: Request, res: Response) => {
     const newcommand = req.body.command;
     const newround = req.body.round;
 
+    if (newround != round) {
+      console.log(newround);
+      let duration: number;
+
+      if (newround == 'EASY') {
+        duration = 60 * 30;
+      }
+      else if (newround == 'MEDIUM') {
+        duration = 60 * 45;
+      }
+      else if (newround == 'WAGER') {
+        duration = 60 * 15;
+      }
+      else if (newround == 'HARD') {
+        duration = 60 * 30;
+      } else {
+        duration = 0;
+      }
+
+      if (duration > 0) {
+        startRoundTimer(duration);
+      }
+    }
+
     command = newcommand;
     round = newround;
     return res.send(
@@ -48,4 +73,4 @@ const setAdminCommand = (req: Request, res: Response) => {
     );
 }
 
-export { commandChannel, setAdminCommand };
+export { commandChannel, setAdminCommand, round };

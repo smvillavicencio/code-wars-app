@@ -7,25 +7,4 @@ const LeaderboardsSchema = new mongoose.Schema({
     totalScore: { type: Number, required: true }
 });
 
-const Leaderboards = mongoose.model("LeaderboardsSchema");
-
-const retrieveLeaderboards = (req : any, res : any) => {
-    Leaderboards.find({}, (err : any, leaderboards : any) => {
-        if(!err) {
-            if(leaderboards != null) { // non-empty list
-                leaderboards.sort({totalScore : 1});
-                return res.send({ success: true, posts: leaderboards });
-            } else { // empty list of leaderboards
-                return res.send({ success: true, posts: leaderboards });
-            }
-        } else {
-            console.log(err);
-            return res.send({ success: false });
-        }
-    });
-}
-
-
-
-
-export { retrieveLeaderboards }
+mongoose.model("Leaderboard", LeaderboardsSchema);

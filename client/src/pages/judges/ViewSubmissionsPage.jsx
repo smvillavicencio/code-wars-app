@@ -22,13 +22,13 @@ import {
 	TopBar
 } from 'components/';
 
+import getLeaderboard from 'components/widgets/leaderboard/getLeaderboard';
+
 import {
 	columnsSubmissions,
 	columnsLeaderboard,
 	optionsTeam,
 	optionsProblems,
-	// rowsSubmissions,
-	rowsLeaderboard
 } from 'utils/dummyData';
 
 import renderEval from './submission-entries/EvalViewInputCell';
@@ -75,6 +75,9 @@ const ViewSubmissionsPage = ({
 
 	const [fetchAllPrevious, setFetchAllPrevious] = useState(false);
 	const [submissionsList, setSubmissionsList] = useState([]);
+
+	// state handler for rows of overall leaderboard
+	const [leaderboardRows, setLeaderboardRows] = useState([]);
 
 	// default values are given to make the component a controlled component
 	// state handler for team dropdown select
@@ -310,6 +313,16 @@ const ViewSubmissionsPage = ({
 		} else {
 			getSubmissions();
 		}
+
+		/**
+	   * Fetch overall leaderboard data
+	   */
+		async function fetchData() {
+			let currLeaderboard = await getLeaderboard()
+			setLeaderboardRows(currLeaderboard);
+		}
+
+		fetchData()
 		
 	}, []);
 	
@@ -395,16 +408,14 @@ const ViewSubmissionsPage = ({
 			<CustomModal isOpen={open} setOpen={setOpen} windowTitle="Leaderboard">
 				<Table
 					editMode="row" 
-					rows={rowsLeaderboard}
+					rows={leaderboardRows}
 					columns={columnsLeaderboard}
 					hideFields={['id', 'totalSpent']}
 					additionalStyles={additionalStylesLeaderboard}
 					pageSize={5}
+					pageSizeOptions={[5, 10]}
 					initialState={{
 						pagination: { paginationModel: { pageSize: 5 } },
-						sorting: {
-							sortModel: [{ field: 'score', sort: 'desc' }],
-						},
 					}}
 				/>
 			</CustomModal>

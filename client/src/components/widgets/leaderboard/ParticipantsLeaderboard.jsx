@@ -1,5 +1,5 @@
 /* eslint-disable */ 
-import { useState, Fragment } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import {
@@ -10,8 +10,20 @@ import {
 } from '@mui/material';
 
 import { CustomModal, Table } from 'components';
-import { columnsLeaderboard,	rowsLeaderboard } from 'utils/dummyData';
+import { columnsLeaderboard } from 'utils/dummyData';
+import getLeaderboard from './getLeaderboard';
 
+
+const additionalStyles = {
+	// modify column header typography
+	'& .MuiDataGrid-columnHeader': {
+		fontSize: "h2",
+		bgcolor: "rgba(0, 0, 0, 0.1)",
+	},
+	bgcolor: 'transparent',
+	border: 'none',
+	padding: 2,
+}
 
 
 /**
@@ -22,6 +34,20 @@ const ParticipantsLeaderboard = ({ rows }) => {
 
 	// state handler for overall leaderboard modal
 	const [open, setOpen] = useState(false);
+	// state handler for rows of overall leaderboard
+	const [leaderboardRows, setLeaderboardRows] = useState([]);
+
+	/**
+	 * Fetch overall leaderboard data
+	 */
+	useEffect(() => { 
+		async function fetchData() {
+			let currLeaderboard = await getLeaderboard()
+			setLeaderboardRows(currLeaderboard);
+		}
+
+		fetchData()
+	}, []);
 
 	/**
 	* Purpose: Handles opening of modal window for overall leaderboard.
@@ -31,16 +57,6 @@ const ParticipantsLeaderboard = ({ rows }) => {
 		setOpen(true);
 	}
 
-	const additionalStyles = {
-		// modify column header typography
-		'& .MuiDataGrid-columnHeader': {
-			fontSize: "h2",
-			bgcolor: "rgba(0, 0, 0, 0.1)",
-		},
-		bgcolor: 'transparent',
-		border: 'none',
-		padding: 2,
-	}
 
 	return (
 		<Box
@@ -68,7 +84,7 @@ const ParticipantsLeaderboard = ({ rows }) => {
 
 				{/* Rankings */}
 				<Box sx={{ marginTop: 2, width: '100%' }}>
-					{rows.map((row, idx) => (
+					{leaderboardRows.map((row, idx) => (
 						// check if row belongs to top 4
 						idx < 4 ? (
 							// if row is in top 4, display this
@@ -101,7 +117,7 @@ const ParticipantsLeaderboard = ({ rows }) => {
 												: 'transparent',
 									}}
 								/>
-								<span>{row.teamName}</span>
+								<span>{row.team_name}</span>
 							</Typography>
 						) : <Fragment key={idx}></Fragment>
 					))}
@@ -116,16 +132,14 @@ const ParticipantsLeaderboard = ({ rows }) => {
 			{/* Overall Leaderboard Modal Window */}
 			<CustomModal isOpen={open} setOpen={setOpen} windowTitle="Leaderboard">
 				<Table
-					rows={rowsLeaderboard}
+					rows={leaderboardRows}
 					columns={columnsLeaderboard}
 					hideFields={['id', 'totalSpent']}
 					additionalStyles={additionalStyles}
 					pageSize={5}
+					pageSizeOptions={[5, 10]}
 					initialState={{
 						pagination: { paginationModel: { pageSize: 5 } },
-						sorting: {
-							sortModel: [{ field: 'score', sort: 'desc' }],
-						},
 					}}
 				/>
 			</CustomModal>

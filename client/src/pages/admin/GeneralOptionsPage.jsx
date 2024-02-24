@@ -19,13 +19,13 @@ import {
 import {
 	optionsRounds,
 	columnsLeaderboard,
-	rowsLeaderboard
 } from 'utils/dummyData';
 import { enterAdminPassword } from 'utils/enterAdminPassword';
 import { useNavigate } from 'react-router-dom';
 
 import { baseURL } from 'utils/constants';
 import { postFetch } from 'utils/apiRequest';
+import getLeaderboard from 'components/widgets/leaderboard/getLeaderboard';
 
 import Loading from 'components/widgets/screen-overlays/Loading';
 
@@ -50,6 +50,9 @@ const GeneralOptionsPage = ({
 	checked,
 	setChecked
 }) => {
+
+	const [leaderboardRows, setLeaderboardRows] = useState([]);
+
 	// used for client-side routing to other pages
 	const navigate = useNavigate();
 
@@ -67,6 +70,16 @@ const GeneralOptionsPage = ({
 		else {
 			setIsLoggedIn(false);
 		}
+
+		/**
+	   * Fetch overall leaderboard data
+	   */
+		async function fetchData() {
+			let currLeaderboard = await getLeaderboard()
+			setLeaderboardRows(currLeaderboard);
+		}
+
+		fetchData()
 	}, []);
 
 	/**
@@ -256,13 +269,13 @@ const GeneralOptionsPage = ({
 					</Typography>
 				</Box>
 
-				{/* Leaderboard Table */}
+				{/* Overall Leaderboard Table */}
 				<Box>
 					<Typography variant="h4">LEADERBOARD</Typography>
 					<Box sx={{ display: 'flex', justifyContent: 'center' }}>
 						<Box sx={{ width: '65%'}}>
 							<Table
-								rows={rowsLeaderboard}
+								rows={leaderboardRows}
 								columns={columnsLeaderboard}
 								hideFields={['id']}
 								additionalStyles={additionalStyles}
@@ -271,9 +284,6 @@ const GeneralOptionsPage = ({
 								autoHeight
 								initialState={{
 									pagination: { paginationModel: { pageSize: 7 } },
-									sorting: {
-										sortModel: [{ field: 'score', sort: 'desc' }],
-									},
 								}}
 							/>
 						</Box>

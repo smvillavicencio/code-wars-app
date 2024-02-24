@@ -234,7 +234,7 @@ const ViewSubmissionsPage = ({
 			console.log(arg);
 
 			let newsubmission = {};
-			newsubmission.id = arg._id;
+			newsubmission.id = submissionsList.length;
 			newsubmission.teamName = arg.team_name;
 			newsubmission.problemTitle = arg.problem_title;
 			newsubmission.submittedAt = new Date(arg.timestamp).toLocaleString();
@@ -274,7 +274,7 @@ const ViewSubmissionsPage = ({
 		submissions.results?.map((arg) => {
 			let newsubmission = {};
 
-			newsubmission.id = arg._id;
+			newsubmission.id = allSubmissionsList.length;
 			newsubmission.teamName = arg.team_name;
 			newsubmission.problemTitle = arg.problem_title;
 			newsubmission.submittedAt = new Date(arg.timestamp).toLocaleString();

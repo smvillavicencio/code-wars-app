@@ -217,33 +217,33 @@ export const columnsSubmissions = [
 	{
 		field: 'id',
 		headerName: 'ID',
-		width: 50,
+		width: 75,
 	},
 	{
 		field: 'teamName',
 		headerName: 'Team Name',
-		minWidth: 300,
+		minWidth: 250,
 		flex: 1,
 	},
 	{
 		field: 'problemTitle',
 		headerName: 'Problem Title',
-		minWidth: 400,
+		minWidth: 300,
 		// maxWidth: 500,
 		flex: 1,
 	},
 	{
 		field: 'submittedAt',
 		headerName: 'Submitted At',
-		minWidth: 150,
+		minWidth: 200,
 		// maxWidth: 200,
 		flex: 1,
 	},
 	{
 		field: 'uploadedFile',
 		headerName: 'Uploaded File',
-		minWidth: 100,
-		maxWidth: 200,
+		minWidth: 250,
+		// maxWidth: 200,
 		headerAlign: 'left',
 		align: 'left',
 		flex: 1,
@@ -251,7 +251,7 @@ export const columnsSubmissions = [
 	{
 		field: 'evaluation',
 		headerName: 'Evaluation',
-		minWidth: 200,
+		minWidth: 175,
 		// maxWidth: 250,
 		flex: 1,
 
@@ -263,7 +263,7 @@ export const columnsSubmissions = [
 	{
 		field: 'checkedBy',
 		headerName: 'Judge',
-		minWidth: 200,
+		minWidth: 275,
 		// maxWidth: 250,
 		flex: 1,
 	},
@@ -323,6 +323,7 @@ export const columnsLeaderboard = [
 ];
 
 // leaderboard rows
+// replaced with getLeaderboard.js
 export const rowsLeaderboard = [
 	{ id: 1, rank: 1, team_name: 'Team One', score: 0/200, total_points_used: 1500},
 	{ id: 2, rank: 2, team_name: 'Team Two', score: 0/400, total_points_used: 1300},

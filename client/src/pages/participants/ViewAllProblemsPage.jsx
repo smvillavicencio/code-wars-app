@@ -77,7 +77,7 @@ const ViewAllProblemsPage = ({
 			let formattedQuestion = {};
 			formattedQuestion.problemTitle = question.title;
 			formattedQuestion.id = question._id;
-			formattedQuestion.status = "pending";
+			formattedQuestion.status = "Pending";
 			formattedQuestion.score = 0;
 			formattedQuestion.checkedBy = "";
 

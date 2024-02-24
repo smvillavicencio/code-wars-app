@@ -1,7 +1,6 @@
 /* eslint-disable */ 
 import {
 	useMemo,
-	useRef,
 	useState,
 	useEffect
 } from 'react';
@@ -13,8 +12,6 @@ import {
 	Stack,
 	Typography
 } from '@mui/material';
-import { useGridApiContext } from '@mui/x-data-grid';
-import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/utils';
 import { Link, useNavigate } from 'react-router-dom';
 
 import seal from 'assets/UPLB COSS.png';
@@ -25,16 +22,17 @@ import {
 	TopBar
 } from 'components/';
 
+import getLeaderboard from 'components/widgets/leaderboard/getLeaderboard';
+
 import {
 	columnsSubmissions,
 	columnsLeaderboard,
-	optionsEval,
 	optionsTeam,
 	optionsProblems,
-	rowsSubmissions,
-	rowsLeaderboard
 } from 'utils/dummyData';
 
+import renderEval from './submission-entries/EvalViewInputCell';
+import EvalEditInputCell from './submission-entries/EvalEditInputCell';
 import Loading from 'components/widgets/screen-overlays/Loading';
 import { socketClient } from 'socket/socket';
 
@@ -58,59 +56,10 @@ const additionalStylesSubmissions = {
 	paddingX: 2,
 }
 
-
-function renderEval(props) {
-	return (
-		<DropdownSelect
-			readOnly
-			variant="standard"
-			minWidth="100%"
-			options={optionsEval}
-			isDisabled={props.row.hasFileDownloaded ? false : true}
-			value={props.formattedValue}
-		/>
-	);
-}
-
-function EvalEditInputCell(props) {
-	const [currVal, setCurrVal] = useState('Default');
-
-	const { id, formattedValue, field, hasFocus } = props;
-	const apiRef = useGridApiContext();
-	const ref = useRef();
-
-	const handleChange = (event, newValue) => {
-		setCurrVal(event.target.value);
-    apiRef.current.setEditCellValue({ id, field, formattedValue: event.target.value });
-	};
-	
-	useEnhancedEffect(() => {
-		if (hasFocus && ref.current) {
-      const input = ref.current.querySelector(`input[value="${currVal}"]`);
-      input?.focus();
-    }
-	}, [hasFocus, currVal]);
-	
-	
-	return (
-		<DropdownSelect
-			innerRef={ref} 
-			displayEmpty
-			variant="standard"
-			isDisabled={props.props.row?.hasFileDownloaded ? false : true}
-			minWidth="100%"
-			options={optionsEval}
-			handleChange={handleChange}
-			value={currVal}
-		> 
-			<MenuItem value="">Default</MenuItem>
-		</DropdownSelect>
-	)
-};
-
 const renderEvalEditInputCell = (params) => {
   return <EvalEditInputCell props={params} />;
 };
+
 
 /**
  * Purpose: Displays the View Submissions Page for judges.
@@ -126,6 +75,9 @@ const ViewSubmissionsPage = ({
 
 	const [fetchAllPrevious, setFetchAllPrevious] = useState(false);
 	const [submissionsList, setSubmissionsList] = useState([]);
+
+	// state handler for rows of overall leaderboard
+	const [leaderboardRows, setLeaderboardRows] = useState([]);
 
 	// default values are given to make the component a controlled component
 	// state handler for team dropdown select
@@ -177,7 +129,6 @@ const ViewSubmissionsPage = ({
 							target="_blank"
 							download
 							onClick={(e) => {handleDownload(e, params)}}
-							// to={'/'}
 						>
 							{params.value}
 						</Link>
@@ -279,7 +230,7 @@ const ViewSubmissionsPage = ({
 		}
 
 		socketClient.on('newitemtojudge', (arg)=>{
-			console.log("NEW SUBMISSION");
+			// console.log("NEW SUBMISSION");
 			console.log(arg);
 
 			let newsubmission = {};
@@ -320,7 +271,7 @@ const ViewSubmissionsPage = ({
 
 		let allSubmissionsList = [];
 
-		submissions.results?.map((arg)=>{
+		submissions.results?.map((arg) => {
 			let newsubmission = {};
 
 			newsubmission.id = allSubmissionsList.length;
@@ -331,6 +282,8 @@ const ViewSubmissionsPage = ({
 			newsubmission.evaluation = arg.evaluation;
 			newsubmission.checkedBy = arg.judge_name;
 			newsubmission.content = arg.content;
+			newsubmission.possible_points = arg.possible_points;
+
 
 			allSubmissionsList.push(newsubmission);
 		});
@@ -360,6 +313,16 @@ const ViewSubmissionsPage = ({
 		} else {
 			getSubmissions();
 		}
+
+		/**
+	   * Fetch overall leaderboard data
+	   */
+		async function fetchData() {
+			let currLeaderboard = await getLeaderboard()
+			setLeaderboardRows(currLeaderboard);
+		}
+
+		fetchData()
 		
 	}, []);
 	
@@ -445,16 +408,12 @@ const ViewSubmissionsPage = ({
 			<CustomModal isOpen={open} setOpen={setOpen} windowTitle="Leaderboard">
 				<Table
 					editMode="row" 
-					rows={rowsLeaderboard}
+					rows={leaderboardRows}
 					columns={columnsLeaderboard}
 					hideFields={['id', 'totalSpent']}
 					additionalStyles={additionalStylesLeaderboard}
 					pageSize={5}
-					// processRowUpdate={(updatedRow, originalRow) =>
-					// 	mySaveOnServerFunction(updatedRow);
-					// }
-					// onProcessRowUpdateError={handleProcessRowUpdateError}
-					// isCellEditable={(params) => console.log(params)}
+					pageSizeOptions={[5, 10]}
 					initialState={{
 						pagination: { paginationModel: { pageSize: 5 } },
 					}}

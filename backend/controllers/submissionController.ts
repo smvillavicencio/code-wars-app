@@ -208,6 +208,29 @@ const viewSubmissionsTP = async (req: Request, res: Response) => {
     });
 }
 
+const getLastSubmissionByTeamOfProblem = async (req: Request, res: Response) => {
+    const problemId = req.body.problemId;
+    const teamId = req.body.teamId;
+
+    const result = await Submission.find({ team_id: teamId, problem_id: problemId });
+
+    let lastSubmission = null;
+    let higherScore = 0;
+    if (result.length > 0) {
+        lastSubmission = result[result.length - 1];
+        console.log(lastSubmission);
+        if (lastSubmission.prev_max_score >= lastSubmission.score) {
+            higherScore = lastSubmission.prev_max_score;
+        } else {
+            higherScore = lastSubmission.score;
+        }
+    } 
+
+    return res.send({
+        higherScore
+    });
+}
+
 const getAllSubmissions = async (req: Request, res: Response) => {
     const results = await Submission.find().sort({ timestamp: 1 });
 
@@ -216,4 +239,4 @@ const getAllSubmissions = async (req: Request, res: Response) => {
     });
 }
 
-export { uploadSubmission, downloadSubmission, checkSubmission, viewSubmissionsTP, getAllSubmissions };
+export { uploadSubmission, downloadSubmission, checkSubmission, viewSubmissionsTP, getAllSubmissions, getLastSubmissionByTeamOfProblem };

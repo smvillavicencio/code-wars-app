@@ -42,18 +42,16 @@ const additionalStyles = {
 const GeneralOptionsPage = ({
 	isLoggedIn,
 	setIsLoggedIn,
-	checkIfLoggedIn
+	checkIfLoggedIn,
+	currRound,
+	setCurrRound,
+	roundRef,
+	freezeRef,
+	checked,
+	setChecked
 }) => {
 	// used for client-side routing to other pages
 	const navigate = useNavigate();
-
-	/**
-	 * State handler for current round.
-	 * Default value is Easy.
-	 */
-	const [currRound, setCurrRound] = useState('Easy');
-	// State handler for toggle switch state
-	const [checked, setChecked] = useState(false);
 
 	useEffect(() => { 
 		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
@@ -75,17 +73,25 @@ const GeneralOptionsPage = ({
 	 * Purpose: Handler for toggle switch button. This will freeze the screens of all active sessions
 	 */
 	const handleFreeze = async (e) => {
+		console.log(freezeRef.current);
 		// for freezing all sessions
 		if (e.target.checked) {
 			await enterAdminPassword({ title: 'Freeze all active sessions' })
-				.then((res) => {
+				.then( async (res) => {
 					// proceed to request for freeze all screens
 
 					// temp confirmation windows
 					if (res == true) {
+						const fResponse = await postFetch(`${baseURL}/setcommand`, {
+							command: "freeze",
+							round: roundRef.current.toLowerCase()
+						});
+
 						SuccessWindow.fire({
 							text: 'Successfully froze all active sessions!'
 						});
+						
+						freezeRef.current = true;
 						setChecked(true);
 
 					} else if (res == false) {
@@ -97,15 +103,22 @@ const GeneralOptionsPage = ({
 				});
 		// for unfreezing all sessions
 		} else {
-			await enterAdminPassword({ title: 'Freeze all active sessions' })
-				.then((res) => {
+			await enterAdminPassword({ title: 'Unfreeze all active sessions' })
+				.then(async (res) => {
 					// proceed to request to unfreeze all screens
 
 					// temp confirmation windows
 					if (res == true) {
+						const uResponse = await postFetch(`${baseURL}/setcommand`, {
+							command: "normal",
+							round: roundRef.current.toLowerCase()
+						});
+
 						SuccessWindow.fire({
 							text: 'Successfully disabled freeze for all active sessions!'
 						});
+						
+						freezeRef.current = false;
 						setChecked(false);
 
 					} else if (res == false) {
@@ -123,11 +136,16 @@ const GeneralOptionsPage = ({
 	 */
 	const handleAllLogout = async () => {
 		await enterAdminPassword({ title:'Logout all active sessions'})
-			.then((res) => {
+			.then(async (res) => {
 				// proceed to request for logout all screens
 
 				// temp confirmation windows
 				if (res == true) {
+					const lResponse = await postFetch(`${baseURL}/setcommand`, {
+						command: "logout",
+						round: roundRef.current.toLowerCase()
+					});
+
 					SuccessWindow.fire({
 						text: 'Successfully logged out all active sessions!'
 					});
@@ -145,16 +163,23 @@ const GeneralOptionsPage = ({
 	 */
 	const handleRounds = async (selected) => {
 		await enterAdminPassword({title:`${'Move to ' + `${selected}` + ' Round?'}`})
-			.then((res) => {
+			.then( async (res) => {
 				// proceed to request for moving rounds
 
 				// temp confirmation windows
 				if (res == true) {
+					const cResponse = await postFetch(`${baseURL}/setcommand`, {
+						command: freezeRef.current ? "freeze" : "normal",
+						round: selected
+					});
+
 					SuccessWindow.fire({
 						text: 'Successfully moved rounds!'
 					});
 
+					roundRef.current = selected;
 					setCurrRound(selected);
+
 
 				} else if (res == false) {
 					ErrorWindow.fire({
@@ -200,8 +225,8 @@ const GeneralOptionsPage = ({
 						<Stack spacing={3} sx={{ width: '15%' }}>
 
 							{/* Toggle Switch */}
-							<Switch checked={checked} onChange={(e) => handleFreeze(e)} />
-
+							<Switch checked={freezeRef.current} onChange={(e) => handleFreeze(e)} />
+							
 							{/* Apply Button */}
 							<Button
 								variant="contained"
@@ -225,7 +250,7 @@ const GeneralOptionsPage = ({
 								minWidth="100px"
 								options={optionsRounds}
 								handleChange={(e) => handleRounds(e.target.value)}
-								value={currRound}
+								value={roundRef.current}
 							/>
 						</Stack>
 					</Typography>

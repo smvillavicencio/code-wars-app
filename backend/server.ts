@@ -18,6 +18,7 @@ import submissionRoutes from './routes/submissionRoutes';
 import adminRoutes from './routes/adminRoutes';
 import questionRoutes from './routes/questionRoutes';
 import teamDetailsRoute from './routes/teamDetailsRoute';
+import leaderboardRoutes from './routes/leaderboardRoutes';
 import { checkTokenMiddleware } from "./controllers/authController";
 
 import './sockets/socket';
@@ -52,6 +53,7 @@ app.use(teamDetailsRoute);
 app.use(powerupRoutes);
 app.use(submissionRoutes);
 app.use(questionRoutes);
+app.use(leaderboardRoutes);
 
 //app.use('/api', sampleRoutes);
 

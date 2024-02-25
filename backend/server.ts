@@ -44,12 +44,14 @@ const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
 connectDB();
-handleDisconnectDB();
+// handleDisconnectDB();
 
 // Middleware
 app.use(bodyParser.json());
 
+import healthCheckRoute from "./routes/health-check";
 // Routes
+app.use(healthCheckRoute);
 app.use(loginRoute);
 app.use(signupRoute);
 app.use(checkIfLoggedInRoute);

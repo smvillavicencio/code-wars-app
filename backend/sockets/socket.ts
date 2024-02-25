@@ -18,21 +18,21 @@ io.on("connection", (socket: any) => {
     console.log("joined user:" + user._id);
   });
 
-  socket.on("newupload", (arg: any)=>{
-    setTimeout( async ()=>{
-      try {
-        let response = await uploadSubmission(arg);
-        console.log(response.submission)
-        if (response.success) {
-          console.log("||||||");
-          socket.emit("newitemtojudge", response.submission);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }, 20000);
+  // socket.on("newupload", (arg: any)=>{
+  //   setTimeout( async ()=>{
+  //     try {
+  //       let response = await uploadSubmission(arg);
+  //       console.log(response.submission)
+  //       if (response.success) {
+  //         console.log("||||||");
+  //         socket.emit("newitemtojudge", response.submission);
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }, 20000);
 
-  });
+  // });
   socket.on("buyBuff", (data: any) => {
     let powerUp = data.powerUp
     let userTeam = data.userTeam.user
@@ -170,4 +170,9 @@ const startRoundTimer = (seconds: number) => {
   }, seconds * 1000);
 }
 
-export { startRoundTimer };
+const newUpload = (upload: any) => {
+  console.log("Emit:NEWUPLOAD");
+  io.emit('newupload', upload);
+}
+
+export { startRoundTimer, newUpload };

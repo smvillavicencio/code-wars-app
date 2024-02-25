@@ -10,6 +10,8 @@ import {
 } from 'components';
 
 import { socketClient } from 'socket/socket';
+import { baseURL } from 'utils/constants';
+import { postFetch } from 'utils/apiRequest';
 
 const  SubmitModal = ({ 
 	setOpen,
@@ -63,12 +65,23 @@ const  SubmitModal = ({
    * Purpose: Handles submission of uploaded file.
    * Params: <Event> event - current event
    */
-	const handleSubmit = () => { 
+	const handleSubmit = async () => { 
 		// close submit button modal window
 		setOpen(false);
 
 		// add post request to db here
-		socketClient.emit("newupload",{
+		// socketClient.emit("newupload",{
+		// 	filename,
+		// 	content,
+		// 	problemId,
+		// 	problemTitle,
+		// 	possiblePoints,
+		// 	"teamId": JSON.parse(localStorage.getItem("user"))._id,
+		// 	"teamName": JSON.parse(localStorage.getItem("user")).username,
+		// 	totalCases
+		// });
+
+		const uResponse = await postFetch(`${baseURL}/uploadsubmission`, {
 			filename,
 			content,
 			problemId,
@@ -77,14 +90,16 @@ const  SubmitModal = ({
 			"teamId": JSON.parse(localStorage.getItem("user"))._id,
 			"teamName": JSON.parse(localStorage.getItem("user")).username,
 			totalCases
-		});
+		})
     
-		// fire success window
-		SuccessWindow.fire({
-			text: 'Successfully submitted file!',
-			html:
-			'<p>You may submit a new file for this problem once the previous file has been graded.</p>'
-		});
+		if (uResponse.success) {
+			// fire success window
+			SuccessWindow.fire({
+				text: 'Successfully submitted file!',
+				html:
+				'<p>You may submit a new file for this problem once the previous file has been graded.</p>'
+			});
+		}
 	};
 
 	return (

@@ -119,6 +119,12 @@ io.on("connection", (socket: any) => {
     }
   });
 
+  // for judge evaluation
+  // if evaluation values ay correct, error or incorrect:
+      // emit("submitEval") ay galing sa client/src/pages/judges/submission-entries/EvalEditInputCell.jsx 
+  
+  // if evaluation value ay partially correct:
+      // emit("submitEval") ay galing sa client/src/pages/judges/modals/EvaluationModal.jsx
   socket.on("submitEval", async (arg: any) => {
     try {
       let response = await checkSubmission(arg);
@@ -126,16 +132,19 @@ io.on("connection", (socket: any) => {
       if (response.success) {
         console.log(response.results)
 
-        // update team score for specific problem
-        // update team problem status, judge name, correct test cases
-        // update overall team score
+        // table entries sa submission table should be reverse chronological, so unshift dapat yung method na gagamitin hindi push if magdadagdag ng new submission entry
 
-        // emit to leaderboards
-        // let newLeaderboard = await retrieveLeaderboards
-        // socket.emit("updateLeaderboard", newLeaderboard)
+        // update details sa db na need maupdate based sa nareceive na submission entry details from judge
+        // update details din na dinidisplay sa view all problems page na table.
+            // 'status' column depends on latest submission entry
+            // 'score' column initially depends sa prev_max_score. once checked na yung latest submission entry, iccheck ulit if score > prev_max_score para sa 'score' column
+        
+        // need na may socket emit din siguro (?) na ipapasa yung evaluation value sa pages/judges/submission-entries/EvalViewInputCell
+        // para maupdate yung displayed value since mahirap ipasa yung state na makukuha from EvalEditInputCell
 
-        // emit to problem list table
-        // socket.emit("updateTeamProblem", )
+        // check submission entry fields if score > prev_max_score.
+            // if yes, then mag-emit ng "updateLeaderboard" para malaman ng client na updated yung overall team scores ng leaderboard
+            // if no, then no need na mag-emit
       }
 
     } catch (error) {

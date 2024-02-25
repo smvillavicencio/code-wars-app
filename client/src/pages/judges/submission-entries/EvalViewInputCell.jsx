@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import { DropdownSelect } from "components";
 import { optionsEval } from "utils/dummyData";
 

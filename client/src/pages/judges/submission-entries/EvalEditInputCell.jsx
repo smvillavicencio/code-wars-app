@@ -14,6 +14,9 @@ export default function EvalEditInputCell(props) {
 	// initial state should be the same as the value held by view state
 	const [currVal, setCurrVal] = useState(value);
 
+	// for dropdown select
+	const [isDisabled, setIsDisabled] = useState(!props.props.row.hasFileDownloaded);
+
 	const [openModal, setOpenModal] = useState(false);
 	const [correctTestCases, setCorrectTestCases] = useState(10);
 
@@ -29,11 +32,9 @@ export default function EvalEditInputCell(props) {
 
 	useLayoutEffect(() => {
 		if (hasFocus && ref.current) {
-			const input = ref.current.querySelector(
-        `input[value="${value}"]`,
-      );
-      input?.focus();
+			ref.current.focus()
 		}
+
 	}, [hasFocus])
 	
 
@@ -63,11 +64,10 @@ export default function EvalEditInputCell(props) {
 						correctCases: correctTestCases,
 						possiblePoints: row.possible_points
 					});
-
+					
 					SuccessWindow.fire({
 						text: 'Successfully submitted evaluation!'
 					});
-
 				} 
 			});
 		}
@@ -77,9 +77,10 @@ export default function EvalEditInputCell(props) {
 	return (
 		<>
 			<DropdownSelect
+				innerRef={ref}
 				displayEmpty
 				variant="standard"
-				isDisabled={props.props.row?.hasFileDownloaded ? false : true}
+				isDisabled={isDisabled}
 				minWidth="100%"
 				options={optionsEval}
 				handleChange={handleChange}

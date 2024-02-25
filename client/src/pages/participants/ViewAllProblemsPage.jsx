@@ -85,7 +85,7 @@ const ViewAllProblemsPage = ({
 	
 				const qeResponse = await postFetch(`${baseURL}/getlastsubmissionbyteam`, {
 					problemId: question._id,
-					teamId: localStorage?.getItem("user")._id
+					teamId: JSON.parse(localStorage?.getItem("user"))._id
 				});
 	
 				formattedQuestion.status = qeResponse.status;
@@ -95,6 +95,7 @@ const ViewAllProblemsPage = ({
 				questionsList.push(formattedQuestion);
 			})
 		);
+		console.log(questionsList);
 
 		setCurrQuestions(questionsList);
 	}

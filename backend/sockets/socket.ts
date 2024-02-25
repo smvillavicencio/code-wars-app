@@ -1,6 +1,6 @@
 // ADD YOUR FILE EXPORTS HERE
 import TeamModel, { Team } from '../models/team';
-import { uploadSubmission, checkSubmission } from './submissionSocket'
+import { checkSubmission } from './submissionSocket'
 
 var roundStartTime: any;
 

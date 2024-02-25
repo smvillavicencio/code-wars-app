@@ -1,4 +1,7 @@
 import { ConfirmWindow } from 'components';
+import { postFetch } from './apiRequest';
+import { baseURL } from './constants';
+
 
 /**
  * Purpose: Takes in the admin's password and verifies in the server if it is correct.
@@ -19,13 +22,17 @@ export const enterAdminPassword = async ({ title }) => {
 		}
 	});
 
-	// replace with post request verify admin password here
-	// pwede siguro parang admin login lang din
-	let passwordVerify = (pw) => {
-		if (pw == 'admin') {
-			return true;
-		} else {
+	let passwordVerify = async (pw) => {
+		// admin login POST request
+		const loginResponse = await postFetch(`${baseURL}/login`, {
+			username: 'Admin1',
+			password: pw
+		});
+
+		if (!loginResponse.success) {
 			return false;
+		} else {
+			return true;
 		}
 	};
 

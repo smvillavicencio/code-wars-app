@@ -117,7 +117,7 @@ const Sidebar = () => {
 
 				{/* Logout Button */}
 				<List
-					onClick={()=>{handleLogout(setUserDetails, navigate)}}
+					onClick={()=>{handleLogout(navigate)}}
 					sx={{
 						position: 'absolute',
 						bottom: '0',

@@ -220,19 +220,29 @@ const getLastSubmissionByTeamOfProblem = async (req: Request, res: Response) => 
     const result = await Submission.find({ team_id: teamId, problem_id: problemId });
 
     let lastSubmission = null;
-    let higherScore = 0;
+    let score = 0;
+    let status;
+    let checkedby;
     if (result.length > 0) {
         lastSubmission = result[result.length - 1];
-        console.log(lastSubmission);
+        //console.log(lastSubmission);
         if (lastSubmission.prev_max_score >= lastSubmission.score) {
-            higherScore = lastSubmission.prev_max_score;
+            score = lastSubmission.prev_max_score;
         } else {
-            higherScore = lastSubmission.score;
+            score = lastSubmission.score;
         }
-    } 
+
+        status = lastSubmission.status;
+        checkedby = lastSubmission.judge_name;
+    } else {
+        status = "Pending";
+        checkedby = "Unassigned";
+    }
 
     return res.send({
-        higherScore
+        score,
+        status,
+        checkedby
     });
 }
 

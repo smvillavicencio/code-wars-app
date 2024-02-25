@@ -1,5 +1,5 @@
 /* eslint-disable */ 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import LockIcon from '@mui/icons-material/Lock';
@@ -35,6 +35,7 @@ import { postFetch } from 'utils/apiRequest';
 import { Bounce, toast } from 'react-toastify';
 import { socketClient } from 'socket/socket';
 import 'react-toastify/dist/ReactToastify.css';
+import { cloneDeep } from 'lodash';
 
 
 /*
@@ -56,6 +57,7 @@ const ViewAllProblemsPage = ({
 	const [open, setOpen] = useState(false);
 
 	const [currQuestions, setCurrQuestions] = useState([]);
+	const questionsRef = useRef();
 	
 	// options for rounds
 	const rounds = ['EASY', 'MEDIUM', 'WAGER', 'HARD'];
@@ -70,22 +72,31 @@ const ViewAllProblemsPage = ({
 			difficulty: currRound.toLowerCase()
 		});
 
-		let newQuestions = [];
+		let counter = 0
+		let questionsList = []
 
-		qResponse.questions?.map((question)=>{
-			let formattedQuestion = {};
-			formattedQuestion.problemTitle = question.title;
-			formattedQuestion.id = newQuestions.length;
-			formattedQuestion.status = "Pending";
-			formattedQuestion.score = 0;
-			formattedQuestion.checkedBy = "";
-			formattedQuestion.dbId = question._id;
+		await Promise.all(
+			qResponse.questions?.map( async (question)=>{
+				let formattedQuestion = {};
+				formattedQuestion.problemTitle = question.title;
+				formattedQuestion.id = counter;
+				counter += 1;
+				formattedQuestion.dbId = question._id;
+	
+				const qeResponse = await postFetch(`${baseURL}/getlastsubmissionbyteam`, {
+					problemId: question._id,
+					teamId: localStorage?.getItem("user")._id
+				});
+	
+				formattedQuestion.status = qeResponse.status;
+				formattedQuestion.score = qeResponse.score;
+				formattedQuestion.checkedBy = qeResponse.checkedby;
+	
+				questionsList.push(formattedQuestion);
+			})
+		);
 
-			newQuestions.push(formattedQuestion);
-		})
-
-		//console.log(qResponse);
-		setCurrQuestions(newQuestions);
+		setCurrQuestions(questionsList);
 	}
 
 	useEffect(() => {

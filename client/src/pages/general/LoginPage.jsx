@@ -243,6 +243,9 @@ const LoginPage = () => {
 								onChange={e => {
 									SetPassword(e.target.value);
 								}}
+								onKeyDown={
+									(e)=>{if (e.key === "Enter") {handleLogin(username, password);}}
+								}
 								sx = {{
 									bgcolor: 'rgba(255, 255, 255, 0.15)',
 									borderTopLeftRadius: '5px',

@@ -5,6 +5,7 @@ import { startRoundTimer } from '../sockets/socket';
 var command = "normal";
 var round = "start";
 var counter = 0;
+var endTimer = false;
 
 const commandChannel = (req: Request, res: Response) => {
     console.log("Connected channel for admin commands.");
@@ -43,6 +44,7 @@ const setAdminCommand = (req: Request, res: Response) => {
     const newround = req.body.round;
 
     if (newround != round) {
+      setEndTimer(true);
       console.log(newround);
       let duration: number;
 
@@ -62,7 +64,9 @@ const setAdminCommand = (req: Request, res: Response) => {
       }
 
       if (duration > 0) {
-        startRoundTimer(duration);
+        setTimeout(()=>{
+          startRoundTimer(duration);
+        },1000);
       }
     }
 
@@ -73,4 +77,8 @@ const setAdminCommand = (req: Request, res: Response) => {
     );
 }
 
-export { commandChannel, setAdminCommand, round };
+const setEndTimer = (bool: boolean) => {
+  endTimer = bool;
+}
+
+export { commandChannel, setAdminCommand, round, endTimer, setEndTimer };

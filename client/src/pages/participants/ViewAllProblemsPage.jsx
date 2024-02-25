@@ -123,6 +123,9 @@ const ViewAllProblemsPage = ({
 		getRoundQuestions();
 	}, []);
 
+	useEffect(()=>{
+		getRoundQuestions();
+	},[currRound]);
 
 	// websocket listener for power-ups toast notifs
 	useEffect(() => {

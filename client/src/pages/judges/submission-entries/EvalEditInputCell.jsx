@@ -57,7 +57,7 @@ export default function EvalEditInputCell(props) {
 
 					// websocket for judge evaluation
 					socketClient.emit("submitEval", {
-						submissionId: row.id,
+						submissionId: row.dbId,
 						evaluation: currVal,
 						judgeId: judgeID,
 						judgeName: judgeName,

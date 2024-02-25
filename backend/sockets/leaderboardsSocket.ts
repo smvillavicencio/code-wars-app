@@ -10,7 +10,7 @@ const Team = mongoose.model("Team");
 const retrieveLeaderboards = async (args: any) => {
     try {
         // const leaderboard = await Team.find({}).sort({score: -1});
-        const leaderboard = await Team.find({}).select("team_name score total_points_used");
+        const leaderboard = await Team.find({}).select("rank team_name score total_points_used");
         console.log(leaderboard);
         return ({ success: true, leaderboard });
     }catch(err) {

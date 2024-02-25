@@ -125,11 +125,17 @@ io.on("connection", (socket: any) => {
 
       if (response.success) {
         console.log(response.results)
+
+        // update team score for specific problem
+        // update team problem status, judge name, correct test cases
+        // update overall team score
+
         // emit to leaderboards
-        // socket.emit("updateLeaderboard", response.results)
+        // let newLeaderboard = await retrieveLeaderboards
+        // socket.emit("updateLeaderboard", newLeaderboard)
 
         // emit to problem list table
-        // socket.emit("")
+        // socket.emit("updateTeamProblem", )
       }
 
     } catch (error) {

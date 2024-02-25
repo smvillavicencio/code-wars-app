@@ -192,12 +192,45 @@ const ViewSpecificProblemPage = ({
 
 			{/* Other components */}
 			<Box
+				gap={7}
 				sx={{
-					display: 'flex',
-					flexDirection: 'row',
-					gap: 4,
+					display: "flex",
+					flexDirection: {
+						xs: "column",
+						xl: "row"
+					},
 				}}
 			>
+				{/* Mobile view for left column */}
+				<Box
+					gap={10}
+					sx={{
+						mt: '3rem',
+						mx: {
+							xl: 8
+						},
+						width: '100%',
+						display: {
+							xs: "none", md: "flex", xl: "none"
+						},
+						justifyContent: "center"
+					}}
+				>
+					<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
+					<Box
+						gap={7}
+						sx={{
+							display: 'flex',
+							flexDirection: 'column',
+							justifyContent: "center",
+						}}
+					>
+						<RoundTimer />
+						<SponsorCarousel />
+					</Box>
+				</Box>
+							
+				{/* Desktop view for left column */}
 				{/* Left column is for timer, leaderboard, sponsors' carousel */}
 				<Stack
 					spacing={3}
@@ -205,6 +238,9 @@ const ViewSpecificProblemPage = ({
 						mt: 4,
 						mx: 8,
 						minWidth: 325,
+						display: {
+							xs: "flex", md: "none", xl: "flex"
+						}
 					}}
 				>
 					<RoundTimer />
@@ -217,8 +253,11 @@ const ViewSpecificProblemPage = ({
 					<Stack
 						spacing={5}
 						sx={{
-							mt: 8,
-							width: '95%',
+							mt: { xl: 8 },
+							mx: { xs: 5, xl: 0},
+							width: {xl: '68%'},
+							height: '100%',
+							display: "flex"
 						}}
 					>
 						{/* Problem Description */}
@@ -237,7 +276,7 @@ const ViewSpecificProblemPage = ({
 							sx={{
 								display: 'flex',
 								backgroundColor: '#fff',
-								minHeight: 200,
+								minHeight: {xs: 100, xl: 200},
 								borderRadius: 4,
 							}}
 						>
@@ -288,13 +327,13 @@ const ViewSpecificProblemPage = ({
 			{
 				problem ?
 				<CustomModal isOpen={open} setOpen={setOpen} windowTitle="Upload your answer">
-				<SubmitModal 
-					setOpen={setOpen} 
-					problemId={problem._id} 
-					problemTitle={problem.title} 
-					possiblePoints={problem.points} 
-					totalCases={problem.total_cases}
-				/>
+					<SubmitModal 
+						setOpen={setOpen} 
+						problemId={problem._id} 
+						problemTitle={problem.title} 
+						possiblePoints={problem.points} 
+						totalCases={problem.total_cases}
+					/>
 				</CustomModal> : null
 			}
 			</>

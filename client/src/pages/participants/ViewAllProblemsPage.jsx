@@ -49,7 +49,6 @@ const ViewAllProblemsPage = ({
 	currRound,
 	setCurrRound
 }) => {
-
 	
 	/**
 	 * State handler for viewing buy power-up popover
@@ -59,8 +58,11 @@ const ViewAllProblemsPage = ({
 	const [currQuestions, setCurrQuestions] = useState([]);
 	const questionsRef = useRef();
 	
-	// options for rounds
+	// options for round labels
 	const rounds = ['EASY', 'MEDIUM', 'WAGER', 'HARD'];
+
+	// array for round where buy power-ups button should be disabled
+	const roundsDisablePowerUps = ['start', 'easy', 'wager']
 
 	const [showBuffs, setShowBuffs] = useState(false);
 	const [showDebuffs, setShowDebuffs] = useState(false);
@@ -105,7 +107,7 @@ const ViewAllProblemsPage = ({
 		setShowBuffs(false);
 		setShowDebuffs(false);
 		setSelectedPowerUp(null);
-		
+
 		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
 		if (usertype == "judge") {
 			navigate('/judge/submissions');
@@ -121,11 +123,8 @@ const ViewAllProblemsPage = ({
 		}
 
 		getRoundQuestions();
-	}, []);
+	}, [currRound]);
 
-	useEffect(()=>{
-		getRoundQuestions();
-	},[currRound]);
 
 	// websocket listener for power-ups toast notifs
 	useEffect(() => {
@@ -226,140 +225,142 @@ const ViewAllProblemsPage = ({
 		setOpen(false);
 	};
 
+
 	return (
 		<>
 			{
 				isLoggedIn ?
 				<>
 					<Stack>
-					{/* Topbar */}
-					<TopBar
-						isImg={true}
-						icon={seal}
-						title="Code Wars"
-						subtitle="UPLB Computer Science Society"
-						buttonText="BUY POWER-UP"
-						handleButton={handleViewPowerUps}
-					/>
+						{/* Topbar */}
+						<TopBar
+							isImg={true}
+							icon={seal}
+							title="Code Wars"
+							subtitle="UPLB Computer Science Society"
+							buttonText="BUY POWER-UP"
+							disabledState={roundsDisablePowerUps.includes(currRound.toLowerCase()) ? true : false}
+							handleButton={handleViewPowerUps}
+						/>
 
-					{/* Other components */}
-					<Box
-						gap={7}
-						sx={{
-							display: "flex",
-							flexDirection: {
-								xs: "column",
-								xl: "row"
-							},
-						}}
-					>
-						
-						{/* Mobile view for left column */}
+						{/* Other components */}
 						<Box
-							gap={10}
+							gap={7}
 							sx={{
-								mt: '3rem',
-								mx: {
-									xl: 8
+								display: "flex",
+								flexDirection: {
+									xs: "column",
+									xl: "row"
 								},
-								width: '100%',
-								display: {
-									xs: "flex", xl: "none"
-								},
-								justifyContent: "center"
-							}}
-						>
-							<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
-							<Box
-								gap={7}
-								sx={{
-									display: 'flex',
-									flexDirection: 'column',
-									justifyContent: "center",
-								}}
-							>
-								<RoundTimer />
-								<SponsorCarousel />
-							</Box>
-						</Box>
-								
-						{/* Desktop view for left column */}
-						{/* Left column is for timer, leaderboard, sponsors' carousel */}
-						<Stack
-							spacing={3}
-							sx={{
-								mt: 4,
-								mx: 8,
-								minWidth: 325,
-								display: {
-									xs: "none", xl: "flex"
-								}
-							}}
-						>
-							<RoundTimer  />
-							<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
-							<SponsorCarousel />
-						</Stack>
-
-						{/* Full Desktop View for round buttons and problem table */}
-						{/* Right column is for the round buttons and problem list table */}
-						<Stack
-							spacing={5}
-							sx={{
-								mt: { xl: 8 },
-								mx: { xs: 5, xl: 0},
-								width: {xl: '68%'},
-								height: '100%',
-								display: "flex"
 							}}
 						>
 							
-							{/* Container for round buttons */}
-							<Box sx={{ display: 'flex', gap: 3, justifyContent: {xs: 'center', xl: ''} }}>
-								{rounds.map((round, idx) => 
-									<Button
-										key={idx}
-										variant="contained"
-										startIcon={currRound === round ? <LockOpenIcon/> : <LockIcon />}
-										disabled={currRound === round ? false : true}
-										size="large"
-										sx={{
-											fontFamily: 'Poppins',
-											fontWeight: '600',
-											minWidth: 125,
-											gap: 0.5,
-											bgcolor: 'major.main',
-											'&:hover': {
-												bgcolor: 'major.light',
-												color: 'general.main',
-											},
-											'&:disabled': {
-												bgcolor: 'major.light',
-												color: '#fff'
-											}
-										}}
-									>
-										{round}
-									</Button>
-								)}
-							</Box>
-
-							{/* Problem List Table for the round */}
-							<Table
-								rows={currQuestions} //rowsProblems
-								columns={columnsProblems}
-								hideFields={[]}
-								additionalStyles={additionalStyles}
-								onRowClick={handleRowClick}
-								pageSizeOptions={[5, 10]}
-								autoHeight={true}
-								pageSize={10}
-								initialState={{
-									pagination: { paginationModel: { pageSize: 10 } },
+							{/* Mobile view for left column */}
+							<Box
+								gap={10}
+								sx={{
+									mt: '3rem',
+									mx: {
+										xl: 8
+									},
+									width: '100%',
+									display: {
+										xs: "flex", xl: "none"
+									},
+									justifyContent: "center"
 								}}
-							/>
-						</Stack>
-					</Box>
+							>
+								<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
+								<Box
+									gap={7}
+									sx={{
+										display: 'flex',
+										flexDirection: 'column',
+										justifyContent: "center",
+									}}
+								>
+									<RoundTimer />
+									<SponsorCarousel />
+								</Box>
+							</Box>
+									
+							{/* Desktop view for left column */}
+							{/* Left column is for timer, leaderboard, sponsors' carousel */}
+							<Stack
+								spacing={3}
+								sx={{
+									mt: 4,
+									mx: 8,
+									minWidth: 325,
+									display: {
+										xs: "none", xl: "flex"
+									}
+								}}
+							>
+								<RoundTimer  />
+								<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
+								<SponsorCarousel />
+							</Stack>
+
+							{/* Full Desktop View for round buttons and problem table */}
+							{/* Right column is for the round buttons and problem list table */}
+							<Stack
+								spacing={5}
+								sx={{
+									mt: { xl: 8 },
+									mx: { xs: 5, xl: 0},
+									width: {xl: '68%'},
+									height: '100%',
+									display: "flex"
+								}}
+							>
+								
+								{/* Container for round buttons */}
+								<Box sx={{ display: 'flex', gap: 3, justifyContent: {xs: 'center', xl: ''} }}>
+									{rounds.map((round, idx) => 
+										<Button
+											key={idx}
+											variant="contained"
+											startIcon={currRound === round ? <LockOpenIcon/> : <LockIcon />}
+											disabled={currRound === round ? false : true}
+											size="large"
+											sx={{
+												fontFamily: 'Poppins',
+												fontWeight: '600',
+												minWidth: 125,
+												gap: 0.5,
+												bgcolor: 'major.main',
+												'&:hover': {
+													bgcolor: 'major.light',
+													color: 'general.main',
+												},
+												'&:disabled': {
+													bgcolor: 'major.light',
+													color: '#fff'
+												}
+											}}
+										>
+											{round}
+										</Button>
+									)}
+								</Box>
+
+								{/* Problem List Table for the round */}
+								<Table
+									rows={currQuestions} //rowsProblems
+									columns={columnsProblems}
+									hideFields={[]}
+									additionalStyles={additionalStyles}
+									onRowClick={handleRowClick}
+									pageSizeOptions={[5, 10]}
+									autoHeight={true}
+									pageSize={10}
+									initialState={{
+										pagination: { paginationModel: { pageSize: 10 } },
+									}}
+								/>
+							</Stack>
+						</Box>
 					</Stack>
 				
 					{/* Buy Power-ups Popover */}

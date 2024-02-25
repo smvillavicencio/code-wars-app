@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import { ConfirmWindow } from 'components';
 import { postFetch } from './apiRequest';
 import { baseURL } from './constants';

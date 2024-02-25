@@ -32,6 +32,7 @@ const TopBar = ({
 	buttonText,
 	startIcon,
 	handleButton,
+	disabledState
 }) => {
 	/** 
    * State handler for the element to be displayed before the title and subtitle.
@@ -116,6 +117,7 @@ const TopBar = ({
 						variant="contained"
 						color="major"
 						size="large"
+						disabled={disabledState}
 						onClick={handleButton}
 						startIcon={startIcon ? <>{startIcon}</> : <></>}
 						sx={{
@@ -124,10 +126,16 @@ const TopBar = ({
 								bgcolor: 'major.light',
 								color: 'general.main',
 							},
+							'&:disabled': {
+								bgcolor: 'major.light',
+								color: 'major.contrastText'
+							}
 						}}
 					>
 						{buttonText}
 					</Button>
+
+					{/* Temporary Logout Button for participants */}
 					<Button
 						variant="contained"
 						color="major"

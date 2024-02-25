@@ -9,7 +9,10 @@ import { socketClient } from "socket/socket";
 
 
 export default function EvalEditInputCell(props) {
+
+	// initial state should be the same as the value held by view state
 	const [currVal, setCurrVal] = useState('Pending');
+
 	const [openModal, setOpenModal] = useState(false);
 	const [correctTestCases, setCorrectTestCases] = useState(10);
 
@@ -26,7 +29,8 @@ export default function EvalEditInputCell(props) {
 	useEffect(() => {
 		if (currVal === "Partially Correct") {
 			setOpenModal(true);
-		} else if (currVal !== "Pending"){
+
+		} else if (currVal !== "Pending") {
 			console.log(currVal);
 
 			// ask for confirmation of action
@@ -38,6 +42,7 @@ export default function EvalEditInputCell(props) {
 				let judgeName = JSON.parse(localStorage?.getItem("user"))?.username;
 				
 				if (res['isConfirmed']) {
+
 					// websocket for judge evaluation
 					socketClient.emit("submitEval", {
 						submissionId: row.id,
@@ -75,9 +80,9 @@ export default function EvalEditInputCell(props) {
 					open={openModal}
 					setOpen={setOpenModal}
 					currEval={currVal}
-					value={correctTestCases}
 					rowValues={row}
-					handleValue={(n) => setCorrectTestCases(n)}
+					correctCases={correctTestCases}
+					setCorrectCases={setCorrectTestCases}
 				/>
 				: null
 			}

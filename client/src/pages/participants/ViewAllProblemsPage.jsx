@@ -79,6 +79,7 @@ const ViewAllProblemsPage = ({
 			formattedQuestion.status = "Pending";
 			formattedQuestion.score = 0;
 			formattedQuestion.checkedBy = "";
+			formattedQuestion.dbId = question._id;
 
 			newQuestions.push(formattedQuestion);
 		})
@@ -176,9 +177,18 @@ const ViewAllProblemsPage = ({
    * Params: <Object> receives information of selected problem in the Problem List Table.
    */
 	const handleRowClick = (params) => {
+		//console.log(params);
+		let customParams = {
+			checkedBy: params.row.checkedBy,
+			id: params.row.dbId,
+			problemTitle: params.row.problemTitle,
+			score: params.row.score,
+			status: params.row.status
+		}
+
 		navigate({
 			pathname: '/participant/view-specific-problem',
-			search: createSearchParams(params.row).toString()
+			search: createSearchParams(customParams).toString()
 		});
 	};
 

@@ -14,7 +14,7 @@ import { socketClient } from 'socket/socket';
 const RoundTimer = ({
 }) => {
 
-	const [seconds, setSec] = useState(40);
+	const [seconds, setSec] = useState("loading...");
 
 	// useEffect(()=>{
 	// 	setSec(new Date(seconds * 1000).toISOString().slice(11, 19));

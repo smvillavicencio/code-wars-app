@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import { getFetch } from "utils/apiRequest";
 import { baseURL } from "utils/constants";
 

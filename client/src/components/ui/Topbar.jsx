@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 
-import { userDetailsContext } from 'utils/UserDetailsProvider';
 import { handleLogout } from 'utils/commonFunctions';
 /*
  * Purpose: Displays the topbar component for the participant and judge-related pages.
@@ -38,9 +37,6 @@ const TopBar = ({
    * State handler for the element to be displayed before the title and subtitle.
    */
 	const [image, setImage] = useState(true);
-
-	// state for context API
-	const [userDetails, setUserDetails] = useContext(userDetailsContext);
 
 	// used for client-side routing to other pages
 	const navigate = useNavigate();
@@ -136,7 +132,7 @@ const TopBar = ({
 						variant="contained"
 						color="major"
 						size="large"
-						onClick={()=>{handleLogout(setUserDetails, navigate)}}
+						onClick={()=>{handleLogout(navigate)}}
 						sx={{
 							minWidth: 10,
 							'&:hover': {

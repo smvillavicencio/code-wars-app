@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
+import { newUpload } from '../sockets/socket';
 
 // get user model registered in Mongoose
 const Submission = mongoose.model("Submission");
@@ -31,14 +32,14 @@ const Team = mongoose.model("Team");
  */
 
 const uploadSubmission = async (req: Request, res: Response) => {
+    const filename = req.body.filename;
+    const content = req.body.content;
     const problemId = req.body.problemId;
+    const problemTitle = req.body.problemTitle;
+    const possiblePoints = req.body.possiblePoints;
     const teamId = req.body.teamId;
     const teamName = req.body.teamName;
-    // const judgeId = req.body.judgeId;
-    // const judgeName = req.body.judgeName; // Judge set when submission is checked
-    const possiblePoints = req.body.possiblePoints;
-    const content = req.body.content;
-    const totalCases = req.body.totalCases;
+    const totalCases = req.body.totalCases;   
 
     const prevSubmissions = await Submission.find({ team_id: teamId, problem_id: problemId })?.sort({ timestamp: 1 });
     let prevMaxScore;
@@ -57,18 +58,20 @@ const uploadSubmission = async (req: Request, res: Response) => {
     const newSubmission = new Submission({
         team_id: teamId,
         team_name: teamName,
-        judge_id: "pending",//judgeId
-        judge_name: "pending",//judgeName
+        judge_id: "Unassigned",//judgeId
+        judge_name: "Unassigned",//judgeName
         problem_id: problemId,
+        problem_title: problemTitle,
         possible_points: possiblePoints,
-        status: "pending",
+        status: "Pending",
         score: 0,
-        evaluation: "pending",
+        evaluation: "Pending",
         timestamp: new Date(),
         content: content,
         prev_max_score: prevMaxScore,
         total_test_cases: totalCases,
-        curr_correct_cases: 0
+        curr_correct_cases: 0,
+        filename
     })
     // status : checked, error, pending
     // evaluation: correct, partially correct, incorrect solution, error, pending
@@ -82,6 +85,8 @@ const uploadSubmission = async (req: Request, res: Response) => {
             results: error
         });
     }
+
+    newUpload(results);
     
     return res.send({
         success: true,

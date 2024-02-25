@@ -2,7 +2,8 @@
 import {
 	useMemo,
 	useState,
-	useEffect
+	useEffect,
+	useRef
 } from 'react';
 
 import ViewListIcon from '@mui/icons-material/ViewList';
@@ -75,6 +76,7 @@ const ViewSubmissionsPage = ({
 
 	const [fetchAllPrevious, setFetchAllPrevious] = useState(false);
 	const [submissionsList, setSubmissionsList] = useState([]);
+	const subListRef = useRef();
 
 	// state handler for rows of overall leaderboard
 	const [leaderboardRows, setLeaderboardRows] = useState([]);
@@ -229,12 +231,11 @@ const ViewSubmissionsPage = ({
 			console.log("socketClient is present")
 		}
 
-		socketClient.on('newitemtojudge', (arg)=>{
-			// console.log("NEW SUBMISSION");
-			console.log(arg);
+		socketClient.on('newupload', (arg)=>{
+			//console.log(arg);
 
 			let newsubmission = {};
-			newsubmission.id = submissionsList.length;
+			newsubmission.id = subListRef.current.length;
 			newsubmission.teamName = arg.team_name;
 			newsubmission.problemTitle = arg.problem_title;
 			newsubmission.submittedAt = new Date(arg.timestamp).toLocaleString();
@@ -242,12 +243,15 @@ const ViewSubmissionsPage = ({
 			newsubmission.evaluation = arg.evaluation;
 			newsubmission.checkedBy = arg.judge_name;
 			newsubmission.content = arg.content;
+			newsubmission.dbId = arg._id;
 
 			let newSubmissionsList = [];
 
 			let present = false;
-			submissionsList?.map((submission)=>{
-				if (submission.id == newsubmission.id) {
+			//console.log(subListRef.current);
+			subListRef.current?.map((submission)=>{
+				//console.log(submission);
+				if (submission.dbId == newsubmission.dbId) {
 					present = true;
 				} else {
 					newSubmissionsList.push(submission);
@@ -256,7 +260,9 @@ const ViewSubmissionsPage = ({
 			newSubmissionsList.push(newsubmission);
 
 			if (!present) {
+				console.log("NEW SUBMISSION:",arg._id);
 				setSubmissionsList(newSubmissionsList);
+				subListRef.current = newSubmissionsList;
 			}
 		});   
   
@@ -283,13 +289,17 @@ const ViewSubmissionsPage = ({
 			newsubmission.checkedBy = arg.judge_name;
 			newsubmission.content = arg.content;
 			newsubmission.possible_points = arg.possible_points;
+			newsubmission.dbId = arg._id;
 
 
 			allSubmissionsList.push(newsubmission);
 		});
 
 		setSubmissionsList(allSubmissionsList);
+		subListRef.current = allSubmissionsList;
 		setFetchAllPrevious(true);
+
+		handleSocket();
 	}
 
 	useEffect(() => { 

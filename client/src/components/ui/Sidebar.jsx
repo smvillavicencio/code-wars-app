@@ -19,7 +19,6 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import { userDetailsContext } from 'utils/UserDetailsProvider';
 import { handleLogout } from 'utils/commonFunctions';
 
 const DRAWER_WIDTH = 250;
@@ -29,9 +28,6 @@ const DRAWER_WIDTH = 250;
  * Params: None
  */
 const Sidebar = () => {
-	// state for context API
-	const [userDetails, setUserDetails] = useContext(userDetailsContext);
-
 	// used for client-side routing to other pages
 	const navigate = useNavigate();
 	

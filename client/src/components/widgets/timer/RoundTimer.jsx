@@ -1,9 +1,6 @@
-/* eslint-disable */ 
-import {
-	Box,
-	Typography
-} from '@mui/material';
+/* eslint-disable */
 import { useEffect, useState } from 'react';
+import { Box, Typography } from '@mui/material';
 import { socketClient } from 'socket/socket';
 
 
@@ -14,7 +11,7 @@ import { socketClient } from 'socket/socket';
 const RoundTimer = ({
 }) => {
 
-	const [seconds, setSec] = useState("00:00:00");
+	const [seconds, setSec] = useState("00:00");
 
 	// useEffect(()=>{
 	// 	setSec(new Date(seconds * 1000).toISOString().slice(11, 19));
@@ -57,10 +54,7 @@ const RoundTimer = ({
 				<span>ROUND TIMER</span>
 			</Typography>
 
-			<Typography noWrap variant="h3"
-				sx={{
-				}}
-			>
+			<Typography noWrap variant="h3">
 				{seconds}
 			</Typography>
 		</Box>

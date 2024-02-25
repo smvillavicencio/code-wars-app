@@ -1,5 +1,5 @@
 /* eslint-disable */ 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { useGridApiContext } from "@mui/x-data-grid";
 import { DropdownSelect } from "components";
 import { optionsEval } from "utils/dummyData";
@@ -9,21 +9,33 @@ import { socketClient } from "socket/socket";
 
 
 export default function EvalEditInputCell(props) {
+	const { id, value, field, hasFocus, row } = props.props;
 
 	// initial state should be the same as the value held by view state
-	const [currVal, setCurrVal] = useState('Pending');
+	const [currVal, setCurrVal] = useState(value);
+
+	// for dropdown select
+	const [isDisabled, setIsDisabled] = useState(!props.props.row.hasFileDownloaded);
 
 	const [openModal, setOpenModal] = useState(false);
 	const [correctTestCases, setCorrectTestCases] = useState(10);
 
-	const { id, formattedValue, field, hasFocus, row } = props.props;
+	console.log(props.props)
 	const apiRef = useGridApiContext();
+	const ref = useRef()
 
-	const handleChange = (event, newValue) => {
+	const handleChange = (event) => {
 		setCurrVal(event.target.value);
-
-		apiRef.current.setEditCellValue({ id, field, formattedValue: currVal });
+		apiRef.current.setEditCellValue({ id, field, value: event.target.value });
+		
 	};
+
+	useLayoutEffect(() => {
+		if (hasFocus && ref.current) {
+			ref.current.focus()
+		}
+
+	}, [hasFocus])
 	
 
 	useEffect(() => {
@@ -52,11 +64,10 @@ export default function EvalEditInputCell(props) {
 						correctCases: correctTestCases,
 						possiblePoints: row.possible_points
 					});
-
+					
 					SuccessWindow.fire({
 						text: 'Successfully submitted evaluation!'
 					});
-
 				} 
 			});
 		}
@@ -66,9 +77,10 @@ export default function EvalEditInputCell(props) {
 	return (
 		<>
 			<DropdownSelect
+				innerRef={ref}
 				displayEmpty
 				variant="standard"
-				isDisabled={props.props.row?.hasFileDownloaded ? false : true}
+				isDisabled={isDisabled}
 				minWidth="100%"
 				options={optionsEval}
 				handleChange={handleChange}

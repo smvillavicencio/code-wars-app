@@ -10,11 +10,9 @@ import {
 	Typography
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
 
 import LoginBackground from 'assets/LoginBackground.png';
 import { SponsorCarousel } from 'components/index.js';
-import { userDetailsContext } from 'utils/UserDetailsProvider';
 import { baseURL } from 'utils/constants';
 import { postFetch } from 'utils/apiRequest';
 import Cookies from "universal-cookie";
@@ -24,8 +22,6 @@ import Cookies from "universal-cookie";
  * Params: None
  */
 const LoginPage = () => {
-	// state for the context API
-	const [userDetails, setUserDetails] = useContext(userDetailsContext);
 	// state for the username textfield
 	const [username, SetUsername] = useState('');
 	// state for the password textfield
@@ -70,7 +66,6 @@ const LoginPage = () => {
 			}
 
 			//console.log(loginResponse);
-			setUserDetails(user);
 			localStorage.setItem("user", JSON.stringify(user));
 
 			const cookies = new Cookies();
@@ -85,31 +80,6 @@ const LoginPage = () => {
 				}
 			);
 		}
-
-		// if (username == 'participant') {
-		// 	setUserDetails({
-		// 		user: 'Team One',
-		// 		role: 'participant',
-		// 	});
-		// 	navigate('/participant/view-all-problems');
-
-		// } else if (username == 'judge') {
-		// 	setUserDetails({
-		// 		user: 'Sir Name',
-		// 		role: 'Judge',
-		// 	});
-		// 	navigate('/judge/submissions');
-
-		// } else if (username == 'admin') {
-		// 	setUserDetails({
-		// 		user: 'Code Wars Admin',
-		// 		role: 'admin',
-		// 	});
-		// 	navigate('/admin/general');
-
-		// } else {
-		// 	alert('Failed');
-		// }
 	};
 
 

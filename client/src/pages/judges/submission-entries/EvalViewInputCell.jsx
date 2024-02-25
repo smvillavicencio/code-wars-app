@@ -12,7 +12,7 @@ export default function renderEval(props) {
 			minWidth="100%"
 			options={optionsEval}
 			isDisabled={props.row.hasFileDownloaded ? false : true}
-			value={props.formattedValue}
+			value={props.value}
 		/>
 	);
 }

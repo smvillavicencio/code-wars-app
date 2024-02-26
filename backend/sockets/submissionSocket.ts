@@ -65,7 +65,7 @@ const checkSubmission = async (arg: any) => {
                 });
             }
         }
-
+        console.log(score);
         submission.status = status;
         submission.score = score;
 

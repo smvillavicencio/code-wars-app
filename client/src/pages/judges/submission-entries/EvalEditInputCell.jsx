@@ -25,9 +25,14 @@ export default function EvalEditInputCell(props) {
 	const ref = useRef()
 
 	const handleChange = (event) => {
-		setCurrVal(event.target.value);
-		apiRef.current.setEditCellValue({ id, field, value: event.target.value });
+		let newVal = event.target.value;
+
+		setCurrVal(newVal);
+		apiRef.current.setEditCellValue({ id, field, value: newVal });
 		
+		if (newVal == "Error" || newVal == "Incorrect Solution") {
+			setCorrectTestCases(0);
+		}
 	};
 
 	useLayoutEffect(() => {
@@ -69,6 +74,12 @@ export default function EvalEditInputCell(props) {
 						text: 'Successfully submitted evaluation!'
 					});
 				} 
+				if (res["isDismissed"]) {
+					console.log(ref);
+					//ref.current.value = "Pending";
+					setCurrVal("Pending");
+					apiRef.current.setEditCellValue({ id, field, value: "Pending" });
+				}
 			});
 		}
 	}, [currVal])

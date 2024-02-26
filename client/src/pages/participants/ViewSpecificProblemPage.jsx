@@ -192,7 +192,7 @@ const ViewSpecificProblemPage = ({
 
 			{/* Other components */}
 			<Box
-				gap={7}
+				// gap={7}
 				sx={{
 					display: "flex",
 					flexDirection: {
@@ -249,77 +249,76 @@ const ViewSpecificProblemPage = ({
 				</Stack>
 
 				{/* Right column is for the problem description and sample inputs/outputs */}
-				<Typography variant="body1">
-					<Stack
-						spacing={5}
+				<Stack
+					spacing={5}
+					sx={{
+						mt: { xl: 8 },
+						px: { xs: 7 },
+						height: '100%',
+						width: '100%',
+						display: "flex"
+					}}
+				>
+					{/* Problem Description */}
+					<Box
 						sx={{
-							mt: { xl: 8 },
-							mx: { xs: 5, xl: 0},
-							width: {xl: '68%'},
-							height: '100%',
-							display: "flex"
+							backgroundColor: '#fff',
+							padding: 3,
+							borderRadius: 4,
+							// width: '100%'
 						}}
 					>
-						{/* Problem Description */}
-						<Box
-							sx={{
-								backgroundColor: '#fff',
-								padding: 3,
-								borderRadius: 4,
-							}}
-						>
-							<Typography paragraph>{problemDescription}</Typography>
+						<Typography paragraph>{problemDescription}</Typography>
+					</Box>
+					
+					{/* Sample Inputs and Outputs */}
+					<Box
+						sx={{
+							display: 'flex',
+							backgroundColor: '#fff',
+							minHeight: {xs: 100, xl: 200},
+							borderRadius: 4,
+						}}
+					>
+						<Box sx={{ width: '50%', borderRight: 2,}}>
+							<Typography
+								color="primary.contrastText"
+								sx={{
+									borderTopLeftRadius: 10,
+									bgcolor: 'primary.main',
+									fontFamily: 'Inter',
+									fontWeight: 400,
+									fontSize: '1.10rem',
+									padding: 1,
+								}}
+							>
+								Sample Inputs
+							</Typography>
+
+							{/* Sample inputs here */}
+							<div></div>
 						</Box>
-            
-						{/* Sample Inputs and Outputs */}
-						<Box
-							sx={{
-								display: 'flex',
-								backgroundColor: '#fff',
-								minHeight: {xs: 100, xl: 200},
-								borderRadius: 4,
-							}}
-						>
-							<Box sx={{ width: '50%', borderRight: 2,}}>
-								<Typography
-									color="primary.contrastText"
-									sx={{
-										borderTopLeftRadius: 10,
-										bgcolor: 'primary.main',
-										fontFamily: 'Inter',
-										fontWeight: 400,
-										fontSize: '1.10rem',
-										padding: 1,
-									}}
-								>
-                  Sample Inputs
-								</Typography>
 
-								{/* Sample inputs here */}
-								<div></div>
-							</Box>
+						<Box sx={{ width: '50%' }}>
+							<Typography
+								color="primary.contrastText"
+								sx={{
+									borderTopRightRadius: 10,
+									bgcolor: 'primary.main',
+									fontFamily: 'Inter',
+									fontWeight: 400,
+									fontSize: '1.10rem',
+									padding: 1,
+								}}
+							>
+								Sample Outputs
+							</Typography>
 
-							<Box sx={{ width: '50%' }}>
-								<Typography
-									color="primary.contrastText"
-									sx={{
-										borderTopRightRadius: 10,
-										bgcolor: 'primary.main',
-										fontFamily: 'Inter',
-										fontWeight: 400,
-										fontSize: '1.10rem',
-										padding: 1,
-									}}
-								>
-                  Sample Outputs
-								</Typography>
-
-								{/* Sample outputs here */}
-								<div></div>
-							</Box>
+							{/* Sample outputs here */}
+							<div></div>
 						</Box>
-					</Stack>
-				</Typography>
+					</Box>
+				</Stack>
 			</Box>
 			
 			{/* Submit Modal Window */}

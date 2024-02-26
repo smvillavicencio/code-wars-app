@@ -276,33 +276,39 @@ const ViewSubmissionsPage = ({
 	const getSubmissions = async () => {
 		const submissions = await getFetch(`${baseURL}/getallsubmissions`,);
 
-		let allSubmissionsList = [];
+		// temp; options for client-side filtering
+		let teamsList = [];
+		let questionsList = [];
 
-		submissions.results?.map((arg) => {
-			let newsubmission = {};
+		console.log(submissions.results)
 
-			newsubmission.id = allSubmissionsList.length;
-			newsubmission.teamName = arg.team_name;
-			newsubmission.problemTitle = arg.problem_title;
-			newsubmission.submittedAt = new Date(arg.timestamp).toLocaleString();
-			newsubmission.uploadedFile = arg.filename;
-			newsubmission.evaluation = arg.evaluation;
-			newsubmission.checkedBy = arg.judge_name;
-			newsubmission.content = arg.content;
-			newsubmission.possible_points = arg.possible_points;
-			newsubmission.dbId = arg._id;
-			newsubmission.totalCases = arg.total_test_cases;
+		let submissionEntries = []
 
+		if (submissions.results.length > 0) {
+			// map out the entries returned by fetch
+			submissions.results.forEach((entry, index) => {
+				// entries should be in reverse chronological order
+				submissionEntries.unshift({
+					id: submissions.results.length - index,
+					teamName: entry.team_name,
+					problemTitle: entry.problem_title,
+					submittedAt: new Date(entry.timestamp).toLocaleTimeString(),
+					uploadedFile: entry.filename,
+					evaluation: entry.evaluation,
+					checkedBy: entry.judge_name,
+					content: entry.content,
+					possible_points: entry.possible_points,
+					dbId: entry._id,
+					totalCases: entry.total_test_cases
+				})
+			})
 
-			allSubmissionsList.push(newsubmission);
-		});
+			// setting UI table state
+			setSubmissionsList([...submissionEntries]);
+		}
 
-		setSubmissionsList(allSubmissionsList);
-		subListRef.current = allSubmissionsList;
+		subListRef.current = submissionEntries;
 		setFetchAllPrevious(true);
-
-		//console.log(allSubmissionsList);
-
 		handleSocket();
 	}
 
@@ -321,7 +327,6 @@ const ViewSubmissionsPage = ({
 			setIsLoggedIn(false);
 		}
 
-
 		if (fetchAllPrevious) {
 			handleSocket();
 		} else {
@@ -339,6 +344,7 @@ const ViewSubmissionsPage = ({
 		fetchData()
 		
 	}, []);
+
 	
 	return (
 		<>

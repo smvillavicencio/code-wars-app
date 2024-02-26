@@ -20,7 +20,7 @@ export default function EvalEditInputCell(props) {
 	const [openModal, setOpenModal] = useState(false);
 	const [correctTestCases, setCorrectTestCases] = useState(row.totalCases);
 
-	console.log(props.props)
+	// console.log(props.props)
 	const apiRef = useGridApiContext();
 	const ref = useRef()
 

@@ -12,14 +12,16 @@ export const enterAdminPassword = async ({ title }) => {
 	// Swal with two textfields and a prompt to copy
 	const { value: formValues } = await ConfirmWindow.fire({
 		title: `${title}`,
-		html:
-			'<p> Enter admin password to confirm action:</p> ' +
-			'<input id="swal-input1" class="swal2-input" type="password" placeholder="Enter password">',
-		
-		preConfirm: () => {
-			return [
-				document.getElementById('swal-input1').value,
-			];
+		input: "password",
+		inputLabel: "Enter admin password to confirm action:",
+		inputAttributes: {
+			autocorrect: "off",
+			autocapitalize: "off"
+		},
+		inputValidator: (value) => {
+			if (!value) {
+				return "Please input a valid password.";
+			}
 		}
 	});
 
@@ -38,7 +40,7 @@ export const enterAdminPassword = async ({ title }) => {
 	};
 
 	if (formValues) {
-		return passwordVerify(formValues[0]);
+		return passwordVerify(formValues);
 	}
 };
 

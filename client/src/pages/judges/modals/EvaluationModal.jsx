@@ -101,7 +101,12 @@ const EvaluationModal = ({
 					}}
 					onFocus={() => setFirstClick(false)}
 					InputLabelProps={{ shrink: true }}
-					InputProps={{ inputProps: { min: 0, max: rowValues.totalCases } }}	
+					InputProps={{
+						inputProps: {
+							min: 0,
+							max: rowValues.totalCases
+						}
+					}}	
 					type="number"
 					variant="standard"
 					label="# of Test Cases Passed:"

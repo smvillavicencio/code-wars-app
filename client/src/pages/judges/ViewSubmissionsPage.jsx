@@ -37,6 +37,7 @@ import { socketClient } from 'socket/socket';
 
 import { baseURL } from 'utils/constants';
 import { getFetch } from 'utils/apiRequest';
+// import { teamsList } from 'utils/dummyData';
 
 
 // Styling for Leaderboard table
@@ -59,6 +60,10 @@ const additionalStylesSubmissions = {
 const renderEvalEditInputCell = (params) => {
   return <EvalEditInputCell props={params} />;
 };
+
+// temp; options for client-side filtering
+const teamsList = [];
+const questionsList = [];
 
 
 /**
@@ -277,9 +282,7 @@ const ViewSubmissionsPage = ({
 	const getSubmissions = async () => {
 		const submissions = await getFetch(`${baseURL}/getallsubmissions`,);
 
-		// temp; options for client-side filtering
-		let teamsList = [];
-		let questionsList = [];
+		
 
 		let submissionEntries = []
 
@@ -319,9 +322,17 @@ const ViewSubmissionsPage = ({
 		}
 
 		subListRef.current = submissionEntries;
+
+		console.log(questionsList, teamsList)
+		// console.log(options[0])
+		// console.log(options[1])
+		// console.log("submissionEntries", submissionEntries)
+
 		setFetchAllPrevious(true);
 		handleSocket();
 	}
+
+	// console.log(options)
 
 	useEffect(() => { 
 		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
@@ -343,6 +354,11 @@ const ViewSubmissionsPage = ({
 		} else {
 			getSubmissions();
 		}
+
+		// console.log("teamsList", teamsList)
+		// console.log("submissionsList", submissionsList)
+		// console.log("questionsList", questionsList)
+
 
 		/**
 	   * Fetch overall leaderboard data
@@ -390,7 +406,8 @@ const ViewSubmissionsPage = ({
 								label="Team Name"
 								minWidth="20%"
 								variant="filled"
-								options={options[0]}
+								// options={options[0]}
+								options={teamsList}
 								handleChange={handleTeams}
 								value={selectedTeam}
 							>
@@ -404,7 +421,8 @@ const ViewSubmissionsPage = ({
 								minWidth="35%"
 								variant="filled"
 								label="Problem Title"
-								options={options[1]}
+								// options={options[1]}
+								options={questionsList}
 								handleChange={handleProblems}
 								value={selectedProblem}
 							>

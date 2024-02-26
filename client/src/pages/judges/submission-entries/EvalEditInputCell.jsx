@@ -11,43 +11,46 @@ import { socketClient } from "socket/socket";
 export default function EvalEditInputCell(props) {
 	const { id, value, field, hasFocus, row } = props.props;
 
+
 	// initial state should be the same as the value held by view state
+	const [initialVal, setInitialVal] = useState(value);
+
+	// state handler for dropdown select value
 	const [currVal, setCurrVal] = useState(value);
 
 	// for dropdown select
 	const [isDisabled, setIsDisabled] = useState(!props.props.row.hasFileDownloaded);
 
+	// for not pushing through with selected option
+	const [confirmed, setConfirmed] = useState(false);
+	
 	const [openModal, setOpenModal] = useState(false);
 	const [correctTestCases, setCorrectTestCases] = useState(row.totalCases);
 
-	// console.log(props.props)
+	console.log(props.props)
 	const apiRef = useGridApiContext();
 	const ref = useRef()
 
 	const handleChange = (event) => {
 		let newVal = event.target.value;
 
-		setCurrVal(newVal);
-		apiRef.current.setEditCellValue({ id, field, value: newVal });
+		if (newVal !== "Pending" && newVal !== initialVal) {
+			console.log("handleChange", newVal, initialVal)
+			setCurrVal(newVal);
+			apiRef.current.setEditCellValue({ id, field, value: newVal });
+		}
 		
 		if (newVal == "Error" || newVal == "Incorrect Solution") {
 			setCorrectTestCases(0);
 		}
+		
 	};
 
-	useLayoutEffect(() => {
-		if (hasFocus && ref.current) {
-			ref.current.focus()
-		}
-
-	}, [hasFocus])
-	
-
 	useEffect(() => {
-		if (currVal === "Partially Correct") {
+		if (!isDisabled && initialVal !== "Partially Correct" && currVal === "Partially Correct") {
 			setOpenModal(true);
 
-		} else if (currVal !== "Pending") {
+		} else if (!isDisabled && currVal !== initialVal && currVal !== "Pending") {
 			console.log(currVal);
 
 			// ask for confirmation of action
@@ -60,6 +63,7 @@ export default function EvalEditInputCell(props) {
 				
 				if (res['isConfirmed']) {
 
+					setConfirmed(true);
 					// websocket for judge evaluation
 					socketClient.emit("submitEval", {
 						submissionId: row.dbId,
@@ -73,15 +77,23 @@ export default function EvalEditInputCell(props) {
 					SuccessWindow.fire({
 						text: 'Successfully submitted evaluation!'
 					});
-				} 
-				if (res["isDismissed"]) {
-					console.log(ref);
-					//ref.current.value = "Pending";
-					setCurrVal("Pending");
-					apiRef.current.setEditCellValue({ id, field, value: "Pending" });
+
+				// if user selected pending as option, do not replace currValue with "Pending" kasi dapat di siya valid option (?)
+				} else {
+					setConfirmed(false);
+					setCurrVal(initialVal);
+					apiRef.current.setEditCellValue({ id, field, value: initialVal });
 				}
 			});
+
 		}
+		// else if (currVal === "Pending") {
+		// 	// replace with making pending an unclickable option in dropdown select
+		// 	setCurrVal("initialVal")
+		// }
+
+		// disabling the dropdown select again
+		props.props.row.hasFileDownloaded = false;
 	}, [currVal])
 	
 

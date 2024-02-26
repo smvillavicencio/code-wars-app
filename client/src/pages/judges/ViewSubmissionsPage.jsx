@@ -244,6 +244,7 @@ const ViewSubmissionsPage = ({
 			newsubmission.checkedBy = arg.judge_name;
 			newsubmission.content = arg.content;
 			newsubmission.dbId = arg._id;
+			newsubmission.totalCases = arg.total_test_cases;
 
 			let newSubmissionsList = [];
 
@@ -290,6 +291,7 @@ const ViewSubmissionsPage = ({
 			newsubmission.content = arg.content;
 			newsubmission.possible_points = arg.possible_points;
 			newsubmission.dbId = arg._id;
+			newsubmission.totalCases = arg.total_test_cases;
 
 
 			allSubmissionsList.push(newsubmission);
@@ -298,6 +300,8 @@ const ViewSubmissionsPage = ({
 		setSubmissionsList(allSubmissionsList);
 		subListRef.current = allSubmissionsList;
 		setFetchAllPrevious(true);
+
+		//console.log(allSubmissionsList);
 
 		handleSocket();
 	}

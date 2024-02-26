@@ -32,6 +32,7 @@ const EvaluationModal = ({
 	 * Purpose: Closes the modal window
 	 */
 	const handleCancel = () => {
+		console.log(rowValues);
 		setOpen(false);
 	}
 
@@ -90,11 +91,17 @@ const EvaluationModal = ({
 					fullWidth
 					error={correctCases === ''}
 					value={correctCases}
-					onChange={(e) => setCorrectCases(e.target.value)}
+					onChange={(e) => {
+						let currCorr = e.target.value;
+						if (currCorr > rowValues.totalCases) {
+							setCorrectCases(rowValues.totalCases);
+						} else {
+							setCorrectCases(e.target.value)
+						}
+					}}
 					onFocus={() => setFirstClick(false)}
 					InputLabelProps={{ shrink: true }}
-					InputProps={{ min: 0, max: 10 }}
-					
+					InputProps={{ inputProps: { min: 0, max: rowValues.totalCases } }}	
 					type="number"
 					variant="standard"
 					label="# of Test Cases Passed:"

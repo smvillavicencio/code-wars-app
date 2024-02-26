@@ -223,21 +223,21 @@ export const columnsSubmissions = [
 		field: 'teamName',
 		headerName: 'Team Name',
 		minWidth: 250,
-		flex: 1,
+		// flex: 1,
 	},
 	{
 		field: 'problemTitle',
 		headerName: 'Problem Title',
 		minWidth: 300,
 		// maxWidth: 500,
-		flex: 1,
+		// flex: 1,
 	},
 	{
 		field: 'submittedAt',
 		headerName: 'Submitted At',
 		minWidth: 200,
 		// maxWidth: 200,
-		flex: 1,
+		// flex: 1,
 	},
 	{
 		field: 'uploadedFile',
@@ -246,17 +246,17 @@ export const columnsSubmissions = [
 		// maxWidth: 200,
 		headerAlign: 'left',
 		align: 'left',
-		flex: 1,
+		// flex: 1,
 	},
 	{
 		field: 'evaluation',
 		headerName: 'Evaluation',
-		minWidth: 175,
+		minWidth: 250,
 		// maxWidth: 250,
-		flex: 1,
+		// flex: 1,
 
-		type: 'singleSelect',
-		width: 120,
+		// type: 'singleSelect',
+		// width: 120,
 		editable: true,
 		valueOptions: optionsEval
 	},
@@ -265,7 +265,7 @@ export const columnsSubmissions = [
 		headerName: 'Judge',
 		minWidth: 275,
 		// maxWidth: 250,
-		flex: 1,
+		// flex: 1,
 	},
 ];
 

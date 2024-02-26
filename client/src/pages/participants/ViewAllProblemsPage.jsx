@@ -316,7 +316,7 @@ const ViewAllProblemsPage = ({
 							>
 								
 								{/* Container for round buttons */}
-								<Box sx={{ display: 'flex', gap: 3, justifyContent: {xs: 'center', xl: ''} }}>
+								<Box sx={{ display: 'flex', gap: 3, justifyContent: {xs: 'center', xl: 'initial'} }}>
 									{rounds.map((round, idx) => 
 										<Button
 											key={idx}

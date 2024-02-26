@@ -28,8 +28,6 @@ import getLeaderboard from 'components/widgets/leaderboard/getLeaderboard';
 import {
 	columnsSubmissions,
 	columnsLeaderboard,
-	optionsTeam,
-	optionsProblems,
 } from 'utils/dummyData';
 
 import renderEval from './submission-entries/EvalViewInputCell';
@@ -39,6 +37,8 @@ import { socketClient } from 'socket/socket';
 
 import { baseURL } from 'utils/constants';
 import { getFetch } from 'utils/apiRequest';
+// import { teamsList } from 'utils/dummyData';
+
 
 // Styling for Leaderboard table
 const additionalStylesLeaderboard = {
@@ -60,6 +60,10 @@ const additionalStylesSubmissions = {
 const renderEvalEditInputCell = (params) => {
   return <EvalEditInputCell props={params} />;
 };
+
+// temp; options for client-side filtering
+const teamsList = [];
+const questionsList = [];
 
 
 /**
@@ -86,6 +90,9 @@ const ViewSubmissionsPage = ({
 	const [selectedTeam, setSelectedTeam] = useState('');
 	// state handler for problem dropdown select
 	const [selectedProblem, setSelectedProblem] = useState('');
+
+	// state handler for dropdown select options
+	const [options, setOptions] = useState([]);
 
 	const handleDownload = (e, params) => {
 		e.preventDefault();
@@ -232,13 +239,12 @@ const ViewSubmissionsPage = ({
 		}
 
 		socketClient.on('newupload', (arg)=>{
-			//console.log(arg);
 
 			let newsubmission = {};
 			newsubmission.id = subListRef.current.length;
 			newsubmission.teamName = arg.team_name;
 			newsubmission.problemTitle = arg.problem_title;
-			newsubmission.submittedAt = new Date(arg.timestamp).toLocaleString();
+			newsubmission.submittedAt = new Date(arg.timestamp).toLocaleTimeString();
 			newsubmission.uploadedFile = arg.filename;
 			newsubmission.evaluation = arg.evaluation;
 			newsubmission.checkedBy = arg.judge_name;
@@ -276,35 +282,57 @@ const ViewSubmissionsPage = ({
 	const getSubmissions = async () => {
 		const submissions = await getFetch(`${baseURL}/getallsubmissions`,);
 
-		let allSubmissionsList = [];
+		
 
-		submissions.results?.map((arg) => {
-			let newsubmission = {};
+		let submissionEntries = []
 
-			newsubmission.id = allSubmissionsList.length;
-			newsubmission.teamName = arg.team_name;
-			newsubmission.problemTitle = arg.problem_title;
-			newsubmission.submittedAt = new Date(arg.timestamp).toLocaleString();
-			newsubmission.uploadedFile = arg.filename;
-			newsubmission.evaluation = arg.evaluation;
-			newsubmission.checkedBy = arg.judge_name;
-			newsubmission.content = arg.content;
-			newsubmission.possible_points = arg.possible_points;
-			newsubmission.dbId = arg._id;
-			newsubmission.totalCases = arg.total_test_cases;
+		if (submissions.results.length > 0) {
+			// map out the entries returned by fetch
+			submissions.results.forEach((entry, index) => {
+				// entries should be in reverse chronological order
+				submissionEntries.unshift({
+					id: submissions.results.length - index,
+					teamName: entry.team_name,
+					problemTitle: entry.problem_title,
+					submittedAt: new Date(entry.timestamp).toLocaleTimeString(),
+					uploadedFile: entry.filename,
+					evaluation: entry.evaluation,
+					checkedBy: entry.judge_name,
+					content: entry.content,
+					possible_points: entry.possible_points,
+					dbId: entry._id,
+					totalCases: entry.total_test_cases
+				})
 
+				// add team name to teamsList
+				if (!teamsList.includes(entry.team_name)) {
+					teamsList.push(entry.team_name)
+				}
+				// add problem title to questionsList
+				if (!questionsList.includes(entry.problem_title)) {
+					questionsList.push(entry.problem_title)
+				}
 
-			allSubmissionsList.push(newsubmission);
-		});
+				// set options for dropdown select filtering
+				setOptions([teamsList, questionsList])
+			})
 
-		setSubmissionsList(allSubmissionsList);
-		subListRef.current = allSubmissionsList;
+			// setting UI table state
+			setSubmissionsList([...submissionEntries]);
+		}
+
+		subListRef.current = submissionEntries;
+
+		console.log(questionsList, teamsList)
+		// console.log(options[0])
+		// console.log(options[1])
+		// console.log("submissionEntries", submissionEntries)
+
 		setFetchAllPrevious(true);
-
-		//console.log(allSubmissionsList);
-
 		handleSocket();
 	}
+
+	// console.log(options)
 
 	useEffect(() => { 
 		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
@@ -321,12 +349,16 @@ const ViewSubmissionsPage = ({
 			setIsLoggedIn(false);
 		}
 
-
 		if (fetchAllPrevious) {
 			handleSocket();
 		} else {
 			getSubmissions();
 		}
+
+		// console.log("teamsList", teamsList)
+		// console.log("submissionsList", submissionsList)
+		// console.log("questionsList", questionsList)
+
 
 		/**
 	   * Fetch overall leaderboard data
@@ -339,102 +371,115 @@ const ViewSubmissionsPage = ({
 		fetchData()
 		
 	}, []);
+
 	
 	return (
 		<>
-		{ isLoggedIn ?
-		<Box>
-			<TopBar
-				isImg={true}
-				icon={seal}
-				title="Code Wars"
-				subtitle="UPLB Computer Science Society"
-				buttonText="VIEW LEADERBOARD"
-				startIcon={<ViewListIcon />}
-				handleButton={handleButton}
-			/>
-			
-			<Stack spacing={5} sx={{ mt: 5, mx: 15 }} >
-				
-				{/* Dropdown selects for team name and problem title */}
-				<Box sx={{
-					display: 'flex',
-					flexDirection: 'row',
-					gap: 5,
-				}}>
-					<DropdownSelect
-						isDisabled={false}
-						label="Team Name"
-						minWidth="20%"
-						variant="filled"
-						options={optionsTeam}
-						handleChange={handleTeams}
-						value={selectedTeam}
-					>
-						{/* Empty Value */}
-						<MenuItem value="">
-							<em>All</em>
-						</MenuItem>
-					</DropdownSelect>
-					<DropdownSelect
-						isDisabled={false}
-						minWidth="35%"
-						variant="filled"
-						label="Problem Title"
-						options={optionsProblems}
-						handleChange={handleProblems}
-						value={selectedProblem}
-					>
-						{/* Empty Value */}
-						<MenuItem value="">
-							<em>All</em>
-						</MenuItem>
-					</DropdownSelect>
-				</Box>
-
-				{/* Submission Entry Table */}
-				<Table
-					rows={getFilteredRows(submissionsList)}// useMemo(() => {return getFilteredRows(rowsSubmissions)}, [selectedTeam, selectedProblem] ) // Replaced original for now due to error happening when # of hooks used change between renders
-					columns={modifiedSubmissionColumns}// useMemo(() => {return modifiedSubmissionColumns}, [] )
-					hideFields={[]}
-					additionalStyles={additionalStylesSubmissions}
-					density={"comfortable"}
-					columnHeaderHeight={45}
-					pageSizeOptions={[5, 8]}
-					autoHeight
-					initialState={{
-						pagination: { paginationModel: { pageSize: 8 } },
+			{ isLoggedIn ?
+				<Box
+					sx={{
+						'& .timeColumn': {
+							fontFamily: 'monospace'
+						}
 					}}
-					// processRowUpdate={processRowUpdate}
+				>
+					<TopBar
+						isImg={true}
+						icon={seal}
+						title="Code Wars"
+						subtitle="UPLB Computer Science Society"
+						buttonText="VIEW LEADERBOARD"
+						startIcon={<ViewListIcon />}
+						handleButton={handleButton}
+					/>
+					
+					<Stack spacing={5} sx={{ mt: 5, mx: 15 }} >
+						
+						{/* Dropdown selects for team name and problem title */}
+						<Box sx={{
+							display: 'flex',
+							flexDirection: 'row',
+							gap: 5,
+						}}>
+							<DropdownSelect
+								isDisabled={false}
+								label="Team Name"
+								minWidth="20%"
+								variant="filled"
+								// options={options[0]}
+								options={teamsList}
+								handleChange={handleTeams}
+								value={selectedTeam}
+							>
+								{/* Empty Value */}
+								<MenuItem value="">
+									<em>All</em>
+								</MenuItem>
+							</DropdownSelect>
+							<DropdownSelect
+								isDisabled={false}
+								minWidth="35%"
+								variant="filled"
+								label="Problem Title"
+								// options={options[1]}
+								options={questionsList}
+								handleChange={handleProblems}
+								value={selectedProblem}
+							>
+								{/* Empty Value */}
+								<MenuItem value="">
+									<em>All</em>
+								</MenuItem>
+							</DropdownSelect>
+						</Box>
 
-					// if there are no submission entries yet
-					slots={{
-						noRowsOverlay: () => (
-							<Stack height="100%" alignItems="center" justifyContent="center">
-								<Typography><em>No records to display.</em></Typography>
-							</Stack>
-						)
-					}}
-				/>
-			</Stack>
+						{/* Submission Entry Table */}
+						<Table
+							rows={getFilteredRows(submissionsList)}// useMemo(() => {return getFilteredRows(rowsSubmissions)}, [selectedTeam, selectedProblem] ) // Replaced original for now due to error happening when # of hooks used change between renders
+							columns={modifiedSubmissionColumns}// useMemo(() => {return modifiedSubmissionColumns}, [] )
+							hideFields={[]}
+							additionalStyles={additionalStylesSubmissions}
+							density={"comfortable"}
+							columnHeaderHeight={45}
+							pageSizeOptions={[5, 8]}
+							autoHeight
+							initialState={{
+								pagination: { paginationModel: { pageSize: 8 } },
+							}}
+							getCellClassName={(params) => {
+								if (params.field === 'submittedAt') {
+									return 'timeColumn'
+								}
+							}}
 
-			{/* Overall Leaderboard Modal Window */}
-			<CustomModal isOpen={open} setOpen={setOpen} windowTitle="Leaderboard">
-				<Table
-					editMode="row" 
-					rows={leaderboardRows}
-					columns={columnsLeaderboard}
-					hideFields={['id', 'totalSpent']}
-					additionalStyles={additionalStylesLeaderboard}
-					pageSize={5}
-					pageSizeOptions={[5, 10]}
-					initialState={{
-						pagination: { paginationModel: { pageSize: 5 } },
-					}}
-				/>
-			</CustomModal>
-		</Box> : <Loading />
-		}
+							// if there are no submission entries yet
+							slots={{
+								noRowsOverlay: () => (
+									<Stack height="100%" alignItems="center" justifyContent="center">
+										<Typography><em>No records to display.</em></Typography>
+									</Stack>
+								)
+							}}
+						/>
+					</Stack>
+
+					{/* Overall Leaderboard Modal Window */}
+					<CustomModal isOpen={open} setOpen={setOpen} windowTitle="Leaderboard">
+						<Table
+							editMode="row" 
+							rows={leaderboardRows}
+							columns={columnsLeaderboard}
+							hideFields={['id', 'totalSpent']}
+							additionalStyles={additionalStylesLeaderboard}
+							pageSize={5}
+							pageSizeOptions={[5, 10]}
+							initialState={{
+								pagination: { paginationModel: { pageSize: 5 } },
+							}}
+						/>
+					</CustomModal>
+				</Box> : <Loading />
+			}
 		</>
 	);
 };

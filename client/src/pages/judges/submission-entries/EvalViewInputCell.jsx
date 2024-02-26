@@ -3,10 +3,11 @@ import { DropdownSelect } from "components";
 import { optionsEval } from "utils/dummyData";
 import { useGridApiContext } from "@mui/x-data-grid";
 
+
 export default function renderEval(props) {
 	const apiRef = useGridApiContext();
 
-	// console.log(props)
+	// console.log("Downloaded?", props.row.hasFileDownloaded)
 	return (
 		<DropdownSelect
 			readOnly
@@ -15,8 +16,10 @@ export default function renderEval(props) {
 			options={optionsEval}
 			isDisabled={props.row.hasFileDownloaded ? false : true}
 			value={props.value}
-			onClick={()=>{
-				apiRef.current.startCellEditMode({id: props.id, field: props.field});
+			onClick={() => {
+				if (props.row.hasFileDownloaded) {
+					apiRef.current.startCellEditMode({id: props.id, field: props.field});
+				}
 			}}
 		/>
 	);

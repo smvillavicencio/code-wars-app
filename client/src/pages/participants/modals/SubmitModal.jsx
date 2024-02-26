@@ -12,6 +12,7 @@ import {
 import { socketClient } from 'socket/socket';
 import { baseURL } from 'utils/constants';
 import { postFetch } from 'utils/apiRequest';
+import { ErrorWindow } from 'components';
 
 const  SubmitModal = ({ 
 	setOpen,
@@ -81,7 +82,7 @@ const  SubmitModal = ({
 		// 	totalCases
 		// });
 
-		const uResponse = await postFetch(`${baseURL}/uploadsubmission`, {
+		let uResponse = await postFetch(`${baseURL}/uploadsubmission`, {
 			filename,
 			content,
 			problemId,
@@ -99,6 +100,12 @@ const  SubmitModal = ({
 				html:
 				'<p>You may submit a new file for this problem once the previous file has been graded.</p>'
 			});
+		} else {
+			// fire error window
+			ErrorWindow.fire({
+				title: 'Error!',
+				text: 'Upload submission has failed. Please try and submit the file again.'
+			})
 		}
 	};
 
@@ -240,9 +247,6 @@ const  SubmitModal = ({
 							height: '50px',
 							marginTop: '20px',
 							bgcolor: 'primary.main',
-							'&:hover': {
-								bgcolor: 'primary.light',
-							}
 						}}
 					>
               Browse
@@ -255,43 +259,27 @@ const  SubmitModal = ({
 					/>
 				</label>
 
-				{   
-					// If there is an uploaded file
-					file ? (
-						<Button 
-							type="submit"
-							variant="contained" 
-							onClick={handleSubmit}
-							sx={{
-								width: '200px',
-								height: '50px',
-								marginTop: '20px',
-								bgcolor: 'secondary.main',
-								'&:hover': {
-									bgcolor: 'rgba(150, 30, 50, 1)',
-								}
-							}}
-						>
-              Submit
-						</Button>
-					) 
-						: 
-					// No file uploaded, disabled button
-						(
-							<Button 
-								variant="contained" 
-								sx={{
-									width: '200px',
-									height: '50px',
-									marginTop: '20px',
-									bgcolor: 'secondary.light',
-								}}
-								disabled
-							>
-              Submit
-							</Button>
-						)
-				}
+				{/* Submit button */}
+				<Button 
+					type="submit"
+					variant="contained" 
+					disabled={file? false : true}
+					onClick={handleSubmit}
+					sx={{
+						width: '200px',
+						height: '50px',
+						marginTop: '20px',
+						bgcolor: 'secondary.main',
+						'&:hover': {
+							bgcolor: '#7a213b'
+						},
+						'&:disabled': {
+							bgcolor: 'secondary.light'
+						}
+					}}
+				>
+					Submit
+				</Button>
 			</Box>
 		</Box>
 	);

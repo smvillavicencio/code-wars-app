@@ -49,7 +49,7 @@ const EvaluationModal = ({
 	
 		// websocket emit
 		socketClient.emit("submitEval", {
-			submissionId: rowValues.id,
+			submissionId: rowValues.dbId,
 			evaluation: currEval,
 			judgeId: judgeID,
 			judgeName: judgeName,

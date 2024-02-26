@@ -28,8 +28,6 @@ import getLeaderboard from 'components/widgets/leaderboard/getLeaderboard';
 import {
 	columnsSubmissions,
 	columnsLeaderboard,
-	optionsTeam,
-	optionsProblems,
 } from 'utils/dummyData';
 
 import renderEval from './submission-entries/EvalViewInputCell';
@@ -87,6 +85,9 @@ const ViewSubmissionsPage = ({
 	const [selectedTeam, setSelectedTeam] = useState('');
 	// state handler for problem dropdown select
 	const [selectedProblem, setSelectedProblem] = useState('');
+
+	// state handler for dropdown select options
+	const [options, setOptions] = useState([]);
 
 	const handleDownload = (e, params) => {
 		e.preventDefault();
@@ -280,8 +281,6 @@ const ViewSubmissionsPage = ({
 		let teamsList = [];
 		let questionsList = [];
 
-		console.log(submissions.results)
-
 		let submissionEntries = []
 
 		if (submissions.results.length > 0) {
@@ -301,6 +300,18 @@ const ViewSubmissionsPage = ({
 					dbId: entry._id,
 					totalCases: entry.total_test_cases
 				})
+
+				// add team name to teamsList
+				if (!teamsList.includes(entry.team_name)) {
+					teamsList.push(entry.team_name)
+				}
+				// add problem title to questionsList
+				if (!questionsList.includes(entry.problem_title)) {
+					questionsList.push(entry.problem_title)
+				}
+
+				// set options for dropdown select filtering
+				setOptions([teamsList, questionsList])
 			})
 
 			// setting UI table state
@@ -379,7 +390,7 @@ const ViewSubmissionsPage = ({
 								label="Team Name"
 								minWidth="20%"
 								variant="filled"
-								options={optionsTeam}
+								options={options[0]}
 								handleChange={handleTeams}
 								value={selectedTeam}
 							>
@@ -393,7 +404,7 @@ const ViewSubmissionsPage = ({
 								minWidth="35%"
 								variant="filled"
 								label="Problem Title"
-								options={optionsProblems}
+								options={options[1]}
 								handleChange={handleProblems}
 								value={selectedProblem}
 							>

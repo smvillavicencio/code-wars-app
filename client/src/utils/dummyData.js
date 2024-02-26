@@ -251,12 +251,12 @@ export const columnsSubmissions = [
 	{
 		field: 'evaluation',
 		headerName: 'Evaluation',
-		minWidth: 175,
+		minWidth: 250,
 		// maxWidth: 250,
 		// flex: 1,
 
-		type: 'singleSelect',
-		width: 120,
+		// type: 'singleSelect',
+		// width: 120,
 		editable: true,
 		valueOptions: optionsEval
 	},

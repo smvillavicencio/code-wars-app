@@ -262,6 +262,7 @@ const  SubmitModal = ({
 					<input
 						type="file"
 						id="icon-button-file"
+						accept=".py,.c"
 						style={{ display: 'none' }}
 						onChange={handleFileInputChange}
 					/>

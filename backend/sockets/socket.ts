@@ -1,6 +1,7 @@
 // ADD YOUR FILE EXPORTS HERE
 import TeamModel, { Team } from '../models/team';
-import { uploadSubmission, checkSubmission } from './submissionSocket'
+import { checkSubmission } from './submissionSocket'
+import { endTimer, setEndTimer } from '../controllers/adminController';
 
 var roundStartTime: any;
 
@@ -156,13 +157,22 @@ io.on("connection", (socket: any) => {
 const startRoundTimer = (seconds: number) => {
   console.log("Started round timer");
   roundStartTime = new Date().getTime();
+  var doAfterDuration: any;
+  var interval: any;
 
   function getRemainingTime() {
-    if (roundStartTime) {
+    if (roundStartTime && !endTimer) {
       const elapsedTime = (new Date().getTime() - roundStartTime) / 1000;
       const remainingTime = Math.max(seconds - elapsedTime, 0);
       return { remainingTime: Math.round(remainingTime) };
     } else {
+      setEndTimer(false);
+      try {
+        clearTimeout(doAfterDuration);
+        clearInterval(interval);
+      } catch (error) {
+        console.log(error);
+      }
       return { remainingTime: 0 };
     }
   }
@@ -170,7 +180,7 @@ const startRoundTimer = (seconds: number) => {
   io.emit('update', getRemainingTime());
   console.log(getRemainingTime());
 
-  setInterval(() => {
+  interval = setInterval(() => {
     if (roundStartTime) {
       io.emit('update', getRemainingTime());
       console.log(getRemainingTime());
@@ -178,7 +188,7 @@ const startRoundTimer = (seconds: number) => {
   }, 1000);
 
   // Set a timeout to end the round after the specified duration
-  setTimeout(() => {
+  doAfterDuration = setTimeout(() => {
     roundStartTime = null;
     io.emit('update', getRemainingTime());
     console.log(getRemainingTime());

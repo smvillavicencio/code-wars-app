@@ -109,7 +109,7 @@ const GeneralOptionsPage = ({
 
 					} else if (res == false) {
 						ErrorWindow.fire({
-							title: 'Invalid Password',
+							title: 'Invalid Password!',
 							text: 'Password is incorrect.'
 						});
 					}
@@ -136,7 +136,7 @@ const GeneralOptionsPage = ({
 
 					} else if (res == false) {
 						ErrorWindow.fire({
-							title: 'Invalid Password',
+							title: 'Invalid Password!',
 							text: 'Password is incorrect.'
 						});
 					}
@@ -164,7 +164,7 @@ const GeneralOptionsPage = ({
 					});
 				} else if (res == false) {
 					ErrorWindow.fire({
-						title: 'Invalid Password',
+						title: 'Invalid Password!',
 						text: 'Password is incorrect.'
 					});
 				}

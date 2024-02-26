@@ -4,6 +4,7 @@ import { useState } from 'react';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import SourceIcon from '@mui/icons-material/Source';
 import { Box, Button, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import {
 	SuccessWindow
@@ -27,6 +28,9 @@ const  SubmitModal = ({
 	const [file, setFile] = useState(null);
 	const [content, setContent] = useState(null);
 	const [filename, setFilename] = useState(null);
+
+	// for navigation (temporary only)
+	const navigate = useNavigate();
 
 	/**
    * Purpose: Allows the file to be dropped in the designated area. Set the current file to the drop file  
@@ -107,6 +111,10 @@ const  SubmitModal = ({
 				text: 'Upload submission has failed. Please try and submit the file again.'
 			})
 		}
+
+		// navigate to view all problems page
+		// pwede to tanggalin once na maimplement na yung sa websockets ng checking submission
+		navigate('/participant/view-all-problems');
 	};
 
 	return (
@@ -274,7 +282,8 @@ const  SubmitModal = ({
 							bgcolor: '#7a213b'
 						},
 						'&:disabled': {
-							bgcolor: 'secondary.light'
+							bgcolor: 'secondary.light',
+							color: '#fff'
 						}
 					}}
 				>

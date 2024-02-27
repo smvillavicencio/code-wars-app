@@ -165,6 +165,7 @@ function App() {
 				<Router>
 					<Routes>
 						{/* Login page */}
+						<Route index element={<LoginPage />} />
 
 						{/* Pages with same backgrounds */}
 						<Route path="/" element={<Layout />}>

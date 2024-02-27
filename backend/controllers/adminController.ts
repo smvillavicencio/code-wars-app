@@ -41,11 +41,10 @@ const commandChannel = (req: Request, res: Response) => {
 
 const setAdminCommand = (req: Request, res: Response) => {
     const newcommand = req.body.command;
-    const newround = req.body.round;
+    const newround: string = req.body.round;
 
-    if (newround != round) {
-      setEndTimer(true);
-      console.log(newround);
+    if (newround.toLowerCase() != round.toLowerCase()) {
+      setEndTimer(true);;
       let duration: number;
 
       if (newround == 'EASY') {

@@ -28,9 +28,9 @@ const Overlay = ({ icon, text }) => {
 					color: '#FFF',
 				}}	
 			>		
-			{icon}
-			<br/>
-			{text}
+				{icon}
+				<br />
+				{text}
 			</Box>
 		</Box>
 

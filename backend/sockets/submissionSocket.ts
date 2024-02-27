@@ -13,101 +13,6 @@ const Team = mongoose.model("Team");
 // 4th submission: prevMaxScore=200,	score=400	[+200]
 // 5th submission: prevMaxScore=400,	score=0
 // 6th submission: prevMaxScore=400,	score=500	[+100]
-
-/*
- * Purpose: Upload submission
- * Params (in the Request): problemId, teamId, teamName, judgeId, judgeName, (max)possiblePoints, (file)content
- * Returns (in the Response): 
- *      Object with fields success and the corresponding results
- */
-
-const uploadSubmission = async (arg: any) => {
-    // console.log(arg);
-    
-    // const judgeId = arg.judgeId;
-    // const judgeName = arg.judgeName; // Judge set when submission is checked
-    const filename = arg.filename;
-    const content = arg.content;
-    const problemId = arg.problemId;
-    const problemTitle = arg.problemTitle;
-    const possiblePoints = arg.possiblePoints;
-    const teamId = arg.teamId;
-    const teamName = arg.teamName;
-    const totalCases = arg.totalCases;    
-
-    const prevSubmissions = await Submission.find({ team_id: teamId, problem_id: problemId })?.sort({ timestamp: 1 });
-    let prevMaxScore;
-
-    if (prevSubmissions.length == 0) {
-        prevMaxScore = 0;
-    } else {
-        let lastSubmission = prevSubmissions[prevSubmissions.length - 1];
-        if (lastSubmission.prev_max_score >= lastSubmission.score) {
-            prevMaxScore = lastSubmission.prev_max_score;
-        } else {
-            prevMaxScore = lastSubmission.score;
-        }
-    }
-
-    const newSubmission = new Submission({
-        team_id: teamId,
-        team_name: teamName,
-        judge_id: "Unassigned",//judgeId
-        judge_name: "Unassigned",//judgeName
-        problem_id: problemId,
-        problem_title: problemTitle,
-        possible_points: possiblePoints,
-        status: "Pending",
-        score: 0,
-        evaluation: "Pending",
-        timestamp: new Date(),
-        content: content,
-        prev_max_score: prevMaxScore,
-        total_test_cases: totalCases,
-        curr_correct_cases: 0,
-        filename
-    })
-    // status : checked, error, pending
-    // evaluation: correct, partially correct, incorrect solution, error, pending
-
-    try {
-        let submission = await newSubmission.save();
-        return {
-            submission,
-            success: true
-        };
-    } catch (error) {
-        console.log(error);
-        return {
-            success: false
-        };
-    }
-}
-
-/*
- * Purpose: Download submission
- * Params (in the Request): submissionId
- * Returns (in the Response): 
- *      Object with fields success and the corresponding results
- */
-const downloadSubmission = async (req: Request, res: Response) => {
-    const submissionId = req.body.submissionId;
-
-    const submission = await Submission.findById(submissionId).select("content");
-
-    if (submission) {
-        return res.send({
-            success: true,
-            results: submission.content
-        });
-    } else {
-        return res.send({
-            success: false,
-            results: "Submission not found"
-        });
-    }
-}
-
 /*
  * Purpose: Check or grade  (changes fields status, evaluation, and score)
  * Params (in the Request): submissionId, evaluation (correct, partially correct, incorrect solution, error, pending), judgeId, judgeName, correctCases, possiblePoints
@@ -160,7 +65,7 @@ const checkSubmission = async (arg: any) => {
                 });
             }
         }
-
+        console.log(score);
         submission.status = status;
         submission.score = score;
 
@@ -206,4 +111,4 @@ const viewSubmissionsTP = async (req: Request, res: Response) => {
     });
 }
 
-export { uploadSubmission, checkSubmission };
+export { checkSubmission };

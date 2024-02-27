@@ -1,5 +1,5 @@
 /* eslint-disable */ 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 import LockIcon from '@mui/icons-material/Lock';
@@ -35,6 +35,7 @@ import { postFetch } from 'utils/apiRequest';
 import { Bounce, toast } from 'react-toastify';
 import { socketClient } from 'socket/socket';
 import 'react-toastify/dist/ReactToastify.css';
+import { cloneDeep } from 'lodash';
 
 
 /*
@@ -48,7 +49,6 @@ const ViewAllProblemsPage = ({
 	currRound,
 	setCurrRound
 }) => {
-
 	
 	/**
 	 * State handler for viewing buy power-up popover
@@ -56,9 +56,13 @@ const ViewAllProblemsPage = ({
 	const [open, setOpen] = useState(false);
 
 	const [currQuestions, setCurrQuestions] = useState([]);
+	const questionsRef = useRef();
 	
-	// options for rounds
+	// options for round labels
 	const rounds = ['EASY', 'MEDIUM', 'WAGER', 'HARD'];
+
+	// array for round where buy power-ups button should be disabled
+	const roundsDisablePowerUps = ['start', 'easy', 'wager']
 
 	const [showBuffs, setShowBuffs] = useState(false);
 	const [showDebuffs, setShowDebuffs] = useState(false);
@@ -70,22 +74,32 @@ const ViewAllProblemsPage = ({
 			difficulty: currRound.toLowerCase()
 		});
 
-		let newQuestions = [];
+		let counter = 0
+		let questionsList = []
 
-		qResponse.questions?.map((question)=>{
-			let formattedQuestion = {};
-			formattedQuestion.problemTitle = question.title;
-			formattedQuestion.id = newQuestions.length;
-			formattedQuestion.status = "Pending";
-			formattedQuestion.score = 0;
-			formattedQuestion.checkedBy = "";
-			formattedQuestion.dbId = question._id;
+		await Promise.all(
+			qResponse.questions?.map( async (question)=>{
+				let formattedQuestion = {};
+				formattedQuestion.problemTitle = question.title;
+				formattedQuestion.id = counter;
+				counter += 1;
+				formattedQuestion.dbId = question._id;
+	
+				const qeResponse = await postFetch(`${baseURL}/getlastsubmissionbyteam`, {
+					problemId: question._id,
+					teamId: JSON.parse(localStorage?.getItem("user"))._id
+				});
+	
+				formattedQuestion.status = qeResponse.status;
+				formattedQuestion.score = qeResponse.score;
+				formattedQuestion.checkedBy = qeResponse.checkedby;
+	
+				questionsList.push(formattedQuestion);
+			})
+		);
+		console.log(questionsList);
 
-			newQuestions.push(formattedQuestion);
-		})
-
-		//console.log(qResponse);
-		setCurrQuestions(newQuestions);
+		setCurrQuestions(questionsList);
 	}
 
 	useEffect(() => {
@@ -93,7 +107,7 @@ const ViewAllProblemsPage = ({
 		setShowBuffs(false);
 		setShowDebuffs(false);
 		setSelectedPowerUp(null);
-		
+
 		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
 		if (usertype == "judge") {
 			navigate('/judge/submissions');
@@ -109,8 +123,7 @@ const ViewAllProblemsPage = ({
 		}
 
 		getRoundQuestions();
-		
-	}, []);
+	}, [currRound]);
 
 
 	// websocket listener for power-ups toast notifs
@@ -167,6 +180,7 @@ const ViewAllProblemsPage = ({
 	// Styling for the problem list table
 	const additionalStyles = {
 		backgroundColor: '#fff',
+		overflow: 'auto',
 	};
 
 	// used for client-side routing to other pages
@@ -211,100 +225,142 @@ const ViewAllProblemsPage = ({
 		setOpen(false);
 	};
 
+
 	return (
 		<>
 			{
 				isLoggedIn ?
 				<>
 					<Stack>
-					{/* Topbar */}
-					<TopBar
-						isImg={true}
-						icon={seal}
-						title="Code Wars"
-						subtitle="UPLB Computer Science Society"
-						buttonText="BUY POWER-UP"
-						handleButton={handleViewPowerUps}
-					/>
+						{/* Topbar */}
+						<TopBar
+							isImg={true}
+							icon={seal}
+							title="Code Wars"
+							subtitle="UPLB Computer Science Society"
+							buttonText="BUY POWER-UP"
+							disabledState={roundsDisablePowerUps.includes(currRound.toLowerCase()) ? true : false}
+							handleButton={handleViewPowerUps}
+						/>
 
-					{/* Other components */}
-					<Box
-						sx={{
-							display: 'flex',
-							flexDirection: 'row',
-							gap: 4,
-						}}
-					>
-						{/* Left column is for timer, leaderboard, sponsors' carousel */}
-						<Stack
-							spacing={3}
+						{/* Other components */}
+						<Box
+							gap={7}
 							sx={{
-								mt: 4,
-								mx: 8,
-								minWidth: 325,
-							}}
-						>
-							<RoundTimer  />
-							<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
-							<SponsorCarousel />
-						</Stack>
-
-						{/* Right column is for the round buttons and problem list table */}
-						<Stack
-							spacing={5}
-							sx={{
-								mt: 8,
-								width: '68%',
-								height: '100%'
+								display: "flex",
+								flexDirection: {
+									xs: "column",
+									xl: "row"
+								},
 							}}
 						>
 							
-							{/* Container for round buttons */}
-							<Box sx={{ display: 'flex', gap: 3 }}>
-								{rounds.map((round, idx) => 
-									<Button
-										key={idx}
-										variant="contained"
-										startIcon={currRound === round ? <LockOpenIcon/> : <LockIcon />}
-										disabled={currRound === round ? false : true}
-										size="large"
-										sx={{
-											fontFamily: 'Poppins',
-											fontWeight: '600',
-											minWidth: 125,
-											gap: 0.5,
-											bgcolor: 'major.main',
-											'&:hover': {
-												bgcolor: 'major.light',
-												color: 'general.main',
-											},
-											'&:disabled': {
-												bgcolor: 'major.light',
-												color: '#fff'
-											}
-										}}
-									>
-										{round}
-									</Button>
-								)}
-							</Box>
-
-							{/* Problem List Table for the round */}
-							<Table
-								rows={currQuestions} //rowsProblems
-								columns={columnsProblems}
-								hideFields={[]}
-								additionalStyles={additionalStyles}
-								onRowClick={handleRowClick}
-								pageSizeOptions={[5, 10]}
-								autoHeight={true}
-								pageSize={10}
-								initialState={{
-									pagination: { paginationModel: { pageSize: 10 } },
+							{/* Mobile view for left column */}
+							<Box
+								gap={10}
+								sx={{
+									mt: '3rem',
+									mx: {
+										xl: 8
+									},
+									width: '100%',
+									display: {
+										xs: "flex", xl: "none"
+									},
+									justifyContent: "center"
 								}}
-							/>
-						</Stack>
-					</Box>
+							>
+								<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
+								<Box
+									gap={7}
+									sx={{
+										display: 'flex',
+										flexDirection: 'column',
+										justifyContent: "center",
+									}}
+								>
+									<RoundTimer />
+									<SponsorCarousel />
+								</Box>
+							</Box>
+									
+							{/* Desktop view for left column */}
+							{/* Left column is for timer, leaderboard, sponsors' carousel */}
+							<Stack
+								spacing={3}
+								sx={{
+									mt: 4,
+									mx: 8,
+									minWidth: 325,
+									display: {
+										xs: "none", xl: "flex"
+									}
+								}}
+							>
+								<RoundTimer  />
+								<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
+								<SponsorCarousel />
+							</Stack>
+
+							{/* Full Desktop View for round buttons and problem table */}
+							{/* Right column is for the round buttons and problem list table */}
+							<Stack
+								spacing={5}
+								sx={{
+									mt: { xl: 8 },
+									mx: { xs: 5, xl: 0},
+									width: {xl: '68%'},
+									height: '100%',
+									display: "flex"
+								}}
+							>
+								
+								{/* Container for round buttons */}
+								<Box sx={{ display: 'flex', gap: 3, justifyContent: {xs: 'center', xl: 'initial'} }}>
+									{rounds.map((round, idx) => 
+										<Button
+											key={idx}
+											variant="contained"
+											startIcon={currRound === round ? <LockOpenIcon/> : <LockIcon />}
+											disabled={currRound === round ? false : true}
+											size="large"
+											sx={{
+												fontFamily: 'Poppins',
+												fontWeight: '600',
+												minWidth: 125,
+												gap: 0.5,
+												bgcolor: 'major.main',
+												'&:hover': {
+													bgcolor: 'major.light',
+													color: 'general.main',
+												},
+												'&:disabled': {
+													bgcolor: 'major.light',
+													color: '#fff'
+												}
+											}}
+										>
+											{round}
+										</Button>
+									)}
+								</Box>
+
+								{/* Problem List Table for the round */}
+								<Table
+									rows={currQuestions} //rowsProblems
+									columns={columnsProblems}
+									hideFields={[]}
+									additionalStyles={additionalStyles}
+									onRowClick={handleRowClick}
+									pageSizeOptions={[5, 10]}
+									autoHeight={true}
+									pageSize={10}
+									initialState={{
+										pagination: { paginationModel: { pageSize: 10 } },
+									}}
+								/>
+							</Stack>
+						</Box>
 					</Stack>
 				
 					{/* Buy Power-ups Popover */}

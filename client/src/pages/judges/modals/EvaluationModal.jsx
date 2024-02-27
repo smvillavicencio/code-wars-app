@@ -21,9 +21,9 @@ const EvaluationModal = ({
 	open,
 	setOpen,
 	currEval,
-	value,
+	correctCases,
 	rowValues,
-	handleValue
+	setCorrectCases
 }) => {
 	// state handler for first-time focusing on input field
 	const [firstClick, setFirstClick] = useState(true);
@@ -32,40 +32,38 @@ const EvaluationModal = ({
 	 * Purpose: Closes the modal window
 	 */
 	const handleCancel = () => {
+		console.log(rowValues);
 		setOpen(false);
 	}
 
 	/**
-	 * Purpose: Submits the value.
+	 * Handles onClick event for submit button
 	 */
 	const handleSubmit = () => { 
-		// pass value to parent component? to edit row value
 		console.log(rowValues);
-		setOpen(false);
+		console.log(currEval, correctCases);
 
+		// get judge user details
 		let judgeID = JSON.parse(localStorage?.getItem("user"))?._id;
 		let judgeName = JSON.parse(localStorage?.getItem("user"))?.username;
 	
 		// websocket emit
 		socketClient.emit("submitEval", {
-			submissionId: rowValues.id,
+			submissionId: rowValues.dbId,
 			evaluation: currEval,
 			judgeId: judgeID,
 			judgeName: judgeName,
-			correctCases: value,
+			correctCases: correctCases,
 			possiblePoints: rowValues.possible_points
 		})
 
+		// close modal window
+		setOpen(false);
+
+		// show confirmation window
 		SuccessWindow.fire({
 			text: 'Successfully submitted evaluation!'
 		});
-	}
-
-	/**
-	 * Purpose: Handles change in input field
-	 */
-	const handleChange = (e) => {
-		handleValue(e.target.value);
 	}
 
 
@@ -91,15 +89,25 @@ const EvaluationModal = ({
 				<TextField
 					required
 					fullWidth
-					error={value === ''}
-					value={value}
-					onChange={(e) => handleValue(e.target.value)}
+					error={correctCases === ''}
+					value={correctCases}
+					onChange={(e) => {
+						let currCorr = e.target.value;
+						if (currCorr > rowValues.totalCases) {
+							setCorrectCases(rowValues.totalCases);
+						} else {
+							setCorrectCases(e.target.value)
+						}
+					}}
 					onFocus={() => setFirstClick(false)}
 					InputLabelProps={{ shrink: true }}
-					InputProps={{ min: 0, max: 10 }}
-					
+					InputProps={{
+						inputProps: {
+							min: 0,
+							max: rowValues.totalCases
+						}
+					}}	
 					type="number"
-					defaultValue="0"
 					variant="standard"
 					label="# of Test Cases Passed:"
 					helperText="Enter numeric values only."
@@ -116,7 +124,7 @@ const EvaluationModal = ({
 					<Button 
 						variant='contained' 
 						size="large"
-						disabled={value === ''}
+						disabled={correctCases === ''}
 						onClick={handleSubmit}
 						sx={{
 							bgcolor: 'primary',

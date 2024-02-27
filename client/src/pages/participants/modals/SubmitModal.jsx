@@ -4,12 +4,16 @@ import { useState } from 'react';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import SourceIcon from '@mui/icons-material/Source';
 import { Box, Button, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import {
 	SuccessWindow
 } from 'components';
 
 import { socketClient } from 'socket/socket';
+import { baseURL } from 'utils/constants';
+import { postFetch } from 'utils/apiRequest';
+import { ErrorWindow } from 'components';
 
 const  SubmitModal = ({ 
 	setOpen,
@@ -24,6 +28,9 @@ const  SubmitModal = ({
 	const [file, setFile] = useState(null);
 	const [content, setContent] = useState(null);
 	const [filename, setFilename] = useState(null);
+
+	// for navigation (temporary only)
+	const navigate = useNavigate();
 
 	/**
    * Purpose: Allows the file to be dropped in the designated area. Set the current file to the drop file  
@@ -63,12 +70,23 @@ const  SubmitModal = ({
    * Purpose: Handles submission of uploaded file.
    * Params: <Event> event - current event
    */
-	const handleSubmit = () => { 
+	const handleSubmit = async () => { 
 		// close submit button modal window
 		setOpen(false);
 
 		// add post request to db here
-		socketClient.emit("newupload",{
+		// socketClient.emit("newupload",{
+		// 	filename,
+		// 	content,
+		// 	problemId,
+		// 	problemTitle,
+		// 	possiblePoints,
+		// 	"teamId": JSON.parse(localStorage.getItem("user"))._id,
+		// 	"teamName": JSON.parse(localStorage.getItem("user")).username,
+		// 	totalCases
+		// });
+
+		let uResponse = await postFetch(`${baseURL}/uploadsubmission`, {
 			filename,
 			content,
 			problemId,
@@ -77,14 +95,26 @@ const  SubmitModal = ({
 			"teamId": JSON.parse(localStorage.getItem("user"))._id,
 			"teamName": JSON.parse(localStorage.getItem("user")).username,
 			totalCases
-		});
+		})
     
-		// fire success window
-		SuccessWindow.fire({
-			text: 'Successfully submitted file!',
-			html:
-			'<p>You may submit a new file for this problem once the previous file has been graded.</p>'
-		});
+		if (uResponse.success) {
+			// fire success window
+			SuccessWindow.fire({
+				text: 'Successfully submitted file!',
+				html:
+				'<p>You may submit a new file for this problem once the previous file has been graded.</p>'
+			});
+		} else {
+			// fire error window
+			ErrorWindow.fire({
+				title: 'Error!',
+				text: 'Upload submission has failed. Please try and submit the file again.'
+			})
+		}
+
+		// navigate to view all problems page
+		// pwede to tanggalin once na maimplement na yung sa websockets ng checking submission
+		navigate('/participant/view-all-problems');
 	};
 
 	return (
@@ -225,9 +255,6 @@ const  SubmitModal = ({
 							height: '50px',
 							marginTop: '20px',
 							bgcolor: 'primary.main',
-							'&:hover': {
-								bgcolor: 'primary.light',
-							}
 						}}
 					>
               Browse
@@ -235,48 +262,34 @@ const  SubmitModal = ({
 					<input
 						type="file"
 						id="icon-button-file"
+						accept=".py,.c"
 						style={{ display: 'none' }}
 						onChange={handleFileInputChange}
 					/>
 				</label>
 
-				{   
-					// If there is an uploaded file
-					file ? (
-						<Button 
-							type="submit"
-							variant="contained" 
-							onClick={handleSubmit}
-							sx={{
-								width: '200px',
-								height: '50px',
-								marginTop: '20px',
-								bgcolor: 'secondary.main',
-								'&:hover': {
-									bgcolor: 'rgba(150, 30, 50, 1)',
-								}
-							}}
-						>
-              Submit
-						</Button>
-					) 
-						: 
-					// No file uploaded, disabled button
-						(
-							<Button 
-								variant="contained" 
-								sx={{
-									width: '200px',
-									height: '50px',
-									marginTop: '20px',
-									bgcolor: 'secondary.light',
-								}}
-								disabled
-							>
-              Submit
-							</Button>
-						)
-				}
+				{/* Submit button */}
+				<Button 
+					type="submit"
+					variant="contained" 
+					disabled={file? false : true}
+					onClick={handleSubmit}
+					sx={{
+						width: '200px',
+						height: '50px',
+						marginTop: '20px',
+						bgcolor: 'secondary.main',
+						'&:hover': {
+							bgcolor: '#7a213b'
+						},
+						'&:disabled': {
+							bgcolor: 'secondary.light',
+							color: '#fff'
+						}
+					}}
+				>
+					Submit
+				</Button>
 			</Box>
 		</Box>
 	);

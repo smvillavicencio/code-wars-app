@@ -1,6 +1,7 @@
 // ADD YOUR FILE EXPORTS HERE
 import TeamModel, { Team } from '../models/team';
-import { uploadSubmission, checkSubmission } from './submissionSocket'
+import { checkSubmission } from './submissionSocket'
+import { endTimer, setEndTimer } from '../controllers/adminController';
 
 var roundStartTime: any;
 
@@ -18,21 +19,21 @@ io.on("connection", (socket: any) => {
     console.log("joined user:" + user._id);
   });
 
-  socket.on("newupload", (arg: any)=>{
-    setTimeout( async ()=>{
-      try {
-        let response = await uploadSubmission(arg);
-        console.log(response.submission)
-        if (response.success) {
-          console.log("||||||");
-          socket.emit("newitemtojudge", response.submission);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }, 20000);
+  // socket.on("newupload", (arg: any)=>{
+  //   setTimeout( async ()=>{
+  //     try {
+  //       let response = await uploadSubmission(arg);
+  //       console.log(response.submission)
+  //       if (response.success) {
+  //         console.log("||||||");
+  //         socket.emit("newitemtojudge", response.submission);
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }, 20000);
 
-  });
+  // });
   socket.on("buyBuff", (data: any) => {
     let powerUp = data.powerUp
     let userTeam = data.userTeam.user
@@ -119,17 +120,32 @@ io.on("connection", (socket: any) => {
     }
   });
 
+  // for judge evaluation
+  // if evaluation values ay correct, error or incorrect:
+      // emit("submitEval") ay galing sa client/src/pages/judges/submission-entries/EvalEditInputCell.jsx 
+  
+  // if evaluation value ay partially correct:
+      // emit("submitEval") ay galing sa client/src/pages/judges/modals/EvaluationModal.jsx
   socket.on("submitEval", async (arg: any) => {
     try {
       let response = await checkSubmission(arg);
 
       if (response.success) {
         console.log(response.results)
-        // emit to leaderboards
-        // socket.emit("updateLeaderboard", response.results)
 
-        // emit to problem list table
-        // socket.emit("")
+        // table entries sa submission table should be reverse chronological, so unshift dapat yung method na gagamitin hindi push if magdadagdag ng new submission entry
+
+        // update details sa db na need maupdate based sa nareceive na submission entry details from judge
+        // update details din na dinidisplay sa view all problems page na table.
+            // 'status' column depends on latest submission entry
+            // 'score' column initially depends sa prev_max_score. once checked na yung latest submission entry, iccheck ulit if score > prev_max_score para sa 'score' column
+        
+        // need na may socket emit din siguro (?) na ipapasa yung evaluation value sa pages/judges/submission-entries/EvalViewInputCell
+        // para maupdate yung displayed value since mahirap ipasa yung state na makukuha from EvalEditInputCell
+
+        // check submission entry fields if score > prev_max_score.
+            // if yes, then mag-emit ng "updateLeaderboard" para malaman ng client na updated yung overall team scores ng leaderboard
+            // if no, then no need na mag-emit
       }
 
     } catch (error) {
@@ -141,13 +157,22 @@ io.on("connection", (socket: any) => {
 const startRoundTimer = (seconds: number) => {
   console.log("Started round timer");
   roundStartTime = new Date().getTime();
+  var doAfterDuration: any;
+  var interval: any;
 
   function getRemainingTime() {
-    if (roundStartTime) {
+    if (roundStartTime && !endTimer) {
       const elapsedTime = (new Date().getTime() - roundStartTime) / 1000;
       const remainingTime = Math.max(seconds - elapsedTime, 0);
       return { remainingTime: Math.round(remainingTime) };
     } else {
+      setEndTimer(false);
+      try {
+        clearTimeout(doAfterDuration);
+        clearInterval(interval);
+      } catch (error) {
+        console.log(error);
+      }
       return { remainingTime: 0 };
     }
   }
@@ -155,7 +180,7 @@ const startRoundTimer = (seconds: number) => {
   io.emit('update', getRemainingTime());
   console.log(getRemainingTime());
 
-  setInterval(() => {
+  interval = setInterval(() => {
     if (roundStartTime) {
       io.emit('update', getRemainingTime());
       console.log(getRemainingTime());
@@ -163,11 +188,16 @@ const startRoundTimer = (seconds: number) => {
   }, 1000);
 
   // Set a timeout to end the round after the specified duration
-  setTimeout(() => {
+  doAfterDuration = setTimeout(() => {
     roundStartTime = null;
     io.emit('update', getRemainingTime());
     console.log(getRemainingTime());
   }, seconds * 1000);
 }
 
-export { startRoundTimer };
+const newUpload = (upload: any) => {
+  console.log("Emit:NEWUPLOAD");
+  io.emit('newupload', upload);
+}
+
+export { startRoundTimer, newUpload };

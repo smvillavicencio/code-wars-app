@@ -6,7 +6,7 @@ import Cookies from "universal-cookie";
   * Purpose: Handles termination of user session.
   * Params: None
   */
-const handleLogout = (setUserDetails, navigate) => {
+const handleLogout = (navigate) => {
 
     // fire success window
     ConfirmWindow.fire({
@@ -14,7 +14,6 @@ const handleLogout = (setUserDetails, navigate) => {
         }).then((res) => {
             if (res['isConfirmed']) {
                 localStorage.removeItem("user");
-                setUserDetails(null);
                 navigate('/');
 
                 // Delete cookie with authToken

@@ -63,6 +63,7 @@ const CustomModal = ({
 
 						padding: 4,
 						minWidth: '25%',
+						maxWidth: '75%', // para sa if empty leaderboard
 						borderRadius: '10px',
 						bgcolor: 'rgba(255, 255, 255)',
 					}}

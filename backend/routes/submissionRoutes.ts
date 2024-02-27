@@ -8,6 +8,6 @@ router.post('/downloadsubmission', downloadSubmission);
 router.post('/checksubmission', checkSubmission);
 router.post('/viewsubmissions', viewSubmissionsTP);
 router.get('/getallsubmissions', getAllSubmissions);
-router.get('/getlastsubmissionbyteam', getLastSubmissionByTeamOfProblem);
+router.post('/getlastsubmissionbyteam', getLastSubmissionByTeamOfProblem);
 
 export default router;

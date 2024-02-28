@@ -14,10 +14,10 @@ export default function renderEval(props) {
 			variant="standard"
 			minWidth="100%"
 			options={optionsEval}
-			isDisabled={props.row.hasFileDownloaded ? false : true}
+			isDisabled={props.row.isDisabled}
 			value={props.value}
 			onClick={() => {
-				if (props.row.hasFileDownloaded) {
+				if (props.row.hasOwnProperty("isDisabled") && !props.row.isDisabled) {
 					apiRef.current.startCellEditMode({id: props.id, field: props.field});
 				}
 			}}

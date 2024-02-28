@@ -37,6 +37,8 @@ import { socketClient } from 'socket/socket';
 
 import { baseURL } from 'utils/constants';
 import { getFetch } from 'utils/apiRequest';
+import { deepClone } from '@mui/x-data-grid/utils/utils';
+import { clone, cloneDeep } from 'lodash';
 // import { teamsList } from 'utils/dummyData';
 
 
@@ -57,10 +59,6 @@ const additionalStylesSubmissions = {
 	paddingX: 2,
 }
 
-const renderEvalEditInputCell = (params) => {
-  return <EvalEditInputCell props={params} />;
-};
-
 // temp; options for client-side filtering
 const teamsList = [];
 const questionsList = [];
@@ -78,9 +76,15 @@ const ViewSubmissionsPage = ({
 	// state handler for overall leaderboard modal
 	const [open, setOpen] = useState(false);
 
-	const [fetchAllPrevious, setFetchAllPrevious] = useState(false);
+	//const [fetchAllPrevious, setFetchAllPrevious] = useState(false);
+	const fetchAllPrevious = useRef(false);
 	const [submissionsList, setSubmissionsList] = useState([]);
-	const subListRef = useRef();
+	const subListRef = useRef([]);
+	const presentDbIds = useRef([]);
+
+	const renderEvalEditInputCell = (params) => {
+		return <EvalEditInputCell props={params} submissionsList={submissionsList} setSubmissionsList={setSubmissionsList} subListRef={subListRef} />;
+	};
 
 	// state handler for rows of overall leaderboard
 	const [leaderboardRows, setLeaderboardRows] = useState([]);
@@ -100,7 +104,24 @@ const ViewSubmissionsPage = ({
 		downloadFile(params.row.uploadedFile, params.row.content);
 
 		params.row.hasFileDownloaded = true;
+
+		if (params.row.evaluation == "Pending") {
+			console.log(cloneDeep(submissionsList));
+			params.row.isDisabled = false;
+
+			var copy = cloneDeep(submissionsList);
+
+			setSubmissionsList(copy);
+			subListRef.current = copy;
+			console.log(copy);
+		} else {
+			params.row.isDisabled = true;
+		}
 	}
+
+	useEffect(()=>{
+		console.log(submissionsList);
+	}, [submissionsList])
 
 	const downloadFile = (filename, data) => {
 		const blob = new Blob([data]);
@@ -235,54 +256,105 @@ const ViewSubmissionsPage = ({
 			console.log("There is a problem with the socketClient")
 			return;
 		} else {
-			console.log("socketClient is present")
+			//console.log("socketClient is present")
 		}
 
 		socketClient.on('newupload', (arg)=>{
-
-			let newsubmission = {};
-			newsubmission.id = subListRef.current.length;
-			newsubmission.teamName = arg.team_name;
-			newsubmission.problemTitle = arg.problem_title;
-			newsubmission.submittedAt = new Date(arg.timestamp).toLocaleTimeString();
-			newsubmission.uploadedFile = arg.filename;
-			newsubmission.evaluation = arg.evaluation;
-			newsubmission.checkedBy = arg.judge_name;
-			newsubmission.content = arg.content;
-			newsubmission.dbId = arg._id;
-			newsubmission.totalCases = arg.total_test_cases;
-
-			let newSubmissionsList = [];
-
-			let present = false;
 			//console.log(subListRef.current);
-			subListRef.current?.map((submission)=>{
-				//console.log(submission);
-				if (submission.dbId == newsubmission.dbId) {
-					present = true;
-				} else {
-					newSubmissionsList.push(submission);
-				}
-			});
-			newSubmissionsList.push(newsubmission);
+			
 
-			if (!present) {
-				console.log("NEW SUBMISSION:",arg._id);
+			if (!presentDbIds.current.includes(arg._id)) {
+				presentDbIds.current.push(arg._id);
+
+
+				let newsubmission = {};
+				newsubmission.id = arg.display_id;
+				newsubmission.teamName = arg.team_name;
+				newsubmission.problemTitle = arg.problem_title;
+				newsubmission.submittedAt = new Date(arg.timestamp).toLocaleTimeString();
+				newsubmission.uploadedFile = arg.filename;
+				newsubmission.evaluation = arg.evaluation;
+				newsubmission.checkedBy = arg.judge_name;
+				newsubmission.content = arg.content,
+				newsubmission.possible_points = arg.possible_points,
+				newsubmission.dbId = arg._id;
+				newsubmission.totalCases = arg.total_test_cases;
+
+				newsubmission.isDisabled = true;
+
+				let newSubmissionsList = [];
+				let present = false;
+
+				
+				subListRef.current?.map((submission)=>{
+					//console.log(submission.dbId,"==",newsubmission.dbId);
+					if (submission.dbId == newsubmission.dbId) {
+						present = true;
+					} else {
+						newSubmissionsList.push(submission);
+					}
+				});
+				newSubmissionsList.unshift(newsubmission);
+
+				//console.log(subListRef.current,"\n", newSubmissionsList, "\n", present);
+
+				if (!present) {
+					//console.log("NEW SUBMISSION:",arg._id,"\n", new Date().toLocaleTimeString());
+					setSubmissionsList(newSubmissionsList);
+					subListRef.current = newSubmissionsList;
+				}
+			}
+			//getSubmissions();
+		});
+
+		socketClient.on('evalupdate', (arg)=>{
+			var judgeId = JSON.parse(localStorage?.getItem("user"))?._id;
+			
+			if (judgeId != arg.judge_id) {
+				//console.log("evalupdate", arg);
+				//let copy = cloneDeep(submissionsList);
+				let foundIt = false;
+
+				let newSubmissionsList = [];
+
+				subListRef.current?.map((submission)=>{
+					//console.log(submission.dbId,"==",newsubmission.dbId);
+					if (!foundIt && submission.id == arg.display_id) {
+						foundIt = true;
+
+						submission.id = arg.display_id;
+						submission.teamName = arg.team_name;
+						submission.problemTitle = arg.problem_title;
+						submission.submittedAt = new Date(arg.timestamp).toLocaleTimeString();
+						submission.uploadedFile = arg.filename;
+						submission.evaluation = arg.evaluation;
+						submission.checkedBy = arg.judge_name;
+						submission.content = arg.content;
+						submission.possible_points = arg.possible_points;
+						submission.dbId = arg._id;
+						submission.totalCases = arg.total_test_cases;
+						submission.isDisabled = true
+					}
+					newSubmissionsList.push(submission);
+				});
+				
+				//console.log(copy);
 				setSubmissionsList(newSubmissionsList);
 				subListRef.current = newSubmissionsList;
 			}
-		});   
+
+
+		});
   
 		return () => {
-			socketClient.off('newitemtojudge');
+			socketClient.off('newupload');
+			socketClient.off('evalupdate');
 		};
 
     }; 
 
 	const getSubmissions = async () => {
 		const submissions = await getFetch(`${baseURL}/getallsubmissions`,);
-
-		
 
 		let submissionEntries = []
 
@@ -291,7 +363,7 @@ const ViewSubmissionsPage = ({
 			submissions.results.forEach((entry, index) => {
 				// entries should be in reverse chronological order
 				submissionEntries.unshift({
-					id: submissions.results.length - index,
+					id: entry.display_id,//submissions.results.length - index,
 					teamName: entry.team_name,
 					problemTitle: entry.problem_title,
 					submittedAt: new Date(entry.timestamp).toLocaleTimeString(),
@@ -301,8 +373,9 @@ const ViewSubmissionsPage = ({
 					content: entry.content,
 					possible_points: entry.possible_points,
 					dbId: entry._id,
-					totalCases: entry.total_test_cases
-				})
+					totalCases: entry.total_test_cases,
+					isDisabled: true
+				});
 
 				// add team name to teamsList
 				if (!teamsList.includes(entry.team_name)) {
@@ -312,6 +385,8 @@ const ViewSubmissionsPage = ({
 				if (!questionsList.includes(entry.problem_title)) {
 					questionsList.push(entry.problem_title)
 				}
+				
+				presentDbIds.current.push(entry._id);
 
 				// set options for dropdown select filtering
 				setOptions([teamsList, questionsList])
@@ -319,17 +394,18 @@ const ViewSubmissionsPage = ({
 
 			// setting UI table state
 			setSubmissionsList([...submissionEntries]);
+			subListRef.current = submissionEntries;
 		}
 
-		subListRef.current = submissionEntries;
 
-		console.log(questionsList, teamsList)
+		//console.log(questionsList, teamsList)
 		// console.log(options[0])
 		// console.log(options[1])
-		// console.log("submissionEntries", submissionEntries)
+		//console.log("submissionEntries", submissionEntries)
 
-		setFetchAllPrevious(true);
-		handleSocket();
+		//setFetchAllPrevious(true);
+		
+		//handleSocket();
 	}
 
 	// console.log(options)
@@ -349,12 +425,6 @@ const ViewSubmissionsPage = ({
 			setIsLoggedIn(false);
 		}
 
-		if (fetchAllPrevious) {
-			handleSocket();
-		} else {
-			getSubmissions();
-		}
-
 		// console.log("teamsList", teamsList)
 		// console.log("submissionsList", submissionsList)
 		// console.log("questionsList", questionsList)
@@ -372,6 +442,19 @@ const ViewSubmissionsPage = ({
 		
 	}, []);
 
+	useEffect(()=>{
+		//console.log("fetchAllPrevious", fetchAllPrevious);
+		handleSocket();
+	}, [fetchAllPrevious]);
+
+	useEffect(()=>{
+		if (isLoggedIn) {
+			if (!fetchAllPrevious.current) {
+				fetchAllPrevious.current = true;
+				getSubmissions();
+			};
+		};
+	}, [isLoggedIn]);
 	
 	return (
 		<>

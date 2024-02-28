@@ -6,10 +6,12 @@ import { optionsEval } from "utils/dummyData";
 import EvaluationModal from "../modals/EvaluationModal";
 import { ConfirmWindow, SuccessWindow } from "components";
 import { socketClient } from "socket/socket";
+import { cloneDeep } from "lodash";
 
 
-export default function EvalEditInputCell(props) {
-	const { id, value, field, hasFocus, row } = props.props;
+export default function EvalEditInputCell({props, submissionsList, setSubmissionsList, subListRef}) {
+	console.log(props);
+	const { id, value, field, hasFocus, row } = props;
 
 
 	// initial state should be the same as the value held by view state
@@ -19,7 +21,7 @@ export default function EvalEditInputCell(props) {
 	const [currVal, setCurrVal] = useState(value);
 
 	// for dropdown select
-	const [isDisabled, setIsDisabled] = useState(!props.props.row.hasFileDownloaded);
+	//const [isDisabled, setIsDisabled] = useState(!row.hasFileDownloaded);
 
 	// for not pushing through with selected option
 	const [confirmed, setConfirmed] = useState(false);
@@ -27,9 +29,8 @@ export default function EvalEditInputCell(props) {
 	const [openModal, setOpenModal] = useState(false);
 	const [correctTestCases, setCorrectTestCases] = useState(row.totalCases);
 
-	console.log(props.props)
 	const apiRef = useGridApiContext();
-	const ref = useRef()
+	const ref = useRef();
 
 	const handleChange = (event) => {
 		let newVal = event.target.value;
@@ -46,11 +47,15 @@ export default function EvalEditInputCell(props) {
 		
 	};
 
+	useEffect(()=>{
+		console.log("000", row.isDisabled);
+	}, [row]);
+
 	useEffect(() => {
-		if (!isDisabled && initialVal !== "Partially Correct" && currVal === "Partially Correct") {
+		if (!row.isDisabled && initialVal !== "Partially Correct" && currVal === "Partially Correct") {
 			setOpenModal(true);
 
-		} else if (!isDisabled && currVal !== initialVal && currVal !== "Pending") {
+		} else if (!row.isDisabled && currVal !== initialVal && currVal !== "Pending") {
 			console.log(currVal);
 
 			// ask for confirmation of action
@@ -78,10 +83,36 @@ export default function EvalEditInputCell(props) {
 						text: 'Successfully submitted evaluation!'
 					});
 
-				// if user selected pending as option, do not replace currValue with "Pending" kasi dapat di siya valid option (?)
-				} else {
+					var copy = cloneDeep(submissionsList);
+
+					copy.map((submission)=>{
+						if (row.dbId == submission.dbId) {
+							submission.evaluation = currVal;
+							submission.checkedBy = judgeName;
+						}
+					});
+
+					console.log(
+						submissionsList
+					);
+					setSubmissionsList(copy);
+					subListRef.current = copy;
+
+					// disabling the dropdown select again
+					//row.hasFileDownloaded = false;
+					//setIsDisabled(true);
+					//console.log(isDisabled);
+
+				// if user selected pending as option, do not replace currValue with "Pending" kasi dapat di siya valid option (?) // It's ok i think, like meaning ay di muna i-evaluate
+				} 
+				if (res['isDismissed']) {
 					setConfirmed(false);
 					setCurrVal(initialVal);
+
+					var copy = cloneDeep(submissionsList);
+					setSubmissionsList(copy);
+					subListRef.current = copy;
+
 					apiRef.current.setEditCellValue({ id, field, value: initialVal });
 				}
 			});
@@ -92,18 +123,17 @@ export default function EvalEditInputCell(props) {
 		// 	setCurrVal("initialVal")
 		// }
 
-		// disabling the dropdown select again
-		props.props.row.hasFileDownloaded = false;
+		
 	}, [currVal])
 	
 
 	return (
 		<>
 			<DropdownSelect
-				innerRef={ref}
+				innerRef={(el)=>ref.current = el}
 				displayEmpty
 				variant="standard"
-				isDisabled={isDisabled}
+				isDisabled={row.isDisabled}
 				minWidth="100%"
 				options={optionsEval}
 				handleChange={handleChange}

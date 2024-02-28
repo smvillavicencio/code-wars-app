@@ -37,7 +37,7 @@ const checkSubmission = async (arg: any) => {
         submission.judge_name = judgeName;
         submission.curr_correct_cases = correctCases;
         
-        console.log(correctCases)
+        console.log(correctCases, submission.total_test_cases, possiblePoints);
         let status;
         let score = 0;
 
@@ -48,6 +48,7 @@ const checkSubmission = async (arg: any) => {
         }
 
         score = Math.floor(possiblePoints * correctCases / submission.total_test_cases);
+        console.log("--", score);
         
         let pointsToAdd = score - submission.prev_max_score;
         if (pointsToAdd > 0) {

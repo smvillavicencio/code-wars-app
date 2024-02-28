@@ -44,6 +44,8 @@ const uploadSubmission = async (req: Request, res: Response) => {
     const prevSubmissions = await Submission.find({ team_id: teamId, problem_id: problemId })?.sort({ timestamp: 1 });
     let prevMaxScore;
 
+    const totalSubmissions = await Submission.find({});
+
     if (prevSubmissions.length == 0) {
         prevMaxScore = 0;
     } else {
@@ -71,7 +73,8 @@ const uploadSubmission = async (req: Request, res: Response) => {
         prev_max_score: prevMaxScore,
         total_test_cases: totalCases,
         curr_correct_cases: 0,
-        filename
+        filename,
+        display_id: totalSubmissions.length
     })
     // status : checked, error, pending
     // evaluation: correct, partially correct, incorrect solution, error, pending

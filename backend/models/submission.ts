@@ -16,7 +16,8 @@ const SubmissionSchema = new mongoose.Schema({
   prev_max_score: { type: Number, required: true }, // Max score of previous submissions to the same problem by the same team
   total_test_cases: { type: Number, required: true },
   curr_correct_cases: { type: Number, required: true },
-  filename: { type: String, required: true }
+  filename: { type: String, required: true },
+  display_id:  { type: Number, required: true }
 });
 // status : checked, error, pending
 // evaluation: correct, partial, wrong, error, pending

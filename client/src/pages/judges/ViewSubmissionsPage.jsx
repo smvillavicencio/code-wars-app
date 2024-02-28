@@ -38,7 +38,7 @@ import { socketClient } from 'socket/socket';
 import { baseURL } from 'utils/constants';
 import { getFetch } from 'utils/apiRequest';
 import { deepClone } from '@mui/x-data-grid/utils/utils';
-import { cloneDeep } from 'lodash';
+import { clone, cloneDeep } from 'lodash';
 // import { teamsList } from 'utils/dummyData';
 
 
@@ -305,10 +305,50 @@ const ViewSubmissionsPage = ({
 				}
 			}
 			//getSubmissions();
-		});   
+		});
+
+		socketClient.on('evalupdate', (arg)=>{
+			var judgeId = JSON.parse(localStorage?.getItem("user"))?._id;
+			
+			if (judgeId != arg.judge_id) {
+				//console.log("evalupdate", arg);
+				//let copy = cloneDeep(submissionsList);
+				let foundIt = false;
+
+				let newSubmissionsList = [];
+
+				subListRef.current?.map((submission)=>{
+					//console.log(submission.dbId,"==",newsubmission.dbId);
+					if (!foundIt && submission.id == arg.display_id) {
+						foundIt = true;
+
+						submission.id = arg.display_id;
+						submission.teamName = arg.team_name;
+						submission.problemTitle = arg.problem_title;
+						submission.submittedAt = new Date(arg.timestamp).toLocaleTimeString();
+						submission.uploadedFile = arg.filename;
+						submission.evaluation = arg.evaluation;
+						submission.checkedBy = arg.judge_name;
+						submission.content = arg.content;
+						submission.possible_points = arg.possible_points;
+						submission.dbId = arg._id;
+						submission.totalCases = arg.total_test_cases;
+						submission.isDisabled = true
+					}
+					newSubmissionsList.push(submission);
+				});
+				
+				//console.log(copy);
+				setSubmissionsList(newSubmissionsList);
+				subListRef.current = newSubmissionsList;
+			}
+
+
+		});
   
 		return () => {
 			socketClient.off('newupload');
+			socketClient.off('evalupdate');
 		};
 
     }; 

@@ -19,6 +19,7 @@ const Team = mongoose.model("Team");
  * Returns (in the Response): 
  *      Object with fields success and the corresponding results
  */
+// NOTE: Did not use. See submissionController.ts
 const checkSubmission = async (arg: any) => {
     const submissionId = arg.submissionId;
     const evaluation = arg.evaluation;

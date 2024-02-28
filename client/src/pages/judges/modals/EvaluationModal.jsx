@@ -11,7 +11,8 @@ import { socketClient } from 'socket/socket';
 import { ConfirmWindow, SuccessWindow, ErrorWindow } from 'components';
 import { useGridApiContext } from "@mui/x-data-grid";
 import { cloneDeep } from 'lodash';
-
+import { baseURL } from 'utils/constants';
+import { postFetch } from 'utils/apiRequest';
 
 /**
  * Purpose: Displays a modal window that takes in the number of test cases passed for a particular submission entry.
@@ -60,8 +61,6 @@ const EvaluationModal = ({
 	 */
 	const handleSubmit = () => {
 		setOpen(false); 
-		console.log(typeof correctCases);
-		console.log(currEval, correctCases);
 
 		if (correctCases <= 0 || correctCases >= totalCases) {
 			ErrorWindow.fire({
@@ -89,7 +88,15 @@ const EvaluationModal = ({
 				if (res['isConfirmed']) {
 			
 					// websocket emit
-					socketClient.emit("submitEval", {
+					// socketClient.emit("submitEval", {
+					// 	submissionId: rowValues.dbId,
+					// 	evaluation: currEval,
+					// 	judgeId: judgeID,
+					// 	judgeName: judgeName,
+					// 	correctCases: correctCases,
+					// 	possiblePoints: rowValues.possible_points
+					// })
+					const eResponse = postFetch(`${baseURL}/checksubmission`, {
 						submissionId: rowValues.dbId,
 						evaluation: currEval,
 						judgeId: judgeID,

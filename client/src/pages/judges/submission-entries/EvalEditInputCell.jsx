@@ -7,7 +7,8 @@ import EvaluationModal from "../modals/EvaluationModal";
 import { ConfirmWindow, SuccessWindow } from "components";
 import { socketClient } from "socket/socket";
 import { cloneDeep } from "lodash";
-
+import { baseURL } from "utils/constants";
+import { postFetch } from "utils/apiRequest";
 
 export default function EvalEditInputCell({props, submissionsList, setSubmissionsList, subListRef}) {
 	console.log(props);
@@ -70,14 +71,22 @@ export default function EvalEditInputCell({props, submissionsList, setSubmission
 
 					setConfirmed(true);
 					// websocket for judge evaluation
-					socketClient.emit("submitEval", {
+					// socketClient.emit("submitEval", {
+					// 	submissionId: row.dbId,
+					// 	evaluation: currVal,
+					// 	judgeId: judgeID,
+					// 	judgeName: judgeName,
+					// 	correctCases: correctTestCases,
+					// 	possiblePoints: row.possible_points
+					// });
+					const eResponse = postFetch(`${baseURL}/checksubmission`, {
 						submissionId: row.dbId,
 						evaluation: currVal,
 						judgeId: judgeID,
 						judgeName: judgeName,
 						correctCases: correctTestCases,
 						possiblePoints: row.possible_points
-					});
+					})
 					
 					SuccessWindow.fire({
 						text: 'Successfully submitted evaluation!'

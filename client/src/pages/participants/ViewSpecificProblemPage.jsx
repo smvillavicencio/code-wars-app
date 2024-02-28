@@ -30,6 +30,7 @@ import { socketClient } from 'socket/socket';
 import 'react-toastify/dist/ReactToastify.css';
 import { baseURL } from 'utils/constants';
 import { postFetch } from 'utils/apiRequest';
+import { getFetch } from 'utils/apiRequest';
 
 
 /*
@@ -115,6 +116,51 @@ const ViewSpecificProblemPage = ({
 
 		const user = JSON.parse(localStorage?.getItem("user"));
 		socketClient.emit("join", user);
+		socketClient.emit("getActivePowerups");
+
+		socketClient.on("fetchActivePowerups", async() => {
+			const res = await getFetch(`${baseURL}/teams/${user._id}`);
+			
+			const active_buffs = res.team.active_buffs;
+			const active_debuffs = res.team.debuffs_received;
+
+			active_buffs.map((buff) => {
+				if(buff.endTime){
+					const duration = new Date(buff.endTime) - new Date();
+
+					toast.info('🚀 New buff ' + buff.name + ' applied on your team!', {
+						toastId: buff._id,
+						position: "bottom-right",
+						autoClose: duration,
+						hideProgressBar: false,
+						closeOnClick: false,
+						pauseOnHover: false,
+						draggable: false,
+						progress: undefined,
+						theme: "dark",
+						transition: Bounce,
+					});
+				}
+			});
+			
+			active_debuffs.map((debuff) => {
+				if(debuff.endTime){
+					const duration = new Date(debuff.endTime) - new Date();
+					toast.info('🚀 New buff ' + debuff.name + ' applied on your team!', {
+						toastId: debuff._id,
+						position: "bottom-right",
+						autoClose: duration,
+						hideProgressBar: false,
+						closeOnClick: false,
+						pauseOnHover: false,
+						draggable: false,
+						progress: undefined,
+						theme: "dark",
+						transition: Bounce,
+					});
+				}
+			});
+		});
 
 		// listener for buffs
 		socketClient.on("newBuff", (powerUp) => {
@@ -162,6 +208,7 @@ const ViewSpecificProblemPage = ({
 			socketClient.off("newBuff");
 			socketClient.off("newDebuff");
 			socketClient.off("dismissToasts");
+			socketClient.off("fetchActivePowerups");
 		};
 	});
 

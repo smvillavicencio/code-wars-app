@@ -21,10 +21,12 @@ io.on("connection", (socket: any) => {
   });
 
   socket.on("logout", () => {
-    console.log("dismissToasts");
     socket.emit("dismissToasts");
-  })
+  });
 
+  socket.on("getActivePowerups", () => {
+    socket.emit("fetchActivePowerups");
+  })
   // socket.on("newupload", (arg: any)=>{
   //   setTimeout( async ()=>{
   //     try {

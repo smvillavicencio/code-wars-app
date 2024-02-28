@@ -430,14 +430,16 @@ const remove_active_powerup = async (team_id : String) => {
       team.active_buffs = team.active_buffs.filter((buff) => {
         if(buff.code == "immune" && buff.tier == "4") { // immunity tier 4 are immunity for the whole round.
           return true;
-        } else {
+        } else if(buff.endTime) {
           return buff.endTime > currentTime;
         }
       });
 
       //Filter out expired debuffs
       team.debuffs_received = team.debuffs_received.filter((debuff) => {
-        return debuff.endTime > currentTime;
+        if (debuff.endTime){
+          return debuff.endTime > currentTime;
+        }
       });
       
       await team.save();

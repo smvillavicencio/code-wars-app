@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 
 
 const Question = mongoose.model("Question");
+const Submission = mongoose.model("Submission");
 
 const viewQuestions = async (req : any, res : any) => {
     try {
@@ -27,15 +28,74 @@ const getQuestionsBasedOnDifficulty = async (req : any, res : any) => {
   } 
 
 const getQuestionContent = async (req : any, res : any) => {
-    const id = req.body.id.trim();
+    const problemId = req.body.problemId.trim();
+    const teamId = req.body.teamId;
 
     try {
-        const question = await Question.findById(id);
-        return res.send({ success: true, question });
+        const question = await Question.findById(problemId);
+
+        const submission = await Submission.find({ team_id: teamId, problem_id: problemId });
+
+        let lastSubmission = null;
+        let score = 0;
+        let status;
+        let evaluation;
+        let checkedby;
+        if (submission.length > 0) {
+            lastSubmission = submission[submission.length - 1];
+            if (lastSubmission.prev_max_score >= lastSubmission.score) {
+                score = lastSubmission.prev_max_score;
+            } else {
+                score = lastSubmission.score;
+            }
+
+            status = lastSubmission.status;
+            checkedby = lastSubmission.judge_name;
+            evaluation = lastSubmission.evaluation;
+        } else {
+            status = "Pending";
+            checkedby = "Unassigned";
+            evaluation = "No Submission";
+        }
+
+        return res.send({ success: true, question, evaluation });
     }catch(err) {
         console.error(err);
         return res.send({ success: false, error: err });
     }
-  } 
+  }
 
-export { viewQuestions, getQuestionsBasedOnDifficulty, getQuestionContent }
+const generateQuestion = async (req : any, res : any) => {
+    const title = req.body.title.trim();
+    const body = req.body.body.trim();
+    const difficulty = req.body.difficulty.trim();
+    const points = parseInt(req.body.points);
+    const total_cases = parseInt(req.body.total_cases);
+
+    const totalQuestions = await Question.find({});
+
+    const newQuestion = new Question({
+        title,
+        body,
+        difficulty,
+        points,
+        total_cases,
+        display_id: totalQuestions.length
+    })
+
+    let results;
+    try {
+        results = await newQuestion.save();
+
+        return res.send({
+            success: true
+        });
+    } catch (error) {
+        return res.send({
+            success: false,
+            results: error
+        });
+    }
+}
+
+export { viewQuestions, getQuestionsBasedOnDifficulty, getQuestionContent, generateQuestion }

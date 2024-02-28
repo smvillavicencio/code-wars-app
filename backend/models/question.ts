@@ -5,7 +5,10 @@ const QuestionSchema = new mongoose.Schema({
     body: { type: String, required: true },
     points: { type: Number, required: true },
     difficulty: { type: String, required: true },
-    total_cases: { type: Number, required: true }
+    total_cases: { type: Number, required: true },
+    display_id: { type: Number, required: true },
+    sample_input: { type: String, required: true },
+    sample_output: { type: String, required: true }
 });
 
 mongoose.model("Question", QuestionSchema);

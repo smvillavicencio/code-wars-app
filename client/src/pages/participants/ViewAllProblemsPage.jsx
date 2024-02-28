@@ -81,7 +81,7 @@ const ViewAllProblemsPage = ({
 			qResponse.questions?.map( async (question)=>{
 				let formattedQuestion = {};
 				formattedQuestion.problemTitle = question.title;
-				formattedQuestion.id = counter;
+				formattedQuestion.id = question.display_id;;
 				counter += 1;
 				formattedQuestion.dbId = question._id;
 	
@@ -90,16 +90,17 @@ const ViewAllProblemsPage = ({
 					teamId: JSON.parse(localStorage?.getItem("user"))._id
 				});
 	
-				formattedQuestion.status = qeResponse.status;
+				formattedQuestion.status = qeResponse.evaluation;
 				formattedQuestion.score = qeResponse.score;
 				formattedQuestion.checkedBy = qeResponse.checkedby;
 	
 				questionsList.push(formattedQuestion);
 			})
 		);
-		console.log(questionsList);
+		//console.log(questionsList);
+		const sortedList = [...questionsList].sort((a, b) => a.id - b.id);
 
-		setCurrQuestions(questionsList);
+		setCurrQuestions(sortedList);
 	}
 
 	useEffect(() => {
@@ -170,10 +171,19 @@ const ViewAllProblemsPage = ({
 			});
 		});
 
+		socketClient.on('evalupdate', (arg)=>{
+			var teamId = JSON.parse(localStorage?.getItem("user"))?._id;
+			
+			if (teamId == arg.team_id) {
+				getRoundQuestions();
+			}
+		});
+
 
 		return () => {
 			socketClient.off("newBuff");
 			socketClient.off("newDebuff");
+			socketClient.off("evalupdate");
 		};
 	});
 

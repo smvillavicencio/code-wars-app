@@ -35,7 +35,7 @@ const CustomModal = ({
 	return (
 		<Modal
 			open={isOpen}
-			onClose={handleClose}
+			//onClose={handleClose}
 			closeAfterTransition
 			slots={{ backdrop: Backdrop }}
 			slotProps={{

@@ -4,7 +4,7 @@ import { useGridApiContext } from "@mui/x-data-grid";
 import { DropdownSelect } from "components";
 import { optionsEval } from "utils/dummyData";
 import EvaluationModal from "../modals/EvaluationModal";
-import { ConfirmWindow, SuccessWindow } from "components";
+import { ConfirmWindow, SuccessWindow, ErrorWindow } from "components";
 import { socketClient } from "socket/socket";
 import { cloneDeep } from "lodash";
 import { baseURL } from "utils/constants";
@@ -57,7 +57,22 @@ export default function EvalEditInputCell({props, submissionsList, setSubmission
 			setOpenModal(true);
 
 		} else if (!row.isDisabled && currVal !== initialVal && currVal !== "Pending") {
-			console.log(currVal);
+
+			if (props.formattedValue != "Pending") {
+				ErrorWindow.fire({
+					text: 'Cannot evaluate already evaluated submission.'
+				});
+
+				setConfirmed(false);
+				setCurrVal(initialVal);
+
+				var copy = cloneDeep(submissionsList);
+				setSubmissionsList(copy);
+				subListRef.current = copy;
+
+				apiRef.current.setEditCellValue({ id, field, value: initialVal });
+			}
+			else {
 
 			// ask for confirmation of action
 			ConfirmWindow.fire({
@@ -125,7 +140,7 @@ export default function EvalEditInputCell({props, submissionsList, setSubmission
 					apiRef.current.setEditCellValue({ id, field, value: initialVal });
 				}
 			});
-
+			}
 		}
 		// else if (currVal === "Pending") {
 		// 	// replace with making pending an unclickable option in dropdown select
@@ -151,9 +166,11 @@ export default function EvalEditInputCell({props, submissionsList, setSubmission
 
 			{openModal ?
 				<EvaluationModal
+					props={props}
 					open={openModal}
 					setOpen={setOpenModal}
 					currEval={currVal}
+					initialVal={initialVal}
 					rowValues={row}
 					correctCases={correctTestCases}
 					setCorrectCases={setCorrectTestCases}

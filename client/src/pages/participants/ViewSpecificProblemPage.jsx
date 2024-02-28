@@ -58,6 +58,8 @@ const ViewSpecificProblemPage = ({
 	
 	const [problem, setProblem] = useState();
 	const [problemDescription, setProblemDescription] = useState();
+	const [sampleInput, setSampleInput] = useState("");
+	const [sampleOutput, setSampleOutput] = useState("");
 
 	const [evaluation, setEvaluation] = useState();
 	
@@ -88,6 +90,8 @@ const ViewSpecificProblemPage = ({
 		setProblem(qResponse.question);
 		setProblemDescription(qResponse.question.body);
 		setEvaluation(qResponse.evaluation);
+		setSampleInput(qResponse.question.sample_input);
+		setSampleOutput(qResponse.question.sample_output);
 	}
 
 	useEffect(() => {
@@ -306,7 +310,9 @@ const ViewSpecificProblemPage = ({
 							</Typography>
 
 							{/* Sample inputs here */}
-							<div></div>
+							<div style={{padding: "10px"}}>
+								{sampleInput}
+							</div>
 						</Box>
 
 						<Box sx={{ width: '50%' }}>
@@ -325,7 +331,9 @@ const ViewSpecificProblemPage = ({
 							</Typography>
 
 							{/* Sample outputs here */}
-							<div></div>
+							<div style={{padding: "10px"}}>
+								{sampleOutput}
+							</div>
 						</Box>
 					</Box>
 				</Stack>

@@ -71,6 +71,8 @@ const generateQuestion = async (req : any, res : any) => {
     const difficulty = req.body.difficulty.trim();
     const points = parseInt(req.body.points);
     const total_cases = parseInt(req.body.total_cases);
+    const sample_input = req.body.sample_input?.trim();
+    const sample_output = req.body.sample_output?.trim();
 
     const totalQuestions = await Question.find({});
 
@@ -80,7 +82,9 @@ const generateQuestion = async (req : any, res : any) => {
         difficulty,
         points,
         total_cases,
-        display_id: totalQuestions.length
+        display_id: totalQuestions.length,
+        sample_input: sample_input?.length == 0? "-" : sample_input,
+        sample_output: sample_output?.length == 0? "-" : sample_output
     })
 
     let results;

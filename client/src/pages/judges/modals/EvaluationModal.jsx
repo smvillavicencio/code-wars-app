@@ -8,7 +8,9 @@ import {
 } from '@mui/material';
 import { CustomModal } from 'components';
 import { socketClient } from 'socket/socket';
-import { SuccessWindow } from 'components';
+import { ConfirmWindow, SuccessWindow, ErrorWindow } from 'components';
+import { useGridApiContext } from "@mui/x-data-grid";
+import { cloneDeep } from 'lodash';
 
 
 /**
@@ -23,15 +25,32 @@ const EvaluationModal = ({
 	currEval,
 	correctCases,
 	rowValues,
-	setCorrectCases
+	setCorrectCases,
+	submissionsList,
+	setSubmissionsList,
+	subListRef,
+	id,
+	field,
+	setCurrVal,
+	totalCases
 }) => {
 	// state handler for first-time focusing on input field
 	const [firstClick, setFirstClick] = useState(true);
+
+	const apiRef = useGridApiContext();
 	
 	/**
 	 * Purpose: Closes the modal window
 	 */
 	const handleCancel = () => {
+		setCurrVal("Pending");
+
+		var copy = cloneDeep(submissionsList);
+		setSubmissionsList(copy);
+		subListRef.current = copy;
+
+		apiRef.current.setEditCellValue({ id, field, value: "Pending" });
+
 		console.log(rowValues);
 		setOpen(false);
 	}
@@ -39,31 +58,79 @@ const EvaluationModal = ({
 	/**
 	 * Handles onClick event for submit button
 	 */
-	const handleSubmit = () => { 
-		console.log(rowValues);
+	const handleSubmit = () => {
+		setOpen(false); 
+		console.log(typeof correctCases);
 		console.log(currEval, correctCases);
 
-		// get judge user details
-		let judgeID = JSON.parse(localStorage?.getItem("user"))?._id;
-		let judgeName = JSON.parse(localStorage?.getItem("user"))?.username;
-	
-		// websocket emit
-		socketClient.emit("submitEval", {
-			submissionId: rowValues.dbId,
-			evaluation: currEval,
-			judgeId: judgeID,
-			judgeName: judgeName,
-			correctCases: correctCases,
-			possiblePoints: rowValues.possible_points
-		})
+		if (correctCases <= 0 || correctCases >= totalCases) {
+			ErrorWindow.fire({
+				text: 'There is a problem with the set number of correct cases.'
+			});
 
-		// close modal window
-		setOpen(false);
+			setCurrVal("Pending");
 
-		// show confirmation window
-		SuccessWindow.fire({
-			text: 'Successfully submitted evaluation!'
-		});
+			var copy = cloneDeep(submissionsList);
+			setSubmissionsList(copy);
+			subListRef.current = copy;
+
+			apiRef.current.setEditCellValue({ id, field, value: "Pending" });
+		}
+		else {
+			// ask for confirmation of action
+			ConfirmWindow.fire({
+				text: 'Are you sure you want to choose Partially Correct (' + `${correctCases} of ${totalCases}` + ') as the evaluation?'
+			}).then((res) => {
+
+				// get judge user details
+				let judgeID = JSON.parse(localStorage?.getItem("user"))?._id;
+				let judgeName = JSON.parse(localStorage?.getItem("user"))?.username;
+
+				if (res['isConfirmed']) {
+			
+					// websocket emit
+					socketClient.emit("submitEval", {
+						submissionId: rowValues.dbId,
+						evaluation: currEval,
+						judgeId: judgeID,
+						judgeName: judgeName,
+						correctCases: correctCases,
+						possiblePoints: rowValues.possible_points
+					})
+
+					var copy = cloneDeep(submissionsList);
+
+					copy.map((submission)=>{
+						if (rowValues.dbId == submission.dbId) {
+							submission.evaluation = currEval;
+							submission.checkedBy = judgeName;
+						}
+					});
+
+					setSubmissionsList(copy);
+					subListRef.current = copy;
+
+					// close modal window
+					setOpen(false);
+
+					// show confirmation window
+					SuccessWindow.fire({
+						text: 'Successfully submitted evaluation!'
+					});
+				}
+				if (res['isDismissed']) {
+					setCurrVal("Pending");
+
+					var copy = cloneDeep(submissionsList);
+					setSubmissionsList(copy);
+					subListRef.current = copy;
+
+					apiRef.current.setEditCellValue({ id, field, value: "Pending" });
+				}
+			});
+		}
+
+		
 	}
 
 
@@ -90,26 +157,28 @@ const EvaluationModal = ({
 					required
 					fullWidth
 					error={correctCases === ''}
-					value={correctCases}
+					//value={correctCases-1}
 					onChange={(e) => {
 						let currCorr = e.target.value;
-						if (currCorr > rowValues.totalCases) {
-							setCorrectCases(rowValues.totalCases);
-						} else {
-							setCorrectCases(e.target.value)
+						console.log(currCorr)
+						try {
+							setCorrectCases(parseInt(e.target.value));
+						} catch (error) {
+							setCorrectCases(0);
 						}
+						
 					}}
 					onFocus={() => setFirstClick(false)}
 					InputLabelProps={{ shrink: true }}
 					InputProps={{
 						inputProps: {
-							min: 0,
-							max: rowValues.totalCases
+							min: 1,
+							max: rowValues.totalCases-1
 						}
 					}}	
 					type="number"
 					variant="standard"
-					label="# of Test Cases Passed:"
+					label={"# of Test Cases Passed Out of "+totalCases+" Cases:"}
 					helperText="Enter numeric values only."
         />
         

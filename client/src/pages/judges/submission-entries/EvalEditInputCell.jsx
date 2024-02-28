@@ -148,6 +148,13 @@ export default function EvalEditInputCell({props, submissionsList, setSubmission
 					rowValues={row}
 					correctCases={correctTestCases}
 					setCorrectCases={setCorrectTestCases}
+					submissionsList={submissionsList}
+					setSubmissionsList={setSubmissionsList}
+					subListRef={subListRef}
+					id={id}
+					field={field}
+					setCurrVal={setCurrVal}
+					totalCases={row.totalCases}
 				/>
 				: null
 			}

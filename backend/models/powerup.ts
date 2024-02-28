@@ -24,7 +24,7 @@ export interface PowerupInfo {
   from?: string;
   target?: string;
   startTime: Date;
-  endTime: Date;
+  endTime: Date | null;
 }
 
 const PowerupSchema = new Schema<Powerup>({

@@ -33,7 +33,7 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 	 */
 	const [selectedTeam, setSelectedTeam] = useState('');
 	/**
-	 * State handler for selected team recipient for debuff
+	 * State handler for selected debuff to dispel
 	 */
 	const [selectedDebuff, setSelectedDebuff] = useState('');
 	/**
@@ -137,7 +137,7 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 				socketClient.on("scenarioCheckerDebuff", (scenario) => {
 					if(scenario === 'existing'){
 						ErrorWindow.fire({
-							text: `${selectedTeam} has an active debuff ${powerUp.name}. Stacking of debuffs is not allowed!`
+							text: `You have an active ${powerUp.name}. Stacking of buffs is not allowed!`
 						});
 					} else if (scenario === 'insufficient_funds') {
 						ErrorWindow.fire({
@@ -171,6 +171,7 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 	 * Applying chosen buff to user team
 	 */
 	const handleBuy = (powerUp) => {
+		console.log(powerUp)
 		// ask for confirmation of action
 		ConfirmWindow.fire({
 			text: 'Are you sure you want to use ' + `${powerUp.code === 'immune' ? powerUp.name + " " + Object.keys(powerUp.tier)[0] : powerUp.name}` + ' on your team?',
@@ -180,11 +181,25 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 				// websocket for buying buff
 				socketClient.emit("buyBuff", {
 					"powerUp": powerUp,
-					"userTeam": userDetails
+					"userTeam": userDetails,
+					"debuff_to_dispel": powerUp.code === 'dispel' ? selectedDebuff : null
 				});
 
-				SuccessWindow.fire({
-					text: 'Successfully used '+`${powerUp.code === 'immune' ? powerUp.name + " " + Object.keys(powerUp.tier)[0] : powerUp.name}`+' on your team!'
+
+				socketClient.on("scenarioCheckerBuff", (scenario) => {
+					if(scenario === 'existing'){
+						ErrorWindow.fire({
+							text: `You have an active buff ${powerUp.code === 'immune' ? powerUp.name + " " + Object.keys(powerUp.tier)[0] : powerUp.name}. Stacking of buffs is not allowed!`
+						});
+					} else if (scenario === 'insufficient_funds') {
+						ErrorWindow.fire({
+							text: `You have insufficient points to buy ${powerUp.code === 'immune' ? powerUp.name + " " + Object.keys(powerUp.tier)[0] : powerUp.name}!`
+						});
+					} else {
+						SuccessWindow.fire({
+							text: 'Successfully used '+`${powerUp.code === 'immune' ? powerUp.name + " " + Object.keys(powerUp.tier)[0] : powerUp.name}`+' on your team!'
+						});
+					}
 				});
 
 				// reset values
@@ -309,7 +324,7 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 					</> :
 					type === 1 && powerUp.code === 'dispel' ?
 					<>
-						{/* Select team dropdown select */}
+						{/* Select debuff to dispel dropdown select */}
 						<DropdownSelect
 							isDisabled={false}
 							label="Active Debuffs"
@@ -320,9 +335,9 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 							value={selectedDebuff}
 						/>
 
-						{/* Button to inflict the debuff */}
+						{/* Button to Dispel the debuff */}
 						<Button
-							onClick={() => applyDebuff(powerUp.name)}
+							onClick={() => handleBuy(powerUp)}
 							variant="contained"
 							sx={{
 								marginBottom: '20px',

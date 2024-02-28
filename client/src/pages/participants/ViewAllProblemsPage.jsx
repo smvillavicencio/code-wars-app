@@ -135,8 +135,9 @@ const ViewAllProblemsPage = ({
 
 		// listener for buffs
 		socketClient.on("newBuff", (powerUp) => {
-			const duration = powerUp.duration
-			const powerUpName = powerUp.name
+			const tierKey = Object.keys(powerUp.tier)[0];
+			const duration = powerUp.tier[tierKey].duration;
+			const powerUpName = powerUp.name;
 
 			toast.info('🚀 New buff ' + powerUpName + ' applied on your team!', {
 				position: "bottom-right",

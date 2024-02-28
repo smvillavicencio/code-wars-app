@@ -18,6 +18,7 @@ import {
 } from 'components';
 import { socketClient } from 'socket/socket';
 import { getFetch } from 'utils/apiRequest';
+import { baseURL } from 'utils/constants';
 
 
 /** 
@@ -68,7 +69,7 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 	 */
 	const getAllTeams = async (user) => {
 		try{
-			const res = await getFetch("http://localhost:5000/teams");
+			const res = await getFetch(`${baseURL}/teams`);
 			if (res.success) {
 				let userTeamInfo = {};
 				let enemyTeams = [];

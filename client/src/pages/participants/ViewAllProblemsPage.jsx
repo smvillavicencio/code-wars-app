@@ -171,10 +171,15 @@ const ViewAllProblemsPage = ({
 			});
 		});
 
+		socketClient.on("dismissToasts", () => {
+			toast.dismiss();
+		});
+
 
 		return () => {
 			socketClient.off("newBuff");
 			socketClient.off("newDebuff");
+			socketClient.off("dismissToasts");
 		};
 	});
 

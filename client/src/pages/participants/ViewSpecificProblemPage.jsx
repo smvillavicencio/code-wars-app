@@ -112,14 +112,15 @@ const ViewSpecificProblemPage = ({
 	// websocket listener for power-ups toast notifs
 	useEffect(() => {
 		if (!socketClient) return;
-		
+
 		const user = JSON.parse(localStorage?.getItem("user"));
 		socketClient.emit("join", user);
 
 		// listener for buffs
 		socketClient.on("newBuff", (powerUp) => {
-			const duration = powerUp.duration
-			const powerUpName = powerUp.name
+			const tierKey = Object.keys(powerUp.tier)[0];
+			const duration = powerUp.tier[tierKey].duration;
+			const powerUpName = powerUp.name;
 
 			toast.info('🚀 New buff ' + powerUpName + ' applied on your team!', {
 				position: "bottom-right",
@@ -136,9 +137,9 @@ const ViewSpecificProblemPage = ({
 
 		// listener for debuffs
 		socketClient.on("newDebuff", (powerUp) => {
-			console.log(powerUp);
-			const duration = powerUp.duration
-			const powerUpName = powerUp.name
+			const tierKey = Object.keys(powerUp.tier)[0];
+			const duration = powerUp.tier[tierKey].duration;
+			const powerUpName = powerUp.name;
 
 			toast.warn('New debuff ' + powerUpName + ' has been applied to your team!', {
 				position: "bottom-right",
@@ -153,9 +154,14 @@ const ViewSpecificProblemPage = ({
 			});
 		});
 
+		socketClient.on("dismissToasts", () => {
+			toast.dismiss();
+		});
+
 		return () => {
 			socketClient.off("newBuff");
 			socketClient.off("newDebuff");
+			socketClient.off("dismissToasts");
 		};
 	});
 

@@ -20,6 +20,11 @@ io.on("connection", (socket: any) => {
     console.log("joined user:" + user._id);
   });
 
+  socket.on("logout", () => {
+    console.log("dismissToasts");
+    socket.emit("dismissToasts");
+  })
+
   // socket.on("newupload", (arg: any)=>{
   //   setTimeout( async ()=>{
   //     try {

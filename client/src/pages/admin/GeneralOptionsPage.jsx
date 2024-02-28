@@ -28,6 +28,7 @@ import { postFetch } from 'utils/apiRequest';
 import getLeaderboard from 'components/widgets/leaderboard/getLeaderboard';
 
 import Loading from 'components/widgets/screen-overlays/Loading';
+import { socketClient } from 'socket/socket';
 
 // styling for leaderboard table
 const additionalStyles = {
@@ -158,6 +159,8 @@ const GeneralOptionsPage = ({
 						command: "logout",
 						round: roundRef.current.toLowerCase()
 					});
+
+					socketClient.emit("logout");
 
 					SuccessWindow.fire({
 						text: 'Successfully logged out all active sessions!'

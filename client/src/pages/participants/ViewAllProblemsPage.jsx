@@ -48,7 +48,8 @@ const ViewAllProblemsPage = ({
 	setIsLoggedIn,
 	checkIfLoggedIn,
 	currRound,
-	setCurrRound
+	setCurrRound,
+	isBuyImmunityChecked
 }) => {
 	
 	/**
@@ -294,7 +295,7 @@ const ViewAllProblemsPage = ({
 							title="Code Wars"
 							subtitle="UPLB Computer Science Society"
 							buttonText="BUY POWER-UP"
-							disabledState={roundsDisablePowerUps.includes(currRound.toLowerCase()) ? true : false}
+							disabledState={roundsDisablePowerUps.includes(currRound.toLowerCase()) && !isBuyImmunityChecked}
 							handleButton={handleViewPowerUps}
 						/>
 
@@ -425,6 +426,7 @@ const ViewAllProblemsPage = ({
 							<BuyPowerUpsPopover
 								isOpen={open}
 								setOpen={setOpen}
+								isBuyImmunityChecked={isBuyImmunityChecked}
 								buffsState={[showBuffs, setShowBuffs]}
 								debuffsState={[showDebuffs, setShowDebuffs]}
 								detailsState={[seeDetails, setSeeDetails]}

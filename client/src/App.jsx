@@ -43,10 +43,12 @@ function App() {
 	 */
 	const [currRound, setCurrRound] = useState('EASY');
 	const roundRef = useRef('EASY');
-	const freezeRef = useRef(false);
+	const freezeRef = useRef(false); 
+	const immunityRef = useRef(false); 
 
 	// State handler for toggle switch state
-	const [checked, setChecked] = useState(false);
+	const [freezeChecked, setFreezeChecked] = useState(false);
+	const [buyImmunityChecked, setBuyImmunityChecked] = useState(false);
 
 
 	const checkIfLoggedIn = async () => {
@@ -137,17 +139,22 @@ function App() {
 				} 
 				else if (adminMessage.command == "normal") {
 					setFreezeOverlay(false);	
-				}
-
-				
-
+				} 
 			}
 			if (adminMessage.command == "freeze") {
-				setChecked(true);
+				setFreezeChecked(true);
 				freezeRef.current = true;
-			} else {
-				setChecked(false);
+			} else if (adminMessage.command == "normal") {
+				setFreezeChecked(false);
 				freezeRef.current = false;
+			}
+
+			if (adminMessage.buyImmunity == "enabled"){
+				setBuyImmunityChecked(true);
+				immunityRef.current = true; 
+			} else if (adminMessage.buyImmunity == "disabled"){
+				setBuyImmunityChecked(false);
+				immunityRef.current = false; 
 			}
 
 			if (adminMessage.round.toUpperCase() != roundRef.current) {
@@ -176,6 +183,7 @@ function App() {
 									checkIfLoggedIn={checkIfLoggedIn}
 									currRound={currRound}
 									setCurrRound={setCurrRound}
+									isBuyImmunityChecked={buyImmunityChecked}
 									//seconds={sec}
 									 />} />
 							<Route path="participant/view-specific-problem" element={<ViewSpecificProblemPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
@@ -190,8 +198,11 @@ function App() {
 									setCurrRound={setCurrRound}
 									roundRef={roundRef}
 									freezeRef={freezeRef}
-									checked={checked}
-									setChecked={setChecked}
+									immunityRef={immunityRef}
+									freezeChecked={freezeChecked}
+									buyImmunityChecked={buyImmunityChecked}
+									setFreezeChecked={setFreezeChecked}
+									setBuyImmunityChecked={setBuyImmunityChecked}
 									/>} />
 							<Route path="admin/logs" element={<PowerUpLogs isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
 							<Route path="admin/podium" element={<TopTeamsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />

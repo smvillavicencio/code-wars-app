@@ -21,7 +21,8 @@ const BuyPowerUpsPopover = ({
 	buffsState,
 	debuffsState,
 	detailsState,
-	powerUpState
+	powerUpState,
+	isBuyImmunityChecked
 }) => {
 
 	const [showBuffs, setShowBuffs] = buffsState;
@@ -112,14 +113,17 @@ const BuyPowerUpsPopover = ({
         			handleClick={(powerup) => { setSelectedPowerUp(powerup); }}
         			handleReturn={handleReturn}
         			selectedPowerUp={selectedPowerUp}
+							isBuyImmunityChecked={isBuyImmunityChecked}
         		/> : null
         	}
           
         	{/* Container for Debuffs */}
         	<PowerUpType seePowerups={showDebuffs} label="Debuff" handleClick={handleClickDebuff} />
 
-        	{/* The Debuffs List */}
-        	{showDebuffs ?
+        	{/* The Debuffs List 
+						*		Debuffs cannot be bought when buy immunity is enabled
+						*/}
+        	{showDebuffs && !isBuyImmunityChecked ?
         		<PowerUpList
         			type="debuff"
         			openDetails={seeDetails}

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import { newUpload } from '../sockets/socket';
+import { newUpload, evalUpdate } from '../sockets/socket';
 
 // get user model registered in Mongoose
 const Submission = mongoose.model("Submission");
@@ -44,6 +44,8 @@ const uploadSubmission = async (req: Request, res: Response) => {
     const prevSubmissions = await Submission.find({ team_id: teamId, problem_id: problemId })?.sort({ timestamp: 1 });
     let prevMaxScore;
 
+    const totalSubmissions = await Submission.find({});
+
     if (prevSubmissions.length == 0) {
         prevMaxScore = 0;
     } else {
@@ -71,7 +73,8 @@ const uploadSubmission = async (req: Request, res: Response) => {
         prev_max_score: prevMaxScore,
         total_test_cases: totalCases,
         curr_correct_cases: 0,
-        filename
+        filename,
+        display_id: totalSubmissions.length
     })
     // status : checked, error, pending
     // evaluation: correct, partially correct, incorrect solution, error, pending
@@ -129,8 +132,8 @@ const checkSubmission = async (req: Request, res: Response) => {
     const evaluation = req.body.evaluation;
     const judgeId = req.body.judgeId;
     const judgeName = req.body.judgeName;
-    const correctCases = parseInt(req.body.currentCases);
-    const possiblePoints = parseInt(req.body.possiblePoints);
+    const correctCases = req.body.correctCases;
+    const possiblePoints = req.body.possiblePoints;
 
     // status : checked, error, pending
     // evaluation: correct, partially correct, incorrect solution, error, pending
@@ -142,6 +145,7 @@ const checkSubmission = async (req: Request, res: Response) => {
         submission.judge_name = judgeName;
         submission.curr_correct_cases = correctCases;
         
+        console.log(correctCases, submission.total_test_cases, possiblePoints);
         let status;
         let score = 0;
 
@@ -152,44 +156,49 @@ const checkSubmission = async (req: Request, res: Response) => {
         }
 
         score = Math.floor(possiblePoints * correctCases / submission.total_test_cases);
+        console.log("--", score);
         
         let pointsToAdd = score - submission.prev_max_score;
         if (pointsToAdd > 0) {
+            
             const team = await Team.findById(submission.team_id);
-
             team.score = team.score + pointsToAdd;
 
             try {
                 team.save()
 
             } catch (error) {
-                return res.send({
+                return ({
                     success: false,
                     results: "Failed updating team score"
                 });
             }
         }
-
+        console.log(score);
         submission.status = status;
         submission.score = score;
 
         try {
             submission.save();
 
-            return res.send({
+            evalUpdate(submission);
+
+            return ({
                 success: true,
+                status: status,
+                pointsToAdd: pointsToAdd,
                 results: submission
             });
 
         } catch (error) {
-            return res.send({
+            return ({
                 success: false,
                 results: "Failed checking submission"
             });
         }
 
     } else {
-        return res.send({
+        return ({
             success: false,
             results: "Submission not found"
         });

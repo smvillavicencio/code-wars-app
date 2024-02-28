@@ -55,7 +55,7 @@ function App() {
 		// IMPORTANT: Remove this timeout in the future
 		//setTimeout(()=>{
 			setIsLoggedIn(response.isLoggedIn);
-			console.log(response);
+			//console.log(response);
 		//}, 1000);
 	}
 
@@ -153,11 +153,11 @@ function App() {
 			if (adminMessage.round.toUpperCase() != roundRef.current) {
 				setCurrRound(adminMessage.round.toUpperCase());
 				roundRef.current = adminMessage.round.toUpperCase();
-				console.log(adminMessage.round.toUpperCase(), currRound, roundRef);
+				//console.log(adminMessage.round.toUpperCase(), currRound, roundRef);
 			}
 		}
 		
-		console.log(roundRef, freezeRef);
+		//console.log(roundRef, freezeRef);
 	  }, []);
 
 	return (

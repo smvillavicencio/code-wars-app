@@ -224,32 +224,35 @@ io.on("connection", (socket: any) => {
   
   // if evaluation value ay partially correct:
       // emit("submitEval") ay galing sa client/src/pages/judges/modals/EvaluationModal.jsx
-  socket.on("submitEval", async (arg: any) => {
-    try {
-      let response = await checkSubmission(arg);
+  // socket.on("submitEval", async (arg: any) => {
+  //   try {
+  //     let response = await checkSubmission(arg);
 
-      if (response.success) {
-        console.log(response.results)
+  //     if (response.success) {
+  //       console.log(response.results)
 
-        // table entries sa submission table should be reverse chronological, so unshift dapat yung method na gagamitin hindi push if magdadagdag ng new submission entry
+  //       // table entries sa submission table should be reverse chronological, so unshift dapat yung method na gagamitin hindi push if magdadagdag ng new submission entry
 
-        // update details sa db na need maupdate based sa nareceive na submission entry details from judge
-        // update details din na dinidisplay sa view all problems page na table.
-            // 'status' column depends on latest submission entry
-            // 'score' column initially depends sa prev_max_score. once checked na yung latest submission entry, iccheck ulit if score > prev_max_score para sa 'score' column
+  //       // update details sa db na need maupdate based sa nareceive na submission entry details from judge
+  //       // update details din na dinidisplay sa view all problems page na table.
+  //           // 'status' column depends on latest submission entry
+  //           // 'score' column initially depends sa prev_max_score. once checked na yung latest submission entry, iccheck ulit if score > prev_max_score para sa 'score' column
         
-        // need na may socket emit din siguro (?) na ipapasa yung evaluation value sa pages/judges/submission-entries/EvalViewInputCell
-        // para maupdate yung displayed value since mahirap ipasa yung state na makukuha from EvalEditInputCell
+  //       // need na may socket emit din siguro (?) na ipapasa yung evaluation value sa pages/judges/submission-entries/EvalViewInputCell
+  //       // para maupdate yung displayed value since mahirap ipasa yung state na makukuha from EvalEditInputCell
 
-        // check submission entry fields if score > prev_max_score.
-            // if yes, then mag-emit ng "updateLeaderboard" para malaman ng client na updated yung overall team scores ng leaderboard
-            // if no, then no need na mag-emit
-      }
+  //       // check submission entry fields if score > prev_max_score.
+  //           // if yes, then mag-emit ng "updateLeaderboard" para malaman ng client na updated yung overall team scores ng leaderboard
+  //           // if no, then no need na mag-emit
+        
+  //       // share to other judges
+  //       socket.emit("evalUpdate", response.results); 
+  //     }
 
-    } catch (error) {
-      console.log(error);
-    }
-  })
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // })
 });
 
 const startRoundTimer = (seconds: number) => {
@@ -298,4 +301,9 @@ const newUpload = (upload: any) => {
   io.emit('newupload', upload);
 }
 
-export { startRoundTimer, newUpload };
+const evalUpdate = (update: any) => {
+  console.log("Emit:NEW_EVALUPDATE");
+  io.emit('evalupdate', update);
+}
+
+export { startRoundTimer, newUpload, evalUpdate };

@@ -242,11 +242,13 @@ const GeneralOptionsPage = ({
 
 				// temp confirmation windows
 				if (res == true) {
+					
+
 					const cResponse = await postFetch(`${baseURL}/setcommand`, {
 						command: freezeRef.current ? "freeze" : "normal",
 						round: selected
 					});
-
+					
 					SuccessWindow.fire({
 						text: 'Successfully moved rounds!'
 					});
@@ -254,6 +256,7 @@ const GeneralOptionsPage = ({
 					roundRef.current = selected;
 					setCurrRound(selected);
 
+					socketClient.emit("moveRound");
 
 				} else if (res == false) {
 					ErrorWindow.fire({

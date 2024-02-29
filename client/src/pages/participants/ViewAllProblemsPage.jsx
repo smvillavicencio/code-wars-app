@@ -110,7 +110,8 @@ const ViewAllProblemsPage = ({
 		setShowDebuffs(false);
 		setSelectedPowerUp(null);
 
-		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
+		let user = JSON.parse(localStorage?.getItem("user"));
+		let usertype = user?.usertype;
 		if (usertype == "judge") {
 			navigate('/judge/submissions');
 		}
@@ -123,7 +124,7 @@ const ViewAllProblemsPage = ({
 		else {
 			setIsLoggedIn(false);
 		}
-
+		
 		getRoundQuestions();
 	}, [currRound]);
 
@@ -136,6 +137,10 @@ const ViewAllProblemsPage = ({
 		socketClient.emit("join", user);
 		socketClient.emit("getActivePowerups");
 
+		socketClient.on("startRound", () => {
+			socketClient.emit("activateImmunity", user._id);
+		});
+
 		socketClient.on("fetchActivePowerups", async() => {
 			const res = await getFetch(`${baseURL}/teams/${user._id}`);
 			
@@ -143,7 +148,10 @@ const ViewAllProblemsPage = ({
 			const active_debuffs = res.team.debuffs_received;
 
 			active_buffs.map((buff) => {
-				if(buff.endTime){
+				const startTime = new Date(buff.startTime);
+				const endTime = new Date(buff.endTime);
+
+				if(new Date(startTime.getTime() + buff.duration).getTime() == endTime.getTime()){
 					const duration = new Date(buff.endTime) - new Date();
 					
 					toast.info('🚀 New buff ' + buff.name + ' applied on your team!', {
@@ -183,9 +191,13 @@ const ViewAllProblemsPage = ({
 
 		// listener for buffs
 		socketClient.on("newBuff", (powerUp) => {
-			const tierKey = Object.keys(powerUp.tier)[0];
-			const duration = powerUp.tier[tierKey].duration;
+			let duration = powerUp.duration;
 			const powerUpName = powerUp.name;
+			
+			if(duration === undefined){
+				const tierKey = Object.keys(powerUp.tier)[0];
+				duration = powerUp.tier[tierKey].duration;
+			}
 
 			toast.info('🚀 New buff ' + powerUpName + ' applied on your team!', {
 				toastId: powerUp._id,
@@ -222,6 +234,7 @@ const ViewAllProblemsPage = ({
 		});
 
 		socketClient.on("dismissToasts", () => {
+			console.log("dismiss")
 			toast.dismiss();
 		});
 
@@ -230,6 +243,7 @@ const ViewAllProblemsPage = ({
 			socketClient.off("newDebuff");
 			socketClient.off("dismissToasts");
 			socketClient.off("fetchActivePowerups");
+			socketClient.off("startRound");
 		};
 	});
 

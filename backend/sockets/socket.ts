@@ -3,6 +3,7 @@ import TeamModel, { Team } from '../models/team';
 import { checkSubmission } from './submissionSocket'
 import { endTimer, setEndTimer } from '../controllers/adminController';
 import { PowerupInfo } from '../models/powerup';
+import { activateImmunity } from './powerupSocket';
 
 var roundStartTime: any;
 
@@ -42,6 +43,20 @@ io.on("connection", (socket: any) => {
   //   }, 20000);
 
   // });
+  socket.on("moveRound", () => {
+    console.log("moveRound")
+    socket.broadcast.emit("startRound");
+  });
+
+  socket.on("activateImmunity", (id: string) => {
+    activateImmunity(id).then((res) => {
+      console.log(res);
+      if (res.success && res.powerup){
+        socket.emit("newBuff", res.powerup);
+      }
+    });
+  })
+
   socket.on("buyBuff", async (data: any) => {
     let powerUp = data.powerUp;
     let userTeam = data.userTeam;
@@ -60,7 +75,7 @@ io.on("connection", (socket: any) => {
         socket.emit("scenarioCheckerBuff", 'insufficient_funds');
       } else {
         const startTime: Date = new Date();
-        let endTime: Date | null = new Date(startTime.getTime() + powerUp.tier[tier_no].duration);
+        let endTime: Date = new Date(startTime.getTime() + powerUp.tier[tier_no].duration);
         
         let cost = powerUp.tier[tier_no].cost;
         
@@ -100,49 +115,71 @@ io.on("connection", (socket: any) => {
           socket.emit("newBuff", powerUp);
           console.log("Team " + userTeam + " has bought a buff.");
         } else { // Other buffs aside from dispel
-          
+          socket.emit("scenarioCheckerBuff", 'success');
           // change end time to null for immunity since it should not start right away 
-          if (powerUp.code === 'immune'){ 
-            endTime = null;
+          if (powerUp.code === 'immune'){
             // cost of immunity tier 4
             if(tier_no === '4'){
               cost = 1.1*team.score + powerUp.tier[tier_no].cost;
             }
-          }
+          
+            const info: PowerupInfo = {
+              _id: powerUp._id,
+              name: powerUp.name,
+              code: powerUp.code,
+              type: powerUp.type,
+              tier: tier_no,
+              duration: powerUp.tier[tier_no].duration,
+              cost: cost,
+              startTime: startTime,
+              endTime: new Date(startTime.getTime() + 1000000000000000)
+            }
+            // Add the debuff 
+            await TeamModel.updateOne({ _id: userTeam._id }, { 
+              $inc: { 
+                score: -cost,    
+                total_points_used: cost
+              }, 
+              $push: { 
+                "activated_powerups": info, 
+                "active_buffs": info,
+              },
+            });
+            
+          } else{
 
-          socket.emit("scenarioCheckerBuff", 'success');
-
-          const info: PowerupInfo = {
-            _id: powerUp._id,
-            name: powerUp.name,
-            code: powerUp.code,
-            type: powerUp.type,
-            tier: tier_no,
-            duration: powerUp.tier[tier_no].duration,
-            cost: cost,
-            startTime: startTime,
-            endTime: endTime,
-          }
-
-          // Add the debuff 
-          await TeamModel.updateOne({ _id: userTeam._id }, { 
-            $inc: { 
-              score: -cost,    
-              total_points_used: cost
-            }, 
-            $push: { 
-              "activated_powerups": info, 
-              "active_buffs": info
-            },
-          });
-
-          // Dont show toast notif right away if immunity is bought
-          // Its toast must show when the medium/hard timer starts
-          if(powerUp.code !== 'immune'){
+            socket.emit("scenarioCheckerBuff", 'success');
+            
+            const info: PowerupInfo = {
+              _id: powerUp._id,
+              name: powerUp.name,
+              code: powerUp.code,
+              type: powerUp.type,
+              tier: tier_no,
+              duration: powerUp.tier[tier_no].duration,
+              cost: cost,
+              startTime: startTime,
+              endTime: endTime
+            }
+            // Add the debuff 
+            await TeamModel.updateOne({ _id: userTeam._id }, { 
+              $inc: { 
+                score: -cost,    
+                total_points_used: cost
+              }, 
+              $push: { 
+                "activated_powerups": info, 
+                "active_buffs": info,
+              },
+            });
+  
+            // Dont show toast notif right away if immunity is bought
+            // Its toast must show when the medium/hard timer starts
             // for toast notif
             socket.emit("newBuff", powerUp);
             console.log("Team " + userTeam.username + " has bought a buff.");
           }
+
         }
       }
     } else {

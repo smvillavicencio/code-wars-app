@@ -13,14 +13,14 @@ const handleLogout = (navigate) => {
     text: "Are you sure you want to log out?",
   }).then((res) => {
     if (res["isConfirmed"]) {
-      socketClient.emit("logout");
-
       localStorage.removeItem("user");
       navigate("/");
 
       // Delete cookie with authToken
       const cookies = new Cookies();
       cookies.remove("authToken");
+
+      socketClient.emit("logout");
     } else {
       return;
     }

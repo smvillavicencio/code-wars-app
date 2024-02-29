@@ -2,38 +2,6 @@ import { Request, Response } from 'express';
 import PowerupModel, {Powerup, PowerupInfo} from '../models/powerup';
 import TeamModel, { Team } from '../models/team';
 
-
-// Hardcoded team
-// let team = { '_id': {'$oid':'65b3bc99f1b97b7835471279'},
-//             'team_name':'Team2',
-//             'password':'$2b$10$WdIMVgxu37P9RIu4yP99uuMPCByYailH5BNcPTeibULeHR1rHTjWa',
-//             'members':'Dim, En, Fin',
-//             'score':1200,
-//             'total_points_used':0,
-//             'activated_buffs':['65b3bc80f1b97b783547b312'],
-//             'activated_own_debuffs':['65b3bc80f1b97b783547b312'],
-//             'applied_debuffs_to':['65b3bc80f1b97b783547b312'],
-//             'availablePowerups':['65b3bc80f1b97b783547b312'],
-//             'debuffs_received':['65b0fa6430b35b5d6790ccc3'],
-//             'debuffs_from':['65b3bc80f1b97b7835471274'],
-//             '__v':0
-//           };
-
-// let target = { '_id':{'$oid':'65b3bc80f1b97b7835471274'},
-//                'team_name':'Team1',
-//                'password':'$2b$10$WY3SiJGA10W.OJlSNJYdoOqIwnlflEJYLuVww/cAZdhkO1jzO.jQm',
-//                'members':'Ade, Ben, Cole',
-//                'score':600,
-//                'total_points_used':0,
-//                'activated_buffs':['65b0f81a30b35b5d6790c213'],
-//                'activated_own_debuffs':['65b3bc80f1b97b783547b312'],
-//                'applied_debuffs_to':['65b3bc80f1b97b783547b312'],
-//                'availablePowerups':['65b3bc80f1b97b783547b312'],
-//                'debuffs_received':['65b0fa9a30b35b5d6790ccc4'],
-//                'debuffs_from':['65b3bc99f1b97b7835471279'],
-//                '__v':0
-//              };
-
 /*
  * Purpose: Fetches all powerups
  * Params: None
@@ -428,9 +396,7 @@ const remove_active_powerup = async (team_id : String) => {
       
       //Filter out expired buffs
       team.active_buffs = team.active_buffs.filter((buff) => {
-        if(buff.code == "immune" && buff.tier == "4") { // immunity tier 4 are immunity for the whole round.
-          return true;
-        } else if(buff.endTime) {
+        if(buff.endTime){
           return buff.endTime > currentTime;
         }
       });

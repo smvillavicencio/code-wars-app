@@ -50,7 +50,7 @@ io.on("connection", (socket: any) => {
   socket.on("activateImmunity", (id: string) => {
     activateImmunity(id).then((res) => {
       if (res.success && res.powerup){
-        socket.emit("newBuff", res.powerup);
+        socket.emit("newBuff", [res.powerup]);
       }
     });
   })
@@ -79,6 +79,14 @@ io.on("connection", (socket: any) => {
         
         if(powerUp.code == 'dispel'){ // For Dispel
           socket.emit("scenarioCheckerBuff", 'success');
+         
+          if(debuffToDispel === 'Stun'){
+            cost = 1.2*100;
+          } else if(debuffToDispel === 'Editor'){
+            cost = 1.2*150;
+          } else if(debuffToDispel === 'Frosty Hands'){
+            cost = 1.2*100;
+          }
 
           const info: PowerupInfo = {
             _id: powerUp._id,
@@ -110,7 +118,7 @@ io.on("connection", (socket: any) => {
           });
 
           // for toast notif
-          socket.emit("newBuff", powerUp);
+          socket.emit("newBuff", [powerUp, debuffToDispel]);
           console.log("Team " + userTeam + " has bought a buff.");
         } else { // Other buffs aside from dispel
           socket.emit("scenarioCheckerBuff", 'success');
@@ -174,7 +182,7 @@ io.on("connection", (socket: any) => {
             // Dont show toast notif right away if immunity is bought
             // Its toast must show when the medium/hard timer starts
             // for toast notif
-            socket.emit("newBuff", powerUp);
+            socket.emit("newBuff", [powerUp]);
             console.log("Team " + userTeam.username + " has bought a buff.");
           }
 

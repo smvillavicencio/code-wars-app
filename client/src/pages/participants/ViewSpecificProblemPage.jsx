@@ -135,7 +135,7 @@ const ViewSpecificProblemPage = ({
 					const duration = new Date(buff.endTime) - new Date();
 
 					toast.info('🚀 New buff ' + buff.name + ' applied on your team!', {
-						toastId: buff._id,
+						toastId: buff.name,
 						position: "bottom-right",
 						autoClose: duration,
 						hideProgressBar: false,
@@ -153,7 +153,7 @@ const ViewSpecificProblemPage = ({
 				if(debuff.endTime){
 					const duration = new Date(debuff.endTime) - new Date();
 					toast.info('🚀 New buff ' + debuff.name + ' applied on your team!', {
-						toastId: debuff._id,
+						toastId: debuff.name,
 						position: "bottom-right",
 						autoClose: duration,
 						hideProgressBar: false,
@@ -169,12 +169,22 @@ const ViewSpecificProblemPage = ({
 		});
 
 		// listener for buffs
-		socketClient.on("newBuff", (powerUp) => {
-			const tierKey = Object.keys(powerUp.tier)[0];
-			const duration = powerUp.tier[tierKey].duration;
+		socketClient.on("newBuff", (arr) => {
+			const powerUp = arr[0];
+			let duration = powerUp.duration;
 			const powerUpName = powerUp.name;
+			
+			if(duration === undefined){
+				const tierKey = Object.keys(powerUp.tier)[0];
+				duration = powerUp.tier[tierKey].duration;
+			}
+
+			if(arr.length > 1){
+				toast.dismiss(arr[1]);
+			}
 
 			toast.info('🚀 New buff ' + powerUpName + ' applied on your team!', {
+				toastId: powerUp.name,
 				position: "bottom-right",
 				autoClose: duration,
 				hideProgressBar: false,

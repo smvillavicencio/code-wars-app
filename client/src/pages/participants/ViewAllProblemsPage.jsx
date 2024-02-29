@@ -157,7 +157,7 @@ const ViewAllProblemsPage = ({
 					const duration = new Date(buff.endTime) - new Date();
 					
 					toast.info('🚀 New buff ' + buff.name + ' applied on your team!', {
-						toastId: buff._id,
+						toastId: buff.name,
 						position: "bottom-right",
 						autoClose: duration,
 						hideProgressBar: false,
@@ -176,7 +176,7 @@ const ViewAllProblemsPage = ({
 					const duration = new Date(debuff.endTime) - new Date();
 
 					toast.warn('New debuff ' + debuff.name + ' has been applied to your team!', {
-						toastId: debuff._id,
+						toastId: debuff.name,
 						position: "bottom-right",
 						autoClose: duration,
 						hideProgressBar: false,
@@ -192,7 +192,8 @@ const ViewAllProblemsPage = ({
 		});
 
 		// listener for buffs
-		socketClient.on("newBuff", (powerUp) => {
+		socketClient.on("newBuff", (arr) => {
+			const powerUp = arr[0];
 			let duration = powerUp.duration;
 			const powerUpName = powerUp.name;
 			
@@ -201,8 +202,12 @@ const ViewAllProblemsPage = ({
 				duration = powerUp.tier[tierKey].duration;
 			}
 
+			if(arr.length > 1){
+				toast.dismiss(arr[1]);
+			}
+
 			toast.info('🚀 New buff ' + powerUpName + ' applied on your team!', {
-				toastId: powerUp._id,
+				toastId: powerUp.name,
 				position: "bottom-right",
 				autoClose: duration,
 				hideProgressBar: false,
@@ -222,7 +227,7 @@ const ViewAllProblemsPage = ({
 			const powerUpName = powerUp.name;
 
 			toast.warn('New debuff ' + powerUpName + ' has been applied to your team!', {
-				toastId: powerUp._id,
+				toastId: powerUp.name,
 				position: "bottom-right",
 				autoClose: duration,
 				hideProgressBar: false,

@@ -25,4 +25,25 @@ const getAllTeams = async (req: Request, res: Response) => {
     }
 }
 
-export { getAllTeams };
+/*
+ * Purpose: Get details of team by id in the database
+ * Params (in the Request): id - team id
+ * Returns (in the Response): 
+ *      Object with fields success and either team details (if no error) or message
+ */
+const getTeamDetailsById = async (req: Request, res: Response) => {
+    try {
+        const results = await Team.findById(req.params.id);
+        return res.send({
+            success: true,
+            team: results
+        }); 
+    } catch (error) {
+        return res.send({
+            success: false,
+            message: error
+        });
+    }
+}
+
+export { getAllTeams, getTeamDetailsById };

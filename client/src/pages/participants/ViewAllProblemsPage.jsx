@@ -36,6 +36,7 @@ import { Bounce, toast } from 'react-toastify';
 import { socketClient } from 'socket/socket';
 import 'react-toastify/dist/ReactToastify.css';
 import { cloneDeep } from 'lodash';
+import { getFetch } from 'utils/apiRequest';
 
 
 /*
@@ -47,7 +48,8 @@ const ViewAllProblemsPage = ({
 	setIsLoggedIn,
 	checkIfLoggedIn,
 	currRound,
-	setCurrRound
+	setCurrRound,
+	isBuyImmunityChecked
 }) => {
 	
 	/**
@@ -109,7 +111,8 @@ const ViewAllProblemsPage = ({
 		setShowDebuffs(false);
 		setSelectedPowerUp(null);
 
-		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
+		let user = JSON.parse(localStorage?.getItem("user"));
+		let usertype = user?.usertype;
 		if (usertype == "judge") {
 			navigate('/judge/submissions');
 		}
@@ -122,7 +125,7 @@ const ViewAllProblemsPage = ({
 		else {
 			setIsLoggedIn(false);
 		}
-
+		
 		getRoundQuestions();
 	}, [currRound]);
 
@@ -133,13 +136,72 @@ const ViewAllProblemsPage = ({
 
 		const user = JSON.parse(localStorage?.getItem("user"));
 		socketClient.emit("join", user);
+		socketClient.emit("getActivePowerups");
+
+		socketClient.on("startRound", () => {
+			socketClient.emit("activateImmunity", user._id);
+		});
+
+		socketClient.on("fetchActivePowerups", async() => {
+			const res = await getFetch(`${baseURL}/teams/${user._id}`);
+			
+			const active_buffs = res.team.active_buffs;
+			const active_debuffs = res.team.debuffs_received;
+
+			active_buffs.map((buff) => {
+				const startTime = new Date(buff.startTime);
+				const endTime = new Date(buff.endTime);
+
+				if(new Date(startTime.getTime() + buff.duration).getTime() == endTime.getTime()){
+					const duration = new Date(buff.endTime) - new Date();
+					
+					toast.info('🚀 New buff ' + buff.name + ' applied on your team!', {
+						toastId: buff._id,
+						position: "bottom-right",
+						autoClose: duration,
+						hideProgressBar: false,
+						closeOnClick: false,
+						pauseOnHover: false,
+						draggable: false,
+						progress: undefined,
+						theme: "dark",
+						transition: Bounce,
+					});
+				}
+			});
+			
+			active_debuffs.map((debuff) => {
+				if(debuff.endTime){
+					const duration = new Date(debuff.endTime) - new Date();
+
+					toast.warn('New debuff ' + debuff.name + ' has been applied to your team!', {
+						toastId: debuff._id,
+						position: "bottom-right",
+						autoClose: duration,
+						hideProgressBar: false,
+						closeOnClick: false,
+						pauseOnHover: false,
+						draggable: false,
+						progress: undefined,
+						theme: "dark",
+						transition: Bounce,
+					});
+				}
+			});
+		});
 
 		// listener for buffs
 		socketClient.on("newBuff", (powerUp) => {
-			const duration = powerUp.duration
-			const powerUpName = powerUp.name
+			let duration = powerUp.duration;
+			const powerUpName = powerUp.name;
+			
+			if(duration === undefined){
+				const tierKey = Object.keys(powerUp.tier)[0];
+				duration = powerUp.tier[tierKey].duration;
+			}
 
 			toast.info('🚀 New buff ' + powerUpName + ' applied on your team!', {
+				toastId: powerUp._id,
 				position: "bottom-right",
 				autoClose: duration,
 				hideProgressBar: false,
@@ -159,6 +221,7 @@ const ViewAllProblemsPage = ({
 			const powerUpName = powerUp.name;
 
 			toast.warn('New debuff ' + powerUpName + ' has been applied to your team!', {
+				toastId: powerUp._id,
 				position: "bottom-right",
 				autoClose: duration,
 				hideProgressBar: false,
@@ -171,6 +234,10 @@ const ViewAllProblemsPage = ({
 			});
 		});
 
+		socketClient.on("dismissToasts", () => {
+			console.log("dismiss")
+			toast.dismiss();
+		});
 		socketClient.on('evalupdate', (arg)=>{
 			var teamId = JSON.parse(localStorage?.getItem("user"))?._id;
 			
@@ -183,6 +250,9 @@ const ViewAllProblemsPage = ({
 		return () => {
 			socketClient.off("newBuff");
 			socketClient.off("newDebuff");
+			socketClient.off("dismissToasts");
+			socketClient.off("fetchActivePowerups");
+			socketClient.off("startRound");
 			socketClient.off("evalupdate");
 		};
 	});
@@ -249,7 +319,7 @@ const ViewAllProblemsPage = ({
 							title="Code Wars"
 							subtitle="UPLB Computer Science Society"
 							buttonText="BUY POWER-UP"
-							disabledState={roundsDisablePowerUps.includes(currRound.toLowerCase()) ? true : false}
+							disabledState={roundsDisablePowerUps.includes(currRound.toLowerCase()) && !isBuyImmunityChecked}
 							handleButton={handleViewPowerUps}
 						/>
 
@@ -380,6 +450,7 @@ const ViewAllProblemsPage = ({
 							<BuyPowerUpsPopover
 								isOpen={open}
 								setOpen={setOpen}
+								isBuyImmunityChecked={isBuyImmunityChecked}
 								buffsState={[showBuffs, setShowBuffs]}
 								debuffsState={[showDebuffs, setShowDebuffs]}
 								detailsState={[seeDetails, setSeeDetails]}

@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { startRoundTimer } from '../sockets/socket';
 
 var command = "normal";
+var buyImmunity = "disabled";
 var round = "start";
 var counter = 0;
 var endTimer = false;
@@ -20,6 +21,7 @@ const commandChannel = (req: Request, res: Response) => {
       const interval = setInterval(() => {
           res.write(`data: ${JSON.stringify({
             command,
+            buyImmunity,
             round
           })}\n\n`);
 
@@ -76,8 +78,15 @@ const setAdminCommand = (req: Request, res: Response) => {
     );
 }
 
+const setBuyImmunity = (req: Request, res: Response) => {
+  buyImmunity = req.body.value;
+  return res.send(
+      { ok: true }
+    );
+}
+
 const setEndTimer = (bool: boolean) => {
   endTimer = bool;
 }
 
-export { commandChannel, setAdminCommand, round, endTimer, setEndTimer };
+export { commandChannel, setAdminCommand, setBuyImmunity, round, endTimer, buyImmunity, setEndTimer };

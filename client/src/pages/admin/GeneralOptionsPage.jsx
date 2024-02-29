@@ -28,6 +28,7 @@ import { postFetch } from 'utils/apiRequest';
 import getLeaderboard from 'components/widgets/leaderboard/getLeaderboard';
 
 import Loading from 'components/widgets/screen-overlays/Loading';
+import { socketClient } from 'socket/socket';
 
 // styling for leaderboard table
 const additionalStyles = {
@@ -47,8 +48,11 @@ const GeneralOptionsPage = ({
 	setCurrRound,
 	roundRef,
 	freezeRef,
-	checked,
-	setChecked
+	immunityRef,
+	freezeChecked,
+	buyImmunityChecked,
+	setFreezeChecked,
+	setBuyImmunityChecked,
 }) => {
 
 	const [leaderboardRows, setLeaderboardRows] = useState([]);
@@ -86,7 +90,6 @@ const GeneralOptionsPage = ({
 	 * Purpose: Handler for toggle switch button. This will freeze the screens of all active sessions
 	 */
 	const handleFreeze = async (e) => {
-		console.log(freezeRef.current);
 		// for freezing all sessions
 		if (e.target.checked) {
 			await enterAdminPassword({ title: 'Freeze all active sessions' })
@@ -105,7 +108,7 @@ const GeneralOptionsPage = ({
 						});
 						
 						freezeRef.current = true;
-						setChecked(true);
+						setFreezeChecked(true);
 
 					} else if (res == false) {
 						ErrorWindow.fire({
@@ -132,7 +135,63 @@ const GeneralOptionsPage = ({
 						});
 						
 						freezeRef.current = false;
-						setChecked(false);
+						setFreezeChecked(false);
+
+					} else if (res == false) {
+						ErrorWindow.fire({
+							title: 'Invalid Password!',
+							text: 'Password is incorrect.'
+						});
+					}
+				});
+		};
+	}
+
+	/**
+	 * Purpose: Handler for toggle switch button. This will allow teams to buy immunity
+	 */
+	const handleBuyImmunity = async (e) => {
+		// for freezing all sessions
+		if (e.target.checked) {
+			await enterAdminPassword({ title: 'Enable buy immunity' })
+				.then( async (res) => {
+					// temp confirmation windows
+					if (res == true) {
+						const fResponse = await postFetch(`${baseURL}/set-buy-immunity`, {
+							value: "enabled",
+						});
+
+						SuccessWindow.fire({
+							text: 'Successfully enabled buy immunity!'
+						});
+						
+						immunityRef.current = true;
+						setBuyImmunityChecked(true);
+
+					} else if (res == false) {
+						ErrorWindow.fire({
+							title: 'Invalid Password!',
+							text: 'Password is incorrect.'
+						});
+					}
+				});
+		// for disabling buy immunity to all sessions
+		} else {
+			await enterAdminPassword({ title: 'Disable buy immunity' })
+				.then(async (res) => {
+
+					// temp confirmation windows
+					if (res == true) {
+						const uResponse = await postFetch(`${baseURL}/set-buy-immunity`, {
+							value: "disabled",
+						});
+
+						SuccessWindow.fire({
+							text: 'Successfully disabled buy immunity for all active sessions!'
+						});
+						
+						immunityRef.current = false;
+						setBuyImmunityChecked(false);
 
 					} else if (res == false) {
 						ErrorWindow.fire({
@@ -159,6 +218,8 @@ const GeneralOptionsPage = ({
 						round: roundRef.current.toLowerCase()
 					});
 
+					socketClient.emit("logout");
+
 					SuccessWindow.fire({
 						text: 'Successfully logged out all active sessions!'
 					});
@@ -181,11 +242,13 @@ const GeneralOptionsPage = ({
 
 				// temp confirmation windows
 				if (res == true) {
+					
+
 					const cResponse = await postFetch(`${baseURL}/setcommand`, {
 						command: freezeRef.current ? "freeze" : "normal",
 						round: selected
 					});
-
+					
 					SuccessWindow.fire({
 						text: 'Successfully moved rounds!'
 					});
@@ -193,6 +256,7 @@ const GeneralOptionsPage = ({
 					roundRef.current = selected;
 					setCurrRound(selected);
 
+					socketClient.emit("moveRound");
 
 				} else if (res == false) {
 					ErrorWindow.fire({
@@ -230,6 +294,7 @@ const GeneralOptionsPage = ({
 						{/* Labels */}
 						<Stack spacing={4} sx={{ marginRight: '2em' }}>
 							<span>Freeze all screens</span>
+							<span>Allow buy immunity</span>
 							<span>Logout all sessions</span>
 							<span>Move Round</span>
 						</Stack>
@@ -239,6 +304,9 @@ const GeneralOptionsPage = ({
 
 							{/* Toggle Switch */}
 							<Switch checked={freezeRef.current} onChange={(e) => handleFreeze(e)} />
+							
+							{/* Toggle Switch */}
+							<Switch checked={immunityRef.current} onChange={(e) => handleBuyImmunity(e)} />
 							
 							{/* Apply Button */}
 							<Button

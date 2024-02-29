@@ -30,6 +30,7 @@ import { socketClient } from 'socket/socket';
 import 'react-toastify/dist/ReactToastify.css';
 import { baseURL } from 'utils/constants';
 import { postFetch } from 'utils/apiRequest';
+import { getFetch } from 'utils/apiRequest';
 
 
 /*
@@ -116,14 +117,60 @@ const ViewSpecificProblemPage = ({
 	// websocket listener for power-ups toast notifs
 	useEffect(() => {
 		if (!socketClient) return;
-		
+
 		const user = JSON.parse(localStorage?.getItem("user"));
 		socketClient.emit("join", user);
+		socketClient.emit("getActivePowerups");
+
+		socketClient.on("fetchActivePowerups", async() => {
+			const res = await getFetch(`${baseURL}/teams/${user._id}`);
+			
+			const active_buffs = res.team.active_buffs;
+			const active_debuffs = res.team.debuffs_received;
+
+			active_buffs.map((buff) => {
+				if(buff.endTime){
+					const duration = new Date(buff.endTime) - new Date();
+
+					toast.info('🚀 New buff ' + buff.name + ' applied on your team!', {
+						toastId: buff._id,
+						position: "bottom-right",
+						autoClose: duration,
+						hideProgressBar: false,
+						closeOnClick: false,
+						pauseOnHover: false,
+						draggable: false,
+						progress: undefined,
+						theme: "dark",
+						transition: Bounce,
+					});
+				}
+			});
+			
+			active_debuffs.map((debuff) => {
+				if(debuff.endTime){
+					const duration = new Date(debuff.endTime) - new Date();
+					toast.info('🚀 New buff ' + debuff.name + ' applied on your team!', {
+						toastId: debuff._id,
+						position: "bottom-right",
+						autoClose: duration,
+						hideProgressBar: false,
+						closeOnClick: false,
+						pauseOnHover: false,
+						draggable: false,
+						progress: undefined,
+						theme: "dark",
+						transition: Bounce,
+					});
+				}
+			});
+		});
 
 		// listener for buffs
 		socketClient.on("newBuff", (powerUp) => {
-			const duration = powerUp.duration
-			const powerUpName = powerUp.name
+			const tierKey = Object.keys(powerUp.tier)[0];
+			const duration = powerUp.tier[tierKey].duration;
+			const powerUpName = powerUp.name;
 
 			toast.info('🚀 New buff ' + powerUpName + ' applied on your team!', {
 				position: "bottom-right",
@@ -140,9 +187,9 @@ const ViewSpecificProblemPage = ({
 
 		// listener for debuffs
 		socketClient.on("newDebuff", (powerUp) => {
-			console.log(powerUp);
-			const duration = powerUp.duration
-			const powerUpName = powerUp.name
+			const tierKey = Object.keys(powerUp.tier)[0];
+			const duration = powerUp.tier[tierKey].duration;
+			const powerUpName = powerUp.name;
 
 			toast.warn('New debuff ' + powerUpName + ' has been applied to your team!', {
 				position: "bottom-right",
@@ -165,9 +212,15 @@ const ViewSpecificProblemPage = ({
 			}
 		});
 
+		socketClient.on("dismissToasts", () => {
+			toast.dismiss();
+		});
+
 		return () => {
 			socketClient.off("newBuff");
 			socketClient.off("newDebuff");
+			socketClient.off("dismissToasts");
+			socketClient.off("fetchActivePowerups");
 			socketClient.off("evalupdate");
 		};
 	});

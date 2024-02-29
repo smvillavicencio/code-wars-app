@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import { newUpload, evalUpdate } from '../sockets/socket';
+import { evalUpdate, newUpload } from '../sockets/socket';
 
 // get user model registered in Mongoose
 const Submission = mongoose.model("Submission");

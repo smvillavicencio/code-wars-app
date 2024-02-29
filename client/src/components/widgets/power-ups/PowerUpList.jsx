@@ -16,6 +16,7 @@ import PowerUpDetails from './PowerUpDetails';
 import PowerUpItem from './PowerUpItem';
 import { useEffect, useRef, useState } from 'react';
 import { getFetch } from 'utils/apiRequest';
+import { baseURL } from 'utils/constants';
 
 
   
@@ -33,7 +34,8 @@ const PowerUpList = ({
 	openDetails,
 	handleReturn,
 	handleClick,
-	selectedPowerUp
+	selectedPowerUp,
+	isBuyImmunityChecked
 }) => {
 	// State handler for buffs and debuffs
 	const [buffs, setBuffs] = useState([]);
@@ -43,7 +45,7 @@ const PowerUpList = ({
 	 * Fetches all powerups from the database then separates it by type. 
 	 */
 	const getAllPowerups = async () => {
-		const res = await getFetch('http://localhost:5000/powerups/');
+		const res = await getFetch(`${baseURL}/powerups/`);
 		
 		if(res.success === true) {
 			const powerups = res.message;
@@ -52,7 +54,22 @@ const PowerUpList = ({
 			let filteredDebuffs = powerups.filter((powerup) => powerup.type == 0);
 			setDebuffs(filteredDebuffs);
 			
-			const filteredBuffs = powerups.filter((powerup) => powerup.type == 1);
+			const filteredBuffs = powerups.filter(powerup => {
+				if (powerup.type !== 1) {
+					return false;
+				}
+				
+				if (isBuyImmunityChecked && powerup.code === 'immune') {
+					return true;
+				}
+
+				if (!isBuyImmunityChecked && powerup.code !== 'immune') {
+					return true;
+				}
+
+				return false;
+			});
+
 			
 			/* 
 				Spread the buff tiers for each buff.

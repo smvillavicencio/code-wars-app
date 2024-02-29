@@ -44,7 +44,20 @@ const LoginPage = () => {
 			alert(loginResponse.results);
 		} else {
 			let user = loginResponse.results;
+			//console.log(loginResponse);
+			localStorage.setItem("user", JSON.stringify(user));
 
+			const cookies = new Cookies();
+			cookies.set(
+				"authToken",
+				loginResponse.token,
+				{
+					secure: true,
+					path: "/",
+					age: 60*60*24,
+					sameSite: "none"
+				}
+			);
 			if (user.usertype == "team") {
 				user["username"] = user["team_name"];
 				delete user["team_name"];
@@ -64,21 +77,6 @@ const LoginPage = () => {
 
 				navigate('/admin/general');
 			}
-
-			//console.log(loginResponse);
-			localStorage.setItem("user", JSON.stringify(user));
-
-			const cookies = new Cookies();
-			cookies.set(
-				"authToken",
-				loginResponse.token,
-				{
-					secure: true,
-					path: "/",
-					age: 60*60*24,
-					sameSite: "none"
-				}
-			);
 		}
 	};
 

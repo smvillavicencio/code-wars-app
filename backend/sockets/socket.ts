@@ -44,13 +44,11 @@ io.on("connection", (socket: any) => {
 
   // });
   socket.on("moveRound", () => {
-    console.log("moveRound")
     socket.broadcast.emit("startRound");
   });
 
   socket.on("activateImmunity", (id: string) => {
     activateImmunity(id).then((res) => {
-      console.log(res);
       if (res.success && res.powerup){
         socket.emit("newBuff", res.powerup);
       }
@@ -225,7 +223,7 @@ io.on("connection", (socket: any) => {
               tier: tier_no,
               duration: powerUp.tier[tier_no].duration,
               cost: powerUp.tier[tier_no].cost,
-              target: recipientTeam._id,
+              target: recipientTeam.team_name,
               startTime: startTime,
               endTime: endTime
             }}

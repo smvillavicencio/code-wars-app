@@ -48,6 +48,7 @@ const LoginPage = () => {
 			localStorage.setItem("user", JSON.stringify(user));
 
 			const cookies = new Cookies();
+			localStorage.setItem("authToken", loginResponse.token);
 			cookies.set(
 				"authToken",
 				loginResponse.token,

@@ -177,17 +177,13 @@ const login = async (req: Request, res: Response) => {
  *      Object with field isLoggedIn
  */
 const checkIfLoggedIn = (req: Request, res: Response) => {
-  var cookieDict: any = {};
   //console.log(req.headers.cookie);
 
-  if (req.headers.cookie) {
-    var cookies = req.headers.cookie!.split("; ");
+  if (JSON.parse(req.body).authToken) {
+    var cookies = JSON.parse(req.body).authToken;
 
-    for (let i = 0; i < cookies!.length; i++) {
-      cookieDict[cookies[i].split("=")[0]] = cookies[i].split("=")[1];
-    } 
     //console.log(cookieDict);
-    if (!cookieDict.authToken) {
+    if (!cookies) {
       // Scenario 1: FAIL - No cookies / no authToken cookie sent
       return res.send({ isLoggedIn: false, scenario: 1 });
     }
@@ -198,7 +194,7 @@ const checkIfLoggedIn = (req: Request, res: Response) => {
 
   // Token is present. Validate it
   return jwt.verify(
-    cookieDict.authToken,
+    cookies,
     secret1!,
     async (err: any, tokenPayload: any) => {
       if (err) {

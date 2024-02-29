@@ -52,7 +52,7 @@ function App() {
 
 
 	const checkIfLoggedIn = async () => {
-		let response = await postFetch(`${baseURL}/checkifloggedin`, {});
+		let response = await postFetch(`${baseURL}/checkifloggedin`, { authToken: localStorage.getItem("authToken") });
 		
 		// IMPORTANT: Remove this timeout in the future
 		//setTimeout(()=>{

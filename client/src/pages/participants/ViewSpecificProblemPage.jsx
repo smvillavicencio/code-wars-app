@@ -105,7 +105,7 @@ const ViewSpecificProblemPage = ({
 		else if (usertype == "admin") {
 			navigate('/admin/general');
 		}
-		else if (usertype == "participant") {
+		else if (usertype == "team") {
 			checkIfLoggedIn();	
 		}
 		else {

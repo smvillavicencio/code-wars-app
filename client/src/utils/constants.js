@@ -1,4 +1,4 @@
 /* eslint-disable */ 
-const baseURL = "http://localhost:5000";
+const baseURL = get(process.env, "REACT_APP_SERVER_URL", "http://localhost:5000");
 
 export { baseURL };

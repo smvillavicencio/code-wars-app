@@ -28,7 +28,9 @@ const cors = require("cors");
 const app = express();
 
 app.use(cors({
-  origin : "http://localhost:3000",
+  origin : ["http://localhost:3000", 
+            process.env.DEV_FRONTEND_URL || "",
+            process.env.PROD_FRONTEND_URL || ""],
   credentials: true
 }));
 

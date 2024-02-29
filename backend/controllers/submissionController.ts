@@ -231,6 +231,7 @@ const getLastSubmissionByTeamOfProblem = async (req: Request, res: Response) => 
     let lastSubmission = null;
     let score = 0;
     let status;
+    let evaluation;
     let checkedby;
     if (result.length > 0) {
         lastSubmission = result[result.length - 1];
@@ -243,15 +244,18 @@ const getLastSubmissionByTeamOfProblem = async (req: Request, res: Response) => 
 
         status = lastSubmission.status;
         checkedby = lastSubmission.judge_name;
+        evaluation = lastSubmission.evaluation;
     } else {
         status = "Pending";
         checkedby = "Unassigned";
+        evaluation = "No Submission"
     }
 
     return res.send({
         score,
         status,
-        checkedby
+        checkedby,
+        evaluation
     });
 }
 

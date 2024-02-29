@@ -1,5 +1,5 @@
 /* eslint-disable */ 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import SourceIcon from '@mui/icons-material/Source';
@@ -28,6 +28,7 @@ const  SubmitModal = ({
 	const [file, setFile] = useState(null);
 	const [content, setContent] = useState(null);
 	const [filename, setFilename] = useState(null);
+	const alreadySubmitted = useRef(false);
 
 	// for navigation (temporary only)
 	const navigate = useNavigate();
@@ -86,6 +87,8 @@ const  SubmitModal = ({
 		// 	totalCases
 		// });
 
+		if (!alreadySubmitted.current) {
+		alreadySubmitted.current = true;
 		let uResponse = await postFetch(`${baseURL}/uploadsubmission`, {
 			filename,
 			content,
@@ -115,6 +118,7 @@ const  SubmitModal = ({
 		// navigate to view all problems page
 		// pwede to tanggalin once na maimplement na yung sa websockets ng checking submission
 		navigate('/participant/view-all-problems');
+		}
 	};
 
 	return (

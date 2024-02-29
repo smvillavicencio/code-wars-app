@@ -21,9 +21,11 @@ import { postFetch } from 'utils/apiRequest';
  *    <Function>  setOpen - function to control modal opening/closing
  */
 const EvaluationModal = ({
+	props,
 	open,
 	setOpen,
 	currEval,
+	initialVal,
 	correctCases,
 	rowValues,
 	setCorrectCases,
@@ -44,13 +46,13 @@ const EvaluationModal = ({
 	 * Purpose: Closes the modal window
 	 */
 	const handleCancel = () => {
-		setCurrVal("Pending");
+		setCurrVal(initialVal);
 
 		var copy = cloneDeep(submissionsList);
 		setSubmissionsList(copy);
 		subListRef.current = copy;
 
-		apiRef.current.setEditCellValue({ id, field, value: "Pending" });
+		apiRef.current.setEditCellValue({ id, field, value: initialVal });
 
 		console.log(rowValues);
 		setOpen(false);
@@ -62,18 +64,33 @@ const EvaluationModal = ({
 	const handleSubmit = () => {
 		setOpen(false); 
 
-		if (correctCases <= 0 || correctCases >= totalCases) {
+		if (props.formattedValue != "Pending") {
 			ErrorWindow.fire({
-				text: 'There is a problem with the set number of correct cases.'
+				text: 'Cannot evaluate already evaluated submission.'
 			});
 
-			setCurrVal("Pending");
+			setCurrVal(initialVal);
 
 			var copy = cloneDeep(submissionsList);
 			setSubmissionsList(copy);
 			subListRef.current = copy;
 
-			apiRef.current.setEditCellValue({ id, field, value: "Pending" });
+			apiRef.current.setEditCellValue({ id, field, value: initialVal });
+		}
+		else
+		{
+		if (correctCases <= 0 || correctCases >= totalCases) {
+			ErrorWindow.fire({
+				text: 'There is a problem with the set number of correct cases.'
+			});
+
+			setCurrVal(initialVal);
+
+			var copy = cloneDeep(submissionsList);
+			setSubmissionsList(copy);
+			subListRef.current = copy;
+
+			apiRef.current.setEditCellValue({ id, field, value: initialVal });
 		}
 		else {
 			// ask for confirmation of action
@@ -126,17 +143,17 @@ const EvaluationModal = ({
 					});
 				}
 				if (res['isDismissed']) {
-					setCurrVal("Pending");
+					setCurrVal(initialVal);
 
 					var copy = cloneDeep(submissionsList);
 					setSubmissionsList(copy);
 					subListRef.current = copy;
 
-					apiRef.current.setEditCellValue({ id, field, value: "Pending" });
+					apiRef.current.setEditCellValue({ id, field, value: initialVal });
 				}
 			});
 		}
-
+	}
 		
 	}
 

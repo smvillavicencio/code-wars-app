@@ -59,17 +59,17 @@ const ViewSpecificProblemPage = ({
 	
 	const [problem, setProblem] = useState();
 	const [problemDescription, setProblemDescription] = useState();
+	const [sampleInput, setSampleInput] = useState("");
+	const [sampleOutput, setSampleOutput] = useState("");
 
-	const tempId = "65d5388fa3fd7658a9c15971";
-	const tempPossiblePoints = 500;
-	const tempTitle = "37 PATTERN";
-	const tempTotalCases = 5;
+	const [evaluation, setEvaluation] = useState();
 	
 	/*
    * Purpose: Handles opening of the submit modal window
    * Params: None
    */ 
 	const handleButton = () => {
+		console.log(!["Correct", "Partially Correct", "Error", "Incorrect Solution"].includes(evaluation));
 		setOpen(true);
 	};
 
@@ -83,12 +83,16 @@ const ViewSpecificProblemPage = ({
 
 	const getQuestionContent = async () => {
 		const qResponse = await postFetch(`${baseURL}/viewquestioncontent`, {
-			id: params.get("id")
+			problemId: params.get("id"),
+			teamId: JSON.parse(localStorage?.getItem("user"))._id
 		});
-		console.log(qResponse.question);
+		//console.log(qResponse.question);
 
 		setProblem(qResponse.question);
 		setProblemDescription(qResponse.question.body);
+		setEvaluation(qResponse.evaluation);
+		setSampleInput(qResponse.question.sample_input);
+		setSampleOutput(qResponse.question.sample_output);
 	}
 
 	useEffect(() => {
@@ -200,6 +204,14 @@ const ViewSpecificProblemPage = ({
 			});
 		});
 
+		socketClient.on('evalupdate', (arg)=>{
+			var teamId = JSON.parse(localStorage?.getItem("user"))?._id;
+			
+			if (teamId == arg.team_id) {
+				getQuestionContent();
+			}
+		});
+
 		socketClient.on("dismissToasts", () => {
 			toast.dismiss();
 		});
@@ -209,6 +221,7 @@ const ViewSpecificProblemPage = ({
 			socketClient.off("newDebuff");
 			socketClient.off("dismissToasts");
 			socketClient.off("fetchActivePowerups");
+			socketClient.off("evalupdate");
 		};
 	});
 
@@ -241,6 +254,7 @@ const ViewSpecificProblemPage = ({
 				buttonText="UPLOAD SUBMISSION"
 				startIcon={<FileUploadIcon />}
 				handleButton={handleButton}
+				disabledState={["Pending", "Correct"].includes(evaluation)}
 			/>
 
 			{/* Other components */}
@@ -349,7 +363,9 @@ const ViewSpecificProblemPage = ({
 							</Typography>
 
 							{/* Sample inputs here */}
-							<div></div>
+							<div style={{padding: "10px"}}>
+								{sampleInput}
+							</div>
 						</Box>
 
 						<Box sx={{ width: '50%' }}>
@@ -368,7 +384,9 @@ const ViewSpecificProblemPage = ({
 							</Typography>
 
 							{/* Sample outputs here */}
-							<div></div>
+							<div style={{padding: "10px"}}>
+								{sampleOutput}
+							</div>
 						</Box>
 					</Box>
 				</Stack>

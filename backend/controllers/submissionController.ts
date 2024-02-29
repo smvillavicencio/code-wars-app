@@ -134,6 +134,7 @@ const checkSubmission = async (req: Request, res: Response) => {
     const judgeName = req.body.judgeName;
     const correctCases = req.body.correctCases;
     const possiblePoints = req.body.possiblePoints;
+    console.log(req.body);
 
     // status : checked, error, pending
     // evaluation: correct, partially correct, incorrect solution, error, pending

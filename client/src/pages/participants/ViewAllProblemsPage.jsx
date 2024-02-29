@@ -113,13 +113,14 @@ const ViewAllProblemsPage = ({
 
 		let user = JSON.parse(localStorage?.getItem("user"));
 		let usertype = user?.usertype;
+		//console.log(user);
 		if (usertype == "judge") {
 			navigate('/judge/submissions');
 		}
 		else if (usertype == "admin") {
 			navigate('/admin/general');
 		}
-		else if (usertype == "team") {
+		else if (usertype == "team" || usertype == "participant") {
 			checkIfLoggedIn();	
 		}
 		else {

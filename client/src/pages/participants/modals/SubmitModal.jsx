@@ -86,6 +86,7 @@ const  SubmitModal = ({
 		// 	"teamName": JSON.parse(localStorage.getItem("user")).username,
 		// 	totalCases
 		// });
+		//console.log(JSON.parse(localStorage.getItem("user")));
 
 		if (!alreadySubmitted.current) {
 		alreadySubmitted.current = true;

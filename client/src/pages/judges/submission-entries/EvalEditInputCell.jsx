@@ -94,6 +94,8 @@ export default function EvalEditInputCell({props, submissionsList, setSubmission
 					// 	correctCases: correctTestCases,
 					// 	possiblePoints: row.possible_points
 					// });
+					//console.log(JSON.parse(localStorage?.getItem("user")));
+					//console.log("+++++++++++", judgeName);
 					const eResponse = postFetch(`${baseURL}/checksubmission`, {
 						submissionId: row.dbId,
 						evaluation: currVal,

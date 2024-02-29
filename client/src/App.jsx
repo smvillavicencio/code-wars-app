@@ -88,11 +88,14 @@ function App() {
 	useEffect(() => {
 		const eventSource = new EventSource(`${baseURL}/admincommand`);
 		eventSource.onmessage = (e) => {
+			//console.log(JSON.parse(e.data));
+			//console.log(localStorage?.getItem("user"));
 			// getting admin message
 			let adminMessage = JSON.parse(e.data);
 
 			// for participants
-			if (JSON.parse(localStorage?.getItem("user"))?.usertype == "participant") {
+			if (JSON.parse(localStorage?.getItem("user"))?.usertype == "team" ||
+			JSON.parse(localStorage?.getItem("user"))?.usertype == "participant" ) {
 				
 				if (adminMessage.command == "freeze") {
 					setFreezeOverlay(true);

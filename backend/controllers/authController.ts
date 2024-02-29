@@ -177,10 +177,13 @@ const login = async (req: Request, res: Response) => {
  *      Object with field isLoggedIn
  */
 const checkIfLoggedIn = (req: Request, res: Response) => {
-  //console.log(req.headers.cookie);
+  console.log(req.body);
 
-  if (JSON.parse(req.body).authToken) {
-    var cookies = JSON.parse(req.body).authToken;
+  //JSON.parse
+  if (req.body.authToken) {
+    //console.log("Got in");
+    //JSON.parse
+    var cookies = req.body.authToken;
 
     //console.log(cookieDict);
     if (!cookies) {

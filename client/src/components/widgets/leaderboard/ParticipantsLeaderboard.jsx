@@ -11,30 +11,36 @@ import {
 
 import { CustomModal, Table } from 'components';
 import { columnsLeaderboard } from 'utils/dummyData';
+
 import getLeaderboard from './getLeaderboard';
 
 
+/**
+ * Additional styling for overall leaderboard modal window.
+ */
 const additionalStyles = {
-	// modify column header typography
 	'& .MuiDataGrid-columnHeader': {
-		fontSize: "h2",
-		bgcolor: "rgba(0, 0, 0, 0.1)",
+		fontSize: 'h2',
+		bgcolor: 'rgba(0, 0, 0, 0.1)',
 	},
 	bgcolor: 'transparent',
 	border: 'none',
 	padding: 2,
-}
+};
 
 
 /**
  * Purpose: Displays the top 4 participants in the realtime leaderboard for participants.
- * Params: <Array> rows - receives the rows from the leaderboard table
+ * Params: None
  */
-const ParticipantsLeaderboard = ({ rows }) => {
-
-	// state handler for overall leaderboard modal
+const ParticipantsLeaderboard = () => {
+	/**
+	 * State handler for overall leaderboard modal.
+	 */
 	const [open, setOpen] = useState(false);
-	// state handler for rows of overall leaderboard
+	/**
+	 * State handler for rows of overall leaderboard.
+	 */
 	const [leaderboardRows, setLeaderboardRows] = useState([]);
 
 	/**
@@ -42,20 +48,19 @@ const ParticipantsLeaderboard = ({ rows }) => {
 	 */
 	useEffect(() => { 
 		async function fetchData() {
-			let currLeaderboard = await getLeaderboard()
+			let currLeaderboard = await getLeaderboard();
 			setLeaderboardRows(currLeaderboard);
 		}
 
-		fetchData()
+		fetchData();
 	}, []);
 
 	/**
-	* Purpose: Handles opening of modal window for overall leaderboard.
-	* Params: None
+	* Handles opening of modal window for overall leaderboard.
 	*/
 	const handleButton = () => {
 		setOpen(true);
-	}
+	};
 
 
 	return (
@@ -109,12 +114,12 @@ const ParticipantsLeaderboard = ({ rows }) => {
 											row.rank === 1
 												? '#C64343'
 												: row.rank === 2
-												? '#30C136'
-												: row.rank === 3
-												? '#2C64A6'
-												: row.rank === 4
-												? '#C825CB'
-												: 'transparent',
+													? '#30C136'
+													: row.rank === 3
+														? '#2C64A6'
+														: row.rank === 4
+															? '#C825CB'
+															: 'transparent',
 									}}
 								/>
 								<span>{row.team_name}</span>

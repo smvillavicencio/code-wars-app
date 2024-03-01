@@ -82,6 +82,7 @@ const BuyPowerUpsPopover = ({
 		setSelectedPowerUp(null);
 	};
 
+
 	return (
 		<>
 			{isOpen && 
@@ -113,10 +114,10 @@ const BuyPowerUpsPopover = ({
         			handleClick={(powerup) => { setSelectedPowerUp(powerup); }}
         			handleReturn={handleReturn}
         			selectedPowerUp={selectedPowerUp}
-							isBuyImmunityChecked={isBuyImmunityChecked}
+        			isBuyImmunityChecked={isBuyImmunityChecked}
         		/> : null
         	}
-          
+
         	{/* Container for Debuffs */}
         	<PowerUpType seePowerups={showDebuffs} label="Debuff" handleClick={handleClickDebuff} />
 
@@ -130,7 +131,7 @@ const BuyPowerUpsPopover = ({
         			handleClick={(powerup) => { setSelectedPowerUp(powerup); }}
         			handleReturn={handleReturn}
         			selectedPowerUp={selectedPowerUp}
-        		/> : null
+						/> : null
         	}
         </Box>
 			}

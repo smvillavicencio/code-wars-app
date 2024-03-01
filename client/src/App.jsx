@@ -1,15 +1,18 @@
 
 /* eslint-disable */ 
-import { useState, useEffect, useRef, useContext } from 'react';
-import { ThemeProvider } from '@emotion/react';
-import { Box } from '@mui/material';
-import { Outlet, BrowserRouter as Router, Routes, Route, useFetcher } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
 
-import GeneralBackground from 'assets/GeneralBackground.png';
-import { FreezeOverlay, ToastContainerConfig } from 'components';
+import { ThemeProvider } from '@emotion/react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Cookies from 'universal-cookie';
+
+import { ToastContainerConfig } from 'components';
 import {
+	AdminLayout,
+	JudgeLayout,
 	LoginPage,
 	GeneralOptionsPage,
+	ParticipantLayout,
 	PowerUpLogs,
 	TopTeamsPage,
 	ViewAllProblemsPage,
@@ -17,11 +20,8 @@ import {
 	ViewSubmissionsPage,
 } from 'pages/';
 import { theme } from 'theme.js';
-
-import { baseURL } from 'utils/constants';
 import { postFetch } from 'utils/apiRequest';
-import Cookies from "universal-cookie";
-import { socketClient } from 'socket/socket';
+import { baseURL } from 'utils/constants';
 
 
 
@@ -30,132 +30,104 @@ var immortalHTML = '<div class="MuiBox-root css-1ato3wx"><div class="MuiBox-root
 
 
 function App() {
-
-
-
 	const [freezeOverlay, setFreezeOverlay] = useState(false);
-	const overlayFreezeLoad = useRef(false);
 
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
-
 	/**
-	 * State handler for current round
+	 * State handler for current round.
 	 */
 	const [currRound, setCurrRound] = useState('EASY');
+	/**
+	 * State handler for toggle switch state of freeze screens.
+	 */
+	const [freezeChecked, setFreezeChecked] = useState(false);
+	/**
+	 * State handler for toggle switch state of buying immunity.
+	 */
+	const [buyImmunityChecked, setBuyImmunityChecked] = useState(false);
+
 	const roundRef = useRef('EASY');
 	const freezeRef = useRef(false); 
 	const immunityRef = useRef(false); 
-
-	// State handler for toggle switch state
-	const [freezeChecked, setFreezeChecked] = useState(false);
-	const [buyImmunityChecked, setBuyImmunityChecked] = useState(false);
+	const overlayFreezeLoad = useRef(false);
 
 
 	const checkIfLoggedIn = async () => {
-		let response = await postFetch(`${baseURL}/checkifloggedin`, { authToken: localStorage.getItem("authToken") });
+		let response = await postFetch(`${baseURL}/checkifloggedin`, { authToken: localStorage.getItem('authToken') });
 		
-		// IMPORTANT: Remove this timeout in the future
-		//setTimeout(()=>{
-			setIsLoggedIn(response.isLoggedIn);
-			//console.log(response);
-		//}, 1000);
-	}
+		setIsLoggedIn(response.isLoggedIn);
+	};
 
-	/**
-	 * This will set the common background for all pages (except login page)
-	 */
-	function Layout() {
-		return (
-			<Box
-				style={{
-					backgroundImage: `url(${GeneralBackground})`,
-					backgroundSize: 'cover',
-					height: '100vh',
-					overflow: 'hidden',
-				}}
-				id="commonBox"
-			>
-				{/* Children will be displayed through outlet */}
-				{freezeOverlay ? <div className='fOverlayScreen' style={{zIndex: "10000"}}><FreezeOverlay /></div> : null}
-				<Outlet />
-			</Box>
-		);
-	}
-
-	// state for context API
-	//const [userDetails, setUserDetails] = useContext(userDetailsContext ?? null);
 
 	useEffect(() => {
 		const eventSource = new EventSource(`${baseURL}/admincommand`);
 		eventSource.onmessage = (e) => {
-			//console.log(JSON.parse(e.data));
-			//console.log(localStorage?.getItem("user"));
 			// getting admin message
 			let adminMessage = JSON.parse(e.data);
 
 			// for participants
-			if (JSON.parse(localStorage?.getItem("user"))?.usertype == "team" ||
-			JSON.parse(localStorage?.getItem("user"))?.usertype == "participant" ) {
+			if (JSON.parse(localStorage?.getItem('user'))?.usertype == 'team' ||
+			JSON.parse(localStorage?.getItem('user'))?.usertype == 'participant' ) {
 				
-				if (adminMessage.command == "freeze") {
+				if (adminMessage.command == 'freeze') {
 					setFreezeOverlay(true);
 
 					// if hindi pa naka-display yung freeze overlay, set to true
-					if (document.querySelectorAll(".fOverlayScreen")[0] != null && overlayFreezeLoad.current == false) {
+					if (document.querySelectorAll('.fOverlayScreen')[0] != null && overlayFreezeLoad.current == false) {
 						overlayFreezeLoad.current = true;
 					}
 
 					// checks if present yung elements na may fOverlay
-					let checker = document.getElementsByClassName("fOverlay").length;
+					let checker = document.getElementsByClassName('fOverlay').length;
 
 					setTimeout(() => {
 						// if hindi pa naka-display yung component pero naka-true na yung overlay, i-display na
 						if (checker < 2 && overlayFreezeLoad.current == true) {
 
 							try {
-								document.getElementsByClassName("fOverlayScreen")[0].remove();
+								document.getElementsByClassName('fOverlayScreen')[0].remove();
 							} catch (error) {
 								
 							}
 							
 							const immortalDiv = document.createElement('div');
-							immortalDiv.className = "fOverlayScreen";
-							immortalDiv.style.zIndex = "10000";
+							immortalDiv.className = 'fOverlayScreen';
+							immortalDiv.style.zIndex = '10000';
 							immortalDiv.innerHTML = immortalHTML;
 
-							let commonBox = document.getElementById("commonBox");
+							let commonBox = document.getElementById('commonBox');
 							commonBox.insertBefore(immortalDiv, commonBox.firstChild);
 						}
 					}, 1000);
 				} 
-				else if (adminMessage.command == "logout") {
-					console.log("Should log out");
+				else if (adminMessage.command == 'logout') {
+					console.log('Should log out');
 
 					setFreezeOverlay(false);
-					localStorage.removeItem("user");
-									//setUserDetails(null);
-									window.location.replace(window.location.origin);
+					localStorage.removeItem('user');
+					//setUserDetails(null);
+					window.location.replace(window.location.origin);
 
-									// Delete cookie with authToken
-									const cookies = new Cookies();
-									cookies.remove("authToken");
+					// Delete cookie with authToken
+					const cookies = new Cookies();
+					cookies.remove('authToken');
 				} 
-				else if (adminMessage.command == "normal") {
+				else if (adminMessage.command == 'normal') {
 					setFreezeOverlay(false);	
 				} 
 			}
-			if (adminMessage.command == "freeze") {
+			if (adminMessage.command == 'freeze') {
 				setFreezeChecked(true);
 				freezeRef.current = true;
-			} else if (adminMessage.command == "normal") {
+			} else if (adminMessage.command == 'normal') {
 				setFreezeChecked(false);
 				freezeRef.current = false;
 			}
 
-			if (adminMessage.buyImmunity == "enabled"){
+			if (adminMessage.buyImmunity == 'enabled'){
 				setBuyImmunityChecked(true);
 				immunityRef.current = true; 
-			} else if (adminMessage.buyImmunity == "disabled"){
+			} else if (adminMessage.buyImmunity == 'disabled'){
 				setBuyImmunityChecked(false);
 				immunityRef.current = false; 
 			}
@@ -165,55 +137,79 @@ function App() {
 				roundRef.current = adminMessage.round.toUpperCase();
 				//console.log(adminMessage.round.toUpperCase(), currRound, roundRef);
 			}
-		}
+		};
 		
 		//console.log(roundRef, freezeRef);
 	  }, []);
 
+	
 	return (
 		<ThemeProvider theme={theme}>
-				<Router>
-					<Routes>
-						{/* Login page */}
-						<Route index element={<LoginPage />} />
+			<Router>
+				<Routes>
+					{/* Login page */}
+					<Route index element={<LoginPage />} />
 
-						{/* Pages with same backgrounds */}
-						<Route path="/" element={<Layout />}>
-							<Route path="participant/view-all-problems" 
-								element={<ViewAllProblemsPage 
-									isLoggedIn={isLoggedIn} 
-									setIsLoggedIn={setIsLoggedIn} 
-									checkIfLoggedIn={checkIfLoggedIn}
-									currRound={currRound}
-									setCurrRound={setCurrRound}
-									isBuyImmunityChecked={buyImmunityChecked}
-									//seconds={sec}
-									 />} />
-							<Route path="participant/view-specific-problem" element={<ViewSpecificProblemPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
-							<Route path="judge/submissions" element={<ViewSubmissionsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
+					{/* Participant Pages */}
+					<Route
+						element={
+							<ParticipantLayout
+								freezeOverlay={freezeOverlay}
+								isLoggedIn={isLoggedIn} 
+								setIsLoggedIn={setIsLoggedIn} 
+								checkIfLoggedIn={checkIfLoggedIn}
+								currRound={currRound}
+								isBuyImmunityChecked={buyImmunityChecked}
+							/>
+						}
+					>
+						<Route path="participant/view-all-problems" element={<ViewAllProblemsPage currRound={currRound} />} />
+						<Route path="participant/view-specific-problem" element={<ViewSpecificProblemPage />} />
+					</Route>
 
-							<Route path="admin/general" 
-								element={<GeneralOptionsPage 
-									isLoggedIn={isLoggedIn} 
-									setIsLoggedIn={setIsLoggedIn} 
-									checkIfLoggedIn={checkIfLoggedIn} 
-									currRound={currRound}
+					{/* Judge Pages */}
+					<Route
+						element={
+							<JudgeLayout
+								freezeOverlay={freezeOverlay}
+								isLoggedIn={isLoggedIn}
+								setIsLoggedIn={setIsLoggedIn} 
+								checkIfLoggedIn={checkIfLoggedIn} 
+							/>
+						}
+					>
+						<Route path="judge/submissions" element={<ViewSubmissionsPage isLoggedIn={isLoggedIn} />} />
+					</Route>
+					
+					{/* Admin Pages */}
+					<Route
+						element={
+							<AdminLayout
+								freezeOverlay={freezeOverlay}
+								isLoggedIn={isLoggedIn}
+								setIsLoggedIn={setIsLoggedIn} 
+								checkIfLoggedIn={checkIfLoggedIn} 
+							/>
+						}
+					>
+						<Route path="admin/general" 
+							element={
+								<GeneralOptionsPage 
 									setCurrRound={setCurrRound}
 									roundRef={roundRef}
 									freezeRef={freezeRef}
 									immunityRef={immunityRef}
-									freezeChecked={freezeChecked}
-									buyImmunityChecked={buyImmunityChecked}
 									setFreezeChecked={setFreezeChecked}
 									setBuyImmunityChecked={setBuyImmunityChecked}
-									/>} />
-							<Route path="admin/logs" element={<PowerUpLogs isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
-							<Route path="admin/podium" element={<TopTeamsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
-
-						</Route>
-					</Routes>
-					<ToastContainerConfig />
-				</Router>
+								/>
+							}
+						/>
+						<Route path="admin/logs" element={ <PowerUpLogs /> } />
+						<Route path="admin/podium" element={<TopTeamsPage />} />
+					</Route>
+				</Routes>
+				<ToastContainerConfig />
+			</Router>
 		</ThemeProvider>
 	);
 }

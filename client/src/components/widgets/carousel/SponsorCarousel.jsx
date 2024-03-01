@@ -25,7 +25,7 @@ var logos = [
 ];
 
 
-/*
+/**
  * Purpose: Component that will display the sponsored companies through a carousel
  * Params: None
  */

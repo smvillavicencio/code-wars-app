@@ -2,7 +2,7 @@
 import { Paper } from '@mui/material';
 
 
-/*
+/**
  * Purpose: Displays an item in the carousel component for sponsors.
  * Params: <Object> logo - contains the company logo and name to be displayed
  */

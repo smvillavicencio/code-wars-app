@@ -1,18 +1,21 @@
 /* eslint-disable */ 
 import { useState } from 'react';
+
 import {
-  Box,
-  Button,
-  TextField,
-  Typography
+	Box,
+	Button,
+	TextField,
+	Typography
 } from '@mui/material';
-import { CustomModal } from 'components';
-import { socketClient } from 'socket/socket';
-import { ConfirmWindow, SuccessWindow, ErrorWindow } from 'components';
-import { useGridApiContext } from "@mui/x-data-grid";
+import { useGridApiContext } from '@mui/x-data-grid';
 import { cloneDeep } from 'lodash';
-import { baseURL } from 'utils/constants';
+
+import { CustomModal } from 'components';
+import { ConfirmWindow, SuccessWindow, ErrorWindow } from 'components';
 import { postFetch } from 'utils/apiRequest';
+import { baseURL } from 'utils/constants';
+
+
 
 /**
  * Purpose: Displays a modal window that takes in the number of test cases passed for a particular submission entry.
@@ -43,7 +46,7 @@ const EvaluationModal = ({
 	const apiRef = useGridApiContext();
 	
 	/**
-	 * Purpose: Closes the modal window
+	 * Closes the modal window
 	 */
 	const handleCancel = () => {
 		setCurrVal(initialVal);
@@ -56,7 +59,7 @@ const EvaluationModal = ({
 
 		console.log(rowValues);
 		setOpen(false);
-	}
+	};
 
 	/**
 	 * Handles onClick event for submit button
@@ -64,7 +67,7 @@ const EvaluationModal = ({
 	const handleSubmit = () => {
 		setOpen(false); 
 
-		if (props.formattedValue != "Pending") {
+		if (props.formattedValue != 'Pending') {
 			ErrorWindow.fire({
 				text: 'Cannot evaluate already evaluated submission.'
 			});
@@ -79,83 +82,74 @@ const EvaluationModal = ({
 		}
 		else
 		{
-		if (correctCases <= 0 || correctCases >= totalCases) {
-			ErrorWindow.fire({
-				text: 'There is a problem with the set number of correct cases.'
-			});
+			if (correctCases <= 0 || correctCases >= totalCases) {
+				ErrorWindow.fire({
+					text: 'There is a problem with the set number of correct cases.'
+				});
 
-			setCurrVal(initialVal);
+				setCurrVal(initialVal);
 
-			var copy = cloneDeep(submissionsList);
-			setSubmissionsList(copy);
-			subListRef.current = copy;
+				var copy = cloneDeep(submissionsList);
+				setSubmissionsList(copy);
+				subListRef.current = copy;
 
-			apiRef.current.setEditCellValue({ id, field, value: initialVal });
-		}
-		else {
+				apiRef.current.setEditCellValue({ id, field, value: initialVal });
+			}
+			else {
 			// ask for confirmation of action
-			ConfirmWindow.fire({
-				text: 'Are you sure you want to choose Partially Correct (' + `${correctCases} of ${totalCases}` + ') as the evaluation?'
-			}).then((res) => {
+				ConfirmWindow.fire({
+					text: 'Are you sure you want to choose Partially Correct (' + `${correctCases} of ${totalCases}` + ') as the evaluation?'
+				}).then((res) => {
 
-				// get judge user details
-				let judgeID = JSON.parse(localStorage?.getItem("user"))?._id;
-				let judgeName = JSON.parse(localStorage?.getItem("user"))?.username;
+					// get judge user details
+					let judgeID = JSON.parse(localStorage?.getItem('user'))?._id;
+					let judgeName = JSON.parse(localStorage?.getItem('user'))?.username;
 
-				if (res['isConfirmed']) {
+					if (res['isConfirmed']) {
 			
-					// websocket emit
-					// socketClient.emit("submitEval", {
-					// 	submissionId: rowValues.dbId,
-					// 	evaluation: currEval,
-					// 	judgeId: judgeID,
-					// 	judgeName: judgeName,
-					// 	correctCases: correctCases,
-					// 	possiblePoints: rowValues.possible_points
-					// })
-					const eResponse = postFetch(`${baseURL}/checksubmission`, {
-						submissionId: rowValues.dbId,
-						evaluation: currEval,
-						judgeId: judgeID,
-						judgeName: judgeName,
-						correctCases: correctCases,
-						possiblePoints: rowValues.possible_points
-					})
+						const eResponse = postFetch(`${baseURL}/checksubmission`, {
+							submissionId: rowValues.dbId,
+							evaluation: currEval,
+							judgeId: judgeID,
+							judgeName: judgeName,
+							correctCases: correctCases,
+							possiblePoints: rowValues.possible_points
+						});
 
-					var copy = cloneDeep(submissionsList);
+						var copy = cloneDeep(submissionsList);
 
-					copy.map((submission)=>{
-						if (rowValues.dbId == submission.dbId) {
-							submission.evaluation = currEval;
-							submission.checkedBy = judgeName;
-						}
-					});
+						copy.map((submission)=>{
+							if (rowValues.dbId == submission.dbId) {
+								submission.evaluation = currEval;
+								submission.checkedBy = judgeName;
+							}
+						});
 
-					setSubmissionsList(copy);
-					subListRef.current = copy;
+						setSubmissionsList(copy);
+						subListRef.current = copy;
 
-					// close modal window
-					setOpen(false);
+						// close modal window
+						setOpen(false);
 
-					// show confirmation window
-					SuccessWindow.fire({
-						text: 'Successfully submitted evaluation!'
-					});
-				}
-				if (res['isDismissed']) {
-					setCurrVal(initialVal);
+						// show confirmation window
+						SuccessWindow.fire({
+							text: 'Successfully submitted evaluation!'
+						});
+					}
+					if (res['isDismissed']) {
+						setCurrVal(initialVal);
 
-					var copy = cloneDeep(submissionsList);
-					setSubmissionsList(copy);
-					subListRef.current = copy;
+						var copy = cloneDeep(submissionsList);
+						setSubmissionsList(copy);
+						subListRef.current = copy;
 
-					apiRef.current.setEditCellValue({ id, field, value: initialVal });
-				}
-			});
+						apiRef.current.setEditCellValue({ id, field, value: initialVal });
+					}
+				});
+			}
 		}
-	}
 		
-	}
+	};
 
 
 	return (
@@ -168,11 +162,11 @@ const EvaluationModal = ({
 			<Box
 				component="form"
 				noValidate
-        autoComplete="off"
-        sx={{ maxWidth: '100%', marginTop: '25px' }}
+				autoComplete="off"
+				sx={{ maxWidth: '100%', marginTop: '25px' }}
 			>
 				{/* Instruction text */}
-        <Typography variant="body1" sx={{ marginBottom: '20px' }}>
+				<Typography variant="body1" sx={{ marginBottom: '20px' }}>
           Please enter the number of test cases passed for this particular submission entry.
 				</Typography>
 				
@@ -184,7 +178,7 @@ const EvaluationModal = ({
 					//value={correctCases-1}
 					onChange={(e) => {
 						let currCorr = e.target.value;
-						console.log(currCorr)
+						console.log(currCorr);
 						try {
 							setCorrectCases(parseInt(e.target.value));
 						} catch (error) {
@@ -202,9 +196,9 @@ const EvaluationModal = ({
 					}}	
 					type="number"
 					variant="standard"
-					label={"# of Test Cases Passed Out of "+totalCases+" Cases:"}
+					label={'# of Test Cases Passed Out of '+totalCases+' Cases:'}
 					helperText="Enter numeric values only."
-        />
+				/>
         
 				{/* Buttons */}
 				<Box sx={{

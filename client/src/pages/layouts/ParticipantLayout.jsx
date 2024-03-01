@@ -24,6 +24,7 @@ import { socketClient } from 'socket/socket';
 import { getFetch, postFetch } from 'utils/apiRequest';
 import { baseURL } from 'utils/constants';
 import { columnsLeaderboard, rowsLeaderboard } from 'utils/dummyData';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -79,9 +80,11 @@ const ParticipantLayout = ({
 	const [problemDescription, setProblemDescription] = useState();
 	const [samples, setSampleInputOutput] = useState();
 
-	
 
-	
+
+
+
+
 	// page values
 	const problemTitle = params.get('problemTitle');
 	// dummy values
@@ -111,11 +114,11 @@ const ParticipantLayout = ({
 				// points are used to buy power-ups
 				// for wager round
 
-		// sample team details
-		setTeamDetails({
-			teamName: 'Team One',
-			score: 10
-		})
+		// setTeamDetails({
+		// 	teamName: 'Team1',
+		// 	score: 0
+		// })
+		getTeamScore();
 	}, []);
 
 
@@ -185,6 +188,8 @@ const ParticipantLayout = ({
 					});
 				}
 			});
+
+			getTeamScore();
 		});
 
 		// listener for buffs
@@ -214,6 +219,8 @@ const ParticipantLayout = ({
 				theme: 'dark',
 				transition: Bounce,
 			});
+
+			getTeamScore();
 		});
 
 		// listener for debuffs
@@ -234,7 +241,13 @@ const ParticipantLayout = ({
 				theme: 'dark',
 				transition: Bounce,
 			});
+
+			getTeamScore();
 		});
+
+		socketClient.on('updateScoreOnBuyDebuff', () => {
+			getTeamScore();
+		})
 
 		socketClient.on('dismissToasts', () => {
 			console.log('dismiss');
@@ -246,6 +259,7 @@ const ParticipantLayout = ({
 			if (teamId == arg.team_id) {
 				getRoundQuestions();
 			}
+			getTeamScore();
 		});
 
 
@@ -313,7 +327,27 @@ const ParticipantLayout = ({
 		setOpenModal(true);
 		console.log(openModal)
 	};
-  
+
+	/**
+	 * Get the score of the team
+	 */
+	const getTeamScore = async () => {
+		const user = JSON.parse(localStorage?.getItem('user'));
+		try {
+			const res = await postFetch(`${baseURL}/viewteamscore`, { teamId: user?._id });
+			const uname = user?.username;
+			if(res.success === true){
+				setTeamDetails({
+					teamName: uname,
+					score: res.score.score,
+				});
+			} else {
+				console.log(res.message);
+			}
+		} catch (err){
+			console.log(err);
+		}
+	}
 
 	return (
 		<Box

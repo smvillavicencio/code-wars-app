@@ -214,6 +214,7 @@ io.on("connection", (socket: any) => {
           socket.emit("scenarioCheckerDebuff", 'insufficient_funds');
         } else {
           socket.emit("scenarioCheckerDebuff", 'success');
+          socket.emit("updateScoreOnBuyDebuff");
           const startTime: Date = new Date();
           const endTime: Date = new Date(startTime.getTime() + powerUp.tier[tier_no].duration);
           

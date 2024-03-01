@@ -143,7 +143,7 @@ let customTheme = createTheme({
 			fontFamily: 'Inter',
 			fontWeight: '500',
 			fontSize: "1.25rem",
-      "@media (max-width:960px)": {
+      "@media (max-width:1200px)": {
         fontSize: "1.1rem",
       },
       "@media (max-width:600px)": {

@@ -14,7 +14,6 @@ const PowerUpType = ({ seePowerups, label, handleClick }) => {
 	return (
 		<Box
 			sx={{
-				width: '100%',
 				display: 'flex',
 				justifyContent: 'center',
 				cursor: 'pointer',
@@ -30,11 +29,17 @@ const PowerUpType = ({ seePowerups, label, handleClick }) => {
 			{/* Subcontainer for the Buff title and arrow icon */}
 			<Toolbar
 				sx={{
-					width: '80%',
+					width: {
+						xs: '70%',
+						xl: '80%'
+					},
 					justifyContent: 'space-between',
 					fontFamily: 'Inter',
 					fontWeight: '500',
-					fontSize: '18px',
+					fontSize: {
+						xs: '0.95rem',
+						lg: '1rem',
+					}
 				}}
 			>
 				{/* Buff title */}
@@ -45,9 +50,9 @@ const PowerUpType = ({ seePowerups, label, handleClick }) => {
           - points downwards if showing the list of buffs
         */}
 				{ seePowerups ? (
-					<KeyboardArrowUpIcon sx={{ width: '25px', height: '25px', transform: 'rotate(180deg)' }} />
+					<KeyboardArrowUpIcon sx={{ width: '1em', height: '1em', transform: 'rotate(180deg)' }} />
 				) : (
-					<KeyboardArrowUpIcon sx={{ width: '25px', height: '25px' }} />
+					<KeyboardArrowUpIcon sx={{ width: '1em', height: '1em' }} />
 				)}
 			</Toolbar>
 		</Box>

@@ -72,22 +72,36 @@ const ViewAllProblemsPage = ({ currRound }) => {
 
 
 	return (
-		<>
+		<Box
+			sx={{
+				display: 'flex',
+				width: '100%',
+				height: '100%',
+				alignContent: {
+					xs: 'center',
+					md: 'none'
+				},
+				justifyContent: {
+					xs: 'center',
+					md: 'none'
+				}
+			}}
+		>
 			{/* Full Desktop View for round buttons and problem table */}
 			{/* Right column is for the round buttons and problem list table */}
 			<Stack
 				spacing={5}
 				sx={{
-					mt: { xl: 8 },
-					mx: { xs: 5, xl: 0},
-					width: {xl: '68%'},
+					px: { xs: 8, md: 5, xl: 0 },
+					mx: { lg: 5, xl: 0},
+					mt: { xs: 3, md: 4, lg: 6 },
+					pr: { xl: 7 },
 					height: '100%',
-					marginTop: '5vh',
-					display: 'flex'
+					width: { xs: '100%'},
 				}}
 			>
 				
-				{/* Container for round buttons */}
+				{/* Container for round buttons and team name + score */}
 				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
 					<Box sx={{ display: 'flex', gap: 3, height: '70%', alignSelf: 'center' }}>
 						{rounds.map((round, idx) => 
@@ -155,7 +169,7 @@ const ViewAllProblemsPage = ({ currRound }) => {
 					}}
 				/>
 			</Stack>
-		</>
+		</Box>
 	);
 };
 

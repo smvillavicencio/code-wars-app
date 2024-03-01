@@ -10,7 +10,7 @@ import {
 	Tooltip,
 	Typography,
 } from '@mui/material';
-import { useNavigate, createSearchParams } from 'react-router-dom';
+import { useNavigate, createSearchParams, useOutletContext } from 'react-router-dom';
 
 import { Table } from 'components/';
 import { postFetch } from 'utils/apiRequest';
@@ -38,11 +38,8 @@ const ViewAllProblemsPage = ({ currRound }) => {
 	/**
 	 * State handler for team details.
 	 */
-	const [teamDetails, setTeamDetails] = useState({
-		teamName: 'Team 1',
-		score: 0
-	});
-	
+	const [teamDetails, setTeamDetails] = useOutletContext();
+
 
 	// options for round labels
 	const rounds = ['EASY', 'MEDIUM', 'WAGER', 'HARD'];
@@ -55,11 +52,6 @@ const ViewAllProblemsPage = ({ currRound }) => {
 	}, [currRound]);
 
 
-	useEffect(() => {
-		// get relevant team details here
-	}, [])
-
-	
 	/**
 	 * Fetching questions for the current round
 	 */

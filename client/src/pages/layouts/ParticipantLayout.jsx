@@ -47,6 +47,15 @@ const ParticipantLayout = ({
    * State handler for the opening and closing of submit modal window 
    */
 	const [openModal, setOpenModal] = useState(false);
+	/**
+	 * State handler for team details
+	 * -- need na andito para sa buy power-ups
+	 */
+	const [teamDetails, setTeamDetails] = useState({
+		teamName: '',
+		score: 0
+	});
+
 
 	// used for client-side routing from view all problems page
 	const location = useLocation();
@@ -56,7 +65,6 @@ const ParticipantLayout = ({
 	// used to retrieve values of datagrid row
 	let params = new URLSearchParams(location.search);
   
-
 	// array for round where buy power-ups button should be disabled
 	const roundsDisablePowerUps = ['start', 'easy', 'wager'];
 
@@ -66,10 +74,9 @@ const ParticipantLayout = ({
 	const [selectedPowerUp, setSelectedPowerUp] = useState(null);
   
 	const [problem, setProblem] = useState();
-
 	const [evaluation, setEvaluation] = useState();
 
-
+	
 	// page values
 	const problemTitle = params.get('problemTitle');
 	// dummy values
@@ -92,7 +99,20 @@ const ParticipantLayout = ({
 			setIsLoggedIn(false);
 		}
     
+
+		// fetch and set team details
+		// team score is updated when:
+				// a submission entry of the team is checked
+				// points are used to buy power-ups
+				// for wager round
+
+		// sample team details
+		setTeamDetails({
+			teamName: 'Team One',
+			score: 10
+		})
 	}, []);
+
 
 	useEffect(() => {
 		setSeeDetails(false);
@@ -360,7 +380,7 @@ const ParticipantLayout = ({
 								</Stack>
 
 								{/* Other components */}
-								<Outlet context={[problem, setProblem]} />
+								<Outlet context={[teamDetails, setTeamDetails]} />
 							</Box>
 						</Stack>
 

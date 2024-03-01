@@ -67,9 +67,18 @@ const ViewAllProblemsPage = ({ currRound }) => {
 		const qResponse = await postFetch(`${baseURL}/viewquestionsdiff`, {
 			difficulty: currRound.toLowerCase()
 		});
+		//console.log(qResponse.questions);
 
 		let counter = 0;
 		let questionsList = [];
+
+		let set = 'c';
+		if (currRound.toLowerCase() == 'easy') {
+			set = JSON.parse(localStorage?.getItem('user')).easy_set;
+		}
+		else if (currRound.toLowerCase() == 'medium') {
+			set = JSON.parse(localStorage?.getItem('user')).medium_set;
+		}
 
 		await Promise.all(
 			qResponse.questions?.map( async (question)=>{
@@ -87,11 +96,14 @@ const ViewAllProblemsPage = ({ currRound }) => {
 				formattedQuestion.status = qeResponse.evaluation;
 				formattedQuestion.score = qeResponse.score;
 				formattedQuestion.checkedBy = qeResponse.checkedby;
-	
-				questionsList.push(formattedQuestion);
+				
+				//console.log(set, question.set);
+				if (set == 'c' || set == question.set) {
+					questionsList.push(formattedQuestion);
+				}
+				
 			})
 		);
-		//console.log(questionsList);
 		const sortedList = [...questionsList].sort((a, b) => a.id - b.id);
 
 		setCurrQuestions(sortedList);

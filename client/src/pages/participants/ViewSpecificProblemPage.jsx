@@ -53,6 +53,8 @@ const ViewSpecificProblemPage = () => {
 		// setSampleInput(qResponse.question.sample_input);
 		// setSampleOutput(qResponse.question.sample_output);
 		setSampleInputOutput(qResponse.question.samples);
+
+		console.log(qResponse);
 	};
 
 

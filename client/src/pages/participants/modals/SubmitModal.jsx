@@ -84,7 +84,7 @@ const  SubmitModal = ({
 				'teamId': JSON.parse(localStorage.getItem('user'))._id,
 				'teamName': JSON.parse(localStorage.getItem('user')).username,
 				totalCases
-			});
+			});//
     
 			if (uResponse.success) {
 			// fire success window

@@ -44,8 +44,6 @@ const uploadSubmission = async (req: Request, res: Response) => {
     const prevSubmissions = await Submission.find({ team_id: teamId, problem_id: problemId })?.sort({ timestamp: 1 });
     let prevMaxScore;
 
-    const totalSubmissions = await Submission.find({});
-
     if (prevSubmissions.length == 0) {
         prevMaxScore = 0;
     } else {
@@ -55,6 +53,16 @@ const uploadSubmission = async (req: Request, res: Response) => {
         } else {
             prevMaxScore = lastSubmission.score;
         }
+    }
+
+    const totalSubmissions = await Submission.find({});
+    let newDisplayId;
+
+    if (totalSubmissions.length == 0) {
+        newDisplayId = 0;
+    } else {
+        let lastSubmission = totalSubmissions[totalSubmissions.length - 1];
+        newDisplayId = lastSubmission.display_id + 1;
     }
 
     const newSubmission = new Submission({
@@ -74,7 +82,7 @@ const uploadSubmission = async (req: Request, res: Response) => {
         total_test_cases: totalCases,
         curr_correct_cases: 0,
         filename,
-        display_id: totalSubmissions.length
+        display_id: newDisplayId
     })
     // status : checked, error, pending
     // evaluation: correct, partially correct, incorrect solution, error, pending

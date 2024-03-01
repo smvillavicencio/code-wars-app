@@ -466,7 +466,11 @@ const ParticipantLayout = ({
 									buttonText="UPLOAD SUBMISSION"
 									startIcon={<FileUploadIcon />}
 									handleButton={handleButton}
-									disabledState={['Pending', 'Correct'].includes(evaluation)}
+									disabledState={
+										currRound.toLowerCase() == 'wager' ?
+										evaluation != 'No Submission' :
+										['Pending', 'Correct'].includes(evaluation)
+									}
 								/>
 							}
 
@@ -550,6 +554,7 @@ const ParticipantLayout = ({
 											problemSet={problem.set}
 											difficulty={problem.difficulty}
 											currRound={currRound}
+											setEvaluation={setEvaluation}
 										/>
 									</CustomModal>
 									: null

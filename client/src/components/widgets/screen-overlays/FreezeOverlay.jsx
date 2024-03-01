@@ -3,6 +3,7 @@ import Overlay from "./Overlay";
 import { Typography } from "@mui/material";
 import HourglassFullTwoToneIcon from '@mui/icons-material/HourglassFullTwoTone';
 
+
 /**
  * Purpose: Displays frozen screen overlay
  * Params: None
@@ -13,8 +14,19 @@ const FreezeOverlay = () => {
 			icon={<HourglassFullTwoToneIcon
 				style={{
 					fontSize: '10rem',
-					alignSelf: 'center'
+					alignSelf: 'center',
 				}}
+				// sx={{
+				// 	"@keyframes spin": {
+				// 		"0%": {
+				// 			transform: "rotate(360deg)",
+				// 		},
+				// 		"100%": {
+				// 			transform: "rotate(0deg)",
+				// 		},
+				// 	},
+				// 	animation: "spin 2.5s linear infinite",
+				// }}
 				className="fOverlay"
 			/>}
 			text={<Typography 

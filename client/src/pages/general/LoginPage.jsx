@@ -1,5 +1,5 @@
 /* eslint-disable */ 
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 import KeyIcon from '@mui/icons-material/Key';
 import PersonIcon from '@mui/icons-material/Person';
@@ -10,32 +10,29 @@ import {
 	Typography
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import Cookies from 'universal-cookie';
 
 import LoginBackground from 'assets/LoginBackground.png';
 import { SponsorCarousel } from 'components/index.js';
-import { postFetch } from 'utils/apiRequest';
 import { baseURL } from 'utils/constants';
+import { postFetch } from 'utils/apiRequest';
+import Cookies from "universal-cookie";
 
-
-/**
+/*
  * Purpose: Displays the login page for all users.
+ * Params: None
  */
 const LoginPage = () => {
-	/**
-	 * State handler for the username textfield
-	 */
+	// state for the username textfield
 	const [username, SetUsername] = useState('');
-	/**
-	 * State handler for the password textfield
-	 */
+	// state for the password textfield
 	const [password, SetPassword] = useState('');
 
 	// used for client-side routing to other pages
 	const navigate = useNavigate();
 
 	/**
-	 * Handles click event on login button, sets user role based on username, and navigates to index page of user role.
+	 * Purpose: Handles click event on login button, sets user role based on username, and navigates to index page of user role.
+	 * Params: <String> username - receives username input.
 	 */
 	const handleLogin = async (username, password) => {
 		const loginResponse = await postFetch(`${baseURL}/login`, {
@@ -51,7 +48,7 @@ const LoginPage = () => {
 			//localStorage.setItem("user", JSON.stringify(user));
 
 			// const cookies = new Cookies();
-			localStorage.setItem('authToken', loginResponse.token);
+			localStorage.setItem("authToken", loginResponse.token);
 			// cookies.set(
 			// 	"authToken",
 			// 	loginResponse.token,
@@ -62,27 +59,27 @@ const LoginPage = () => {
 			// 		sameSite: "none"
 			// 	}
 			// );
-			if (usertype == "team" || usertype == "participant") {
-				user['username'] = user['team_name'];
-				delete user['team_name'];
-				user['usertype'] = 'participant';
+			if (user.usertype == "team") {
+				user["username"] = user["team_name"];
+				delete user["team_name"];
+				user["usertype"] = "participant";
 
 				navigate('/participant/view-all-problems');
 			} 
-			else if (user.usertype == 'judge') {
-				user['username'] = user['judge_name'];
-				delete user['judge_name'];
+			else if (user.usertype == "judge") {
+				user["username"] = user["judge_name"];
+				delete user["judge_name"];
 
 				navigate('/judge/submissions');
 			}
-			else if (user.usertype == 'admin') {
-				user['username'] = user['admin_name'];
-				delete user['admin_name'];
+			else if (user.usertype == "admin") {
+				user["username"] = user["admin_name"];
+				delete user["admin_name"];
 
 				navigate('/admin/general');
 			}
 
-			localStorage.setItem('user', JSON.stringify(user));
+			localStorage.setItem("user", JSON.stringify(user));
 		}
 	};
 
@@ -218,7 +215,7 @@ const LoginPage = () => {
 									SetPassword(e.target.value);
 								}}
 								onKeyDown={
-									(e)=>{if (e.key === 'Enter') {handleLogin(username, password);}}
+									(e)=>{if (e.key === "Enter") {handleLogin(username, password);}}
 								}
 								sx = {{
 									bgcolor: 'rgba(255, 255, 255, 0.15)',

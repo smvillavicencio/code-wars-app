@@ -39,12 +39,40 @@ const uploadSubmission = async (req: Request, res: Response) => {
     const possiblePoints = req.body.possiblePoints;
     const teamId = req.body.teamId;
     const teamName = req.body.teamName;
-    const totalCases = req.body.totalCases;   
+    const totalCases = req.body.totalCases;
+    const difficulty = req.body.difficulty.toLowerCase();
+
+    if (['easy','medium'].includes(difficulty)) {
+        const problemSet = req.body.problemSet;
+        const currentTeamEasySet = req.body.currentTeamEasySet;
+        const currentTeamMediumSet = req.body.currentTeamMediumSet;
+
+        let team;
+        if (difficulty == 'easy' && currentTeamEasySet == 'c') {
+            team = await Team.findById(teamId);
+            team.easy_set = problemSet;
+
+            try {
+                team.save()
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        if (difficulty == 'medium' && currentTeamMediumSet == 'c') {
+            team = await Team.findById(teamId);
+            team.medium_set = problemSet;
+
+            try {
+                team.save()
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        
+    }
 
     const prevSubmissions = await Submission.find({ team_id: teamId, problem_id: problemId })?.sort({ timestamp: 1 });
     let prevMaxScore;
-
-    const totalSubmissions = await Submission.find({});
 
     if (prevSubmissions.length == 0) {
         prevMaxScore = 0;
@@ -55,6 +83,16 @@ const uploadSubmission = async (req: Request, res: Response) => {
         } else {
             prevMaxScore = lastSubmission.score;
         }
+    }
+
+    const totalSubmissions = await Submission.find({});
+    let newDisplayId;
+
+    if (totalSubmissions.length == 0) {
+        newDisplayId = 0;
+    } else {
+        let lastSubmission = totalSubmissions[totalSubmissions.length - 1];
+        newDisplayId = lastSubmission.display_id + 1;
     }
 
     const newSubmission = new Submission({
@@ -74,7 +112,7 @@ const uploadSubmission = async (req: Request, res: Response) => {
         total_test_cases: totalCases,
         curr_correct_cases: 0,
         filename,
-        display_id: totalSubmissions.length
+        display_id: newDisplayId
     })
     // status : checked, error, pending
     // evaluation: correct, partially correct, incorrect solution, error, pending
@@ -162,7 +200,7 @@ const checkSubmission = async (req: Request, res: Response) => {
         let pointsToAdd = score - submission.prev_max_score;
         if (pointsToAdd > 0) {
             
-            const team = await Team.findById(submission.team_id);
+            let team = await Team.findById(submission.team_id);
             team.score = team.score + pointsToAdd;
 
             try {

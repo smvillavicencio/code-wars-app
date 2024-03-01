@@ -36,7 +36,7 @@ function App() {
 	/**
 	 * State handler for current round.
 	 */
-	const [currRound, setCurrRound] = useState('EASY');
+	const [currRound, setCurrRound] = useState('START');
 	/**
 	 * State handler for toggle switch state of freeze screens.
 	 */
@@ -46,7 +46,7 @@ function App() {
 	 */
 	const [buyImmunityChecked, setBuyImmunityChecked] = useState(false);
 
-	const roundRef = useRef('EASY');
+	const roundRef = useRef('START');
 	const freezeRef = useRef(false); 
 	const immunityRef = useRef(false); 
 	const overlayFreezeLoad = useRef(false);

@@ -1,5 +1,5 @@
 /* eslint-disable */ 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import SourceIcon from '@mui/icons-material/Source';
@@ -22,7 +22,10 @@ const  SubmitModal = ({
 	problemId,
 	problemTitle,
 	possiblePoints,
-	totalCases
+	totalCases,
+	problemSet,
+	difficulty,
+	currRound
 }) => {
 	/**
    * State handler for the team's uploaded file.
@@ -34,6 +37,8 @@ const  SubmitModal = ({
 
 	// for navigation (temporary only)
 	const navigate = useNavigate();
+
+	const [canSubmit, setCanSubmit] = useState(false);
 
 	/**
    * Allows the file to be dropped in the designated area. Set the current file to the drop file  
@@ -75,16 +80,37 @@ const  SubmitModal = ({
 
 		if (!alreadySubmitted.current) {
 			alreadySubmitted.current = true;
-			let uResponse = await postFetch(`${baseURL}/uploadsubmission`, {
-				filename,
-				content,
-				problemId,
-				problemTitle,
-				possiblePoints,
-				'teamId': JSON.parse(localStorage.getItem('user'))._id,
-				'teamName': JSON.parse(localStorage.getItem('user')).username,
-				totalCases
-			});
+			let user = JSON.parse(localStorage.getItem('user'));
+			
+			let uResponse;
+			if (["easy", "medium"].includes(difficulty.toLowerCase())) {
+				uResponse = await postFetch(`${baseURL}/uploadsubmission`, {
+					filename,
+					content,
+					problemId,
+					problemTitle,
+					possiblePoints,
+					'teamId': user._id,
+					'teamName': user.username,
+					totalCases,
+					difficulty,
+					problemSet,
+					currentTeamEasySet: user.easy_set,
+					currentTeamMediumSet: user.medium_set
+				});
+			} else {
+				uResponse = await postFetch(`${baseURL}/uploadsubmission`, {
+					filename,
+					content,
+					problemId,
+					problemTitle,
+					possiblePoints,
+					'teamId': user._id,
+					'teamName': user.username,
+					totalCases,
+					difficulty
+				});
+			}
     
 			if (uResponse.success) {
 			// fire success window
@@ -106,6 +132,26 @@ const  SubmitModal = ({
 		navigate('/participant/view-all-problems');
 		}
 	};
+
+	useEffect(()=>{
+		async function checkLegitimacy() {
+			if (currRound.toLowerCase() == difficulty.toLowerCase()) {
+				let user = JSON.parse(localStorage?.getItem('user'));
+	
+				const tResponse = await postFetch(`${baseURL}/teamsets`, {
+					id: user._id
+				});
+	
+				if (difficulty.toLowerCase() == 'easy' && tResponse.easy_set == problemSet) {
+					setCanSubmit(true);
+				}
+				if (difficulty.toLowerCase() == 'medium' && tResponse.medium_set == problemSet) {
+					setCanSubmit(true);
+				}
+			}
+		}
+		checkLegitimacy();
+	});
 
 	return (
 		<Box>
@@ -262,7 +308,7 @@ const  SubmitModal = ({
 				<Button 
 					type="submit"
 					variant="contained" 
-					disabled={file? false : true}
+					disabled={file? canSubmit : true}
 					onClick={handleSubmit}
 					sx={{
 						width: '200px',

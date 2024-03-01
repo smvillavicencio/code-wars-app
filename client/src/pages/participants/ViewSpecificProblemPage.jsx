@@ -13,12 +13,12 @@ import { useOutletContext } from 'react-router-dom';
  * Purpose: Displays the Specific Problem Page for participants.
  */
 const ViewSpecificProblemPage = () => {
-
+	/**
+	 * Consuming context needed for the page
+	 */
 	const {
 		problemDesc,
-		setProblemDesc,
 		samp,
-		setSamples, 
 		fetchContent
 	} = useOutletContext();
 

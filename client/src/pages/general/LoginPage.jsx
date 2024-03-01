@@ -105,15 +105,14 @@ const LoginPage = () => {
 					justifyContent: 'center',
 					alignItems: 'center',
 					marginRight: '16%',
-					marginTop: '9vh',
+					marginTop: '80px',
 					zIndex: 1,
 				}}
 			> 
 				<Box
 					sx = {{ 
 						padding: 2,
-						// width: 450,
-						width: "100%",
+						width: 450, 
 						height: 450, 
 						borderRadius: '20px',
 						'& .MuiTextField-root': {

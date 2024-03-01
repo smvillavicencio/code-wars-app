@@ -473,7 +473,7 @@ const ParticipantLayout = ({
 									display: 'flex',
 									flexDirection: {
 										xs: 'column',
-										xl: 'row'
+										lg: 'row'
 									},
 								}}
 							>

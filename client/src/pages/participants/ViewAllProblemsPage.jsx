@@ -84,6 +84,7 @@ const ViewAllProblemsPage = ({ currRound }) => {
 					mx: { xs: 5, xl: 0},
 					width: {xl: '68%'},
 					height: '100%',
+					marginTop: '5vh',
 					display: 'flex'
 				}}
 			>
@@ -121,14 +122,13 @@ const ViewAllProblemsPage = ({ currRound }) => {
 
 					{/* Team Name and Team Score */}
 					<Typography
+						variant="body1"
 						sx={{
 							gap: 1,
+							color: '#fff',
+							alignItems: 'end',
 							display: 'flex',
 							flexDirection: 'column',
-							fontFamily: 'Inter',
-							fontSize: '1.25rem',
-							color: '#fff',
-							alignItems: 'end'
 						}}
 					>
 						<Box sx={{ display:'flex', gap: 2 }}>

@@ -128,12 +128,12 @@ let customTheme = createTheme({
 			color: '#e5ebff',
 			fontFamily: 'Poppins',
 			fontWeight: '400',
-			fontSize: "1.5rem",
-      "@media (max-width:960px)": {
-        fontSize: "1.25rem",
+			fontSize: "1.25rem",
+      "@media (max-width:1200px)": {
+        fontSize: "1.15rem",
       },
       "@media (max-width:600px)": {
-        fontSize: "1.1rem",
+        fontSize: "1rem",
       },
 		},
 
@@ -157,8 +157,8 @@ let customTheme = createTheme({
 			fontFamily: 'Inter',
 			fontWeight: '400',
 			fontSize: "1rem",
-      "@media (max-width:960px)": {
-        fontSize: "1rem",
+      "@media (max-width:1200px)": {
+        fontSize: ".95rem",
       },
       "@media (max-width:600px)": {
         fontSize: ".9rem",

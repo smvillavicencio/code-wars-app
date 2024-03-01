@@ -108,6 +108,7 @@ const PowerUpList = ({
 		if (code == 'dispel') {
 			return <AutoAwesomeIcon
 				sx={{
+					fontSize: '1.25rem',
 					marginLeft: '20px',
 					marginRight: '10px',
 					color: '#85eeff',
@@ -116,6 +117,7 @@ const PowerUpList = ({
 		} else if (code === 'immune' && Object.keys(tier)[0] == 1) {
 			return <LooksOneIcon
 				sx={{
+					fontSize: '1.25rem',
 					marginLeft: '20px',
 					marginRight: '10px',
 					color: '#ff9cee',
@@ -124,6 +126,7 @@ const PowerUpList = ({
 		} else if (code === 'immune' && Object.keys(tier)[0] == 2) {
 			return <LooksTwoIcon
 				sx={{
+					fontSize: '1.25rem',
 					marginLeft: '20px',
 					marginRight: '10px',
 					color: '#b28dff',
@@ -132,6 +135,7 @@ const PowerUpList = ({
 		} else if (code === 'immune' && Object.keys(tier)[0] == 3) {
 			return <Looks3Icon
 				sx={{
+					fontSize: '1.25rem',
 					marginLeft: '20px',
 					marginRight: '10px',
 					color: '#e7ffac',
@@ -140,6 +144,7 @@ const PowerUpList = ({
 		} else if (code === 'immune' && Object.keys(tier)[0] == 4) {
 			return <Looks4Icon
 				sx={{
+					fontSize: '1.25rem',
 					marginLeft: '20px',
 					marginRight: '10px',
 					color: '#97a2ff',
@@ -148,6 +153,7 @@ const PowerUpList = ({
 		} else if (code === 'unchain') {
 			return <NoEncryptionIcon
 				sx={{
+					fontSize: '1.25rem',
 					marginLeft: '20px',
 					marginRight: '10px',
 					color: '#bffcc6',
@@ -156,6 +162,7 @@ const PowerUpList = ({
 		} else if (code === 'stun') {
 			return <ElectricBoltIcon
 				sx={{
+					fontSize: '1.25rem',
 					marginLeft: '20px',
 					marginRight: '10px',
 					color: '#85eeff',
@@ -164,6 +171,7 @@ const PowerUpList = ({
 		} else if (code === 'editor') {
 			return <LaptopChromebookIcon
 				sx={{
+					fontSize: '1.25rem',
 					marginLeft: '20px',
 					marginRight: '10px',
 					color: '#ff9cee',
@@ -172,6 +180,7 @@ const PowerUpList = ({
 		} else if (code === 'frosty') {
 			return <PanToolIcon
 				sx={{
+					fontSize: '1.25rem',
 					marginLeft: '20px',
 					marginRight: '10px',
 					color: '#e7ffac',

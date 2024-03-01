@@ -76,7 +76,7 @@ const generateQuestion = async (req : any, res : any) => {
     const samples = req.body.samples.trim();
     const set = req.body.set.trim();
 
-    var actualSet = ["easy", "medium"].includes(difficulty) ? set : "c";
+    var actualSet = ["easy", "medium"].includes(difficulty) ? set : "a";
 
     const totalQuestions = await Question.find({});
 

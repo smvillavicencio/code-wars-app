@@ -46,7 +46,7 @@ let customTheme = createTheme({
       sm: 600,
       md: 900,
       lg: 1200,
-      xl: 1536,
+			xl: 1536,
     },
   },
 	palette: {
@@ -114,13 +114,13 @@ let customTheme = createTheme({
 			color: '#e5ebff',
 			fontFamily: 'Poppins',
 			fontWeight: '600',
-			fontSize: "2.125rem",
-      "@media (max-width:960px)": {
+			fontSize: "1.75rem",
+      "@media (max-width:1200px)": {
         fontSize: "1.5rem",
       },
       "@media (max-width:600px)": {
-        fontSize: "1.25rem",
-      },
+        fontSize: "1rem",
+			},
 		},
 
 		// topbar subtitle / timer title / buttons / other titles
@@ -128,12 +128,12 @@ let customTheme = createTheme({
 			color: '#e5ebff',
 			fontFamily: 'Poppins',
 			fontWeight: '400',
-			fontSize: "1.5rem",
-      "@media (max-width:960px)": {
-        fontSize: "1.25rem",
+			fontSize: "1.25rem",
+      "@media (max-width:1200px)": {
+        fontSize: "1.15rem",
       },
       "@media (max-width:600px)": {
-        fontSize: "1.1rem",
+        fontSize: "1rem",
       },
 		},
 
@@ -143,7 +143,7 @@ let customTheme = createTheme({
 			fontFamily: 'Inter',
 			fontWeight: '500',
 			fontSize: "1.25rem",
-      "@media (max-width:960px)": {
+      "@media (max-width:1200px)": {
         fontSize: "1.1rem",
       },
       "@media (max-width:600px)": {
@@ -157,8 +157,8 @@ let customTheme = createTheme({
 			fontFamily: 'Inter',
 			fontWeight: '400',
 			fontSize: "1rem",
-      "@media (max-width:960px)": {
-        fontSize: "1rem",
+      "@media (max-width:1200px)": {
+        fontSize: ".95rem",
       },
       "@media (max-width:600px)": {
         fontSize: ".9rem",
@@ -180,4 +180,5 @@ let customTheme = createTheme({
 	},
 });
 
-export const theme = responsiveFontSizes(customTheme);
+// export const theme = responsiveFontSizes(customTheme);
+export const theme = customTheme;

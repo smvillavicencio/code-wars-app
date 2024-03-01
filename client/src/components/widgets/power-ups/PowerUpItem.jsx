@@ -28,7 +28,10 @@ const PowerUpItem = ({ icon, item, handleClick }) => {
 					bgcolor: 'rgba(255, 255, 255, 0.1)',
 					width: '100%',
 					boxShadow: 'inset 0px 5px 5px -5px rgba(0,0,0,0.5)',
-					paddingY: 2,
+					paddingY: {
+						xs: 1.5,
+						lg: 2
+					},
 					borderRadius: '50px',
 					display: 'flex',
 					justifyContent: 'space-between',
@@ -41,7 +44,7 @@ const PowerUpItem = ({ icon, item, handleClick }) => {
 				<Box sx={{ display: 'flex' }} >
 					{icon}
 
-					<Typography sx={{ fontSize: '.9rem', color: 'white.main' }} >
+					<Typography sx={{ fontSize: { xs: '.85rem', lg: '0.9rem' }, color: 'white.main' }} >
 						{item.code === 'immune' ? item.name + " " + Object.keys(item.tier)[0] : item.name}
 					</Typography>
 				</Box>

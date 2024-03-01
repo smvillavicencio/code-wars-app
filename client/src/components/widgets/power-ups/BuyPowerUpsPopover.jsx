@@ -88,7 +88,11 @@ const BuyPowerUpsPopover = ({
 			{isOpen && 
         <Box
         	sx={{
-        		width: '400px',
+						width: {
+							xs: '300px',
+							md: '350px',
+							lg: '400px'
+						},
         		position: 'absolute',
         		top: 0,
         		right: 0,

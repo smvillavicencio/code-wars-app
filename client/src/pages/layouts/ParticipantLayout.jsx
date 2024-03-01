@@ -3,7 +3,13 @@ import { useState, useEffect } from 'react';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { Box, ClickAwayListener, IconButton, Stack } from '@mui/material';
+import {
+	Box,
+	Button,
+	ClickAwayListener,
+	IconButton,
+	Stack
+} from '@mui/material';
 import SubmitModal from 'pages/participants/modals/SubmitModal';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Bounce, toast } from 'react-toastify';
@@ -18,14 +24,30 @@ import {
 	ParticipantsLeaderboard,
 	RoundTimer,
 	SponsorCarousel,
+	Table,
 	TopBar
 } from 'components';
+import getLeaderboard from 'components/widgets/leaderboard/getLeaderboard';
 import { socketClient } from 'socket/socket';
 import { getFetch, postFetch } from 'utils/apiRequest';
 import { baseURL } from 'utils/constants';
 import { columnsLeaderboard, rowsLeaderboard } from 'utils/dummyData';
 import 'react-toastify/dist/ReactToastify.css';
 
+
+
+/**
+ * Additional styling for overall leaderboard modal window.
+ */
+const additionalStyles = {
+	'& .MuiDataGrid-columnHeader': {
+		fontSize: 'h2',
+		bgcolor: 'rgba(0, 0, 0, 0.1)',
+	},
+	bgcolor: 'transparent',
+	border: 'none',
+	padding: 2,
+};
 
 
 /**
@@ -48,6 +70,18 @@ const ParticipantLayout = ({
    * State handler for the opening and closing of submit modal window 
    */
 	const [openModal, setOpenModal] = useState(false);
+		/**
+	 * State handler for currrent round.
+	 */
+	const [currQuestions, setCurrQuestions] = useState([]);
+	/**
+	 * State handler for rows of overall leaderboard.
+	 */
+	const [leaderboardRows, setLeaderboardRows] = useState([]);
+	/**
+	 * State handler for overall leaderboard modal.
+	 */
+	const [openLeaderboard, setOpenLeaderboard] = useState(false);
 	/**
 	 * State handler for team details
 	 * -- need na andito para sa buy power-ups
@@ -56,15 +90,13 @@ const ParticipantLayout = ({
 		teamName: '',
 		score: 0
 	});
-	/**
-	 * State handler for currrent round.
-	 */
-	const [currQuestions, setCurrQuestions] = useState([]);
+
 
 	// used for client-side routing from view all problems page
 	const location = useLocation();
 	// for navigation
 	const navigate = useNavigate();
+
 
 	// used to retrieve values of datagrid row
 	let params = new URLSearchParams(location.search);
@@ -84,15 +116,10 @@ const ParticipantLayout = ({
 	const [samplesInputOutput, setSampleInputOutput] = useState();
 
 
-
-
-
-
 	// page values
 	const problemTitle = params.get('problemTitle');
 	// dummy values
 	const problemSubtitle = 'UPLB Computer Science Society';
-  
 
 
 	useEffect(() => { 
@@ -122,6 +149,7 @@ const ParticipantLayout = ({
 		// 	score: 0
 		// })
 		getTeamScore();
+		fetchLeaderboardData();
 	}, []);
 
 
@@ -133,7 +161,9 @@ const ParticipantLayout = ({
 	}, [currRound]);
 
 
-	// websocket listener for power-ups toast notifs
+	/**
+	 * Web sockets listener for power-ups toast notifs
+	 */
 	useEffect(() => {
 		if (!socketClient) return;
 
@@ -260,7 +290,11 @@ const ParticipantLayout = ({
 			var teamId = JSON.parse(localStorage?.getItem('user'))?._id;
       
 			if (teamId == arg.team_id) {
-				getRoundQuestions();
+				getRoundQuestions();//
+
+				if (location.pathname === '/participant/view-specific-problem') {
+					getQuestionContent();
+				}
 			}
 			getTeamScore();
 		});
@@ -277,6 +311,31 @@ const ParticipantLayout = ({
 		};
 	});
   
+	/**
+	 * Web sockets for real time update of leaderboard
+	 */
+	useEffect(() => { 
+		if(!socketClient) return;
+
+		socketClient.on('evalupdate', () => {
+			fetchLeaderboardData();
+		});
+
+		socketClient.on('updateScoreOnBuyDebuff', () => {
+			fetchLeaderboardData();
+		});
+		
+		socketClient.on('newBuff', () => {
+			fetchLeaderboardData();
+		})
+
+		return () => {
+			socketClient.off('evalupdate');
+			socketClient.off('updateScoreOnBuyDebuff');
+			socketClient.off('newBuff');
+		};
+	});
+
 	/**
 	 * Fetching questions for the current round
 	 */
@@ -352,6 +411,14 @@ const ParticipantLayout = ({
 	};
 
 	/**
+	 * Fetch leaderboard data
+	 */
+	async function fetchLeaderboardData() {
+		let currLeaderboard = await getLeaderboard();
+		setLeaderboardRows(currLeaderboard);
+	}
+	
+	/**
 	 * Handles opening of power-up popover.
 	 */
 	const handleViewPowerUps = (e) => {
@@ -382,7 +449,14 @@ const ParticipantLayout = ({
    */ 
 	const handleButton = () => {
 		setOpenModal(true);
-		console.log(openModal)
+		//console.log(openModal)
+	};
+
+	/**
+   * Handles opening of modal window for overall leaderboard.
+   */
+	const handleOpenLeaderboard = () => {
+		setOpenLeaderboard(true);
 	};
 
 	/**
@@ -405,6 +479,7 @@ const ParticipantLayout = ({
 			console.log(err);
 		}
 	}
+	
 
 	return (
 		<Box
@@ -462,11 +537,14 @@ const ParticipantLayout = ({
 									buttonText="UPLOAD SUBMISSION"
 									startIcon={<FileUploadIcon />}
 									handleButton={handleButton}
-									disabledState={['Pending', 'Correct'].includes(evaluation)}
+									disabledState={
+										currRound.toLowerCase() == 'wager' ?
+										evaluation != 'No Submission' :
+										['Pending', 'Correct'].includes(evaluation)
+									}
 								/>
 							}
 
-							{/* Desktop View -- container for components on the left */}
 							<Box
 								gap={7}
 								sx={{
@@ -477,9 +555,67 @@ const ParticipantLayout = ({
 									},
 								}}
 							>
-                
-								{/* Desktop view */}
-								{/* Timer, Participants Leaderboard and Sponsor's Carousel */}
+
+								{/* Mobile View for laederboard, round timer, sponsor carousel */}
+								<Box
+									sx={{
+										mt: 4,
+										mx: 8,
+										minWidth: 325,
+										display: {
+											xs: 'flex', xl: 'none'
+										},
+										flexDirection: 'row',
+										gap: 7,
+										alignItems: {
+											xs: 'center',
+										},
+										justifyContent: {
+											xs: 'center'
+										},
+									}}
+								>
+									{/* Round Timer and Leaderboard Button */}
+									<Box
+										sx={{
+											gap: 5,
+											display: 'flex',
+											justifyContent: 'center',
+											flexDirection: {
+												xs: 'column',
+												lg: 'column',
+											},
+										}}
+									>
+										<RoundTimer />
+										<Button
+											variant="contained"
+											color="major"
+											onClick={handleOpenLeaderboard}
+											sx={{
+												maxHeight: '5vh',
+												minWidth: 30,
+												'&:hover': {
+													bgcolor: 'major.light',
+													color: 'general.main',
+												},
+												'&:disabled': {
+													bgcolor: 'major.light',
+													color: 'major.contrastText'
+												}
+											}}
+										>
+											Overall Leaderboard
+										</Button>
+									</Box>
+							
+									{/* Sponsors Carousel */}
+									<Box sx={{ width: '100%', display: { xs: 'none', md: 'initial' }}}>
+										<SponsorCarousel />
+									</Box>
+								</Box>
+
+								{/* Desktop View -- container for components on the left */}
 								<Stack
 									spacing={3}
 									sx={{
@@ -487,7 +623,7 @@ const ParticipantLayout = ({
 										mx: 8,
 										minWidth: 325,
 										display: {
-											xs: 'flex', md: 'none', xl: 'flex'
+											xs: 'none', xl: 'flex'
 										}
 									}}
 								>
@@ -495,7 +631,7 @@ const ParticipantLayout = ({
 									<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
 									<SponsorCarousel />
 								</Stack>
-
+								
 								{/* Other components */}
 								<Outlet
 									context={{
@@ -532,6 +668,29 @@ const ParticipantLayout = ({
 							: null
 						}
 
+						{/* Overall Leaderboard Modal Window */}
+						<CustomModal isOpen={openLeaderboard} setOpen={setOpenLeaderboard} windowTitle="Leaderboard">
+							<Table
+								rows={leaderboardRows}
+								columns={columnsLeaderboard}
+								hideFields={['id', 'totalSpent']}
+								additionalStyles={additionalStyles}
+								pageSize={5}
+								pageSizeOptions={[5, 10]}
+								initialState={{
+									pagination: { paginationModel: { pageSize: 5 } },
+								}}
+								// if there are no entries yet
+								slots={{
+									noRowsOverlay: () => (
+										<Stack height="100%" alignItems="center" justifyContent="center">
+											<Typography><em>No records to display.</em></Typography>
+										</Stack>
+									)
+								}}
+							/>
+						</CustomModal>
+
 						{/* Submit Modal Window */}
 						{ location.pathname === '/participant/view-specific-problem' ?
 							<>
@@ -546,6 +705,7 @@ const ParticipantLayout = ({
 											problemSet={problem.set}
 											difficulty={problem.difficulty}
 											currRound={currRound}
+											setEvaluation={setEvaluation}
 										/>
 									</CustomModal>
 									: null

@@ -143,11 +143,15 @@ const  SubmitModal = ({
 				});
 	
 				if (difficulty.toLowerCase() == 'easy' && tResponse.easy_set == problemSet) {
+					console.log("easy legitimate");
 					setCanSubmit(true);
 				}
 				if (difficulty.toLowerCase() == 'medium' && tResponse.medium_set == problemSet) {
+					console.log("medium legitimate");
 					setCanSubmit(true);
 				}
+
+				console.log(file? !canSubmit : true);
 			}
 		}
 		checkLegitimacy();
@@ -308,7 +312,7 @@ const  SubmitModal = ({
 				<Button 
 					type="submit"
 					variant="contained" 
-					disabled={file? canSubmit : true}
+					disabled={file? !canSubmit : true}
 					onClick={handleSubmit}
 					sx={{
 						width: '200px',

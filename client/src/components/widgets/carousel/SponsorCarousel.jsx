@@ -2,7 +2,17 @@
 import Carousel from 'react-material-ui-carousel';
 
 import Item from './CarouselItem';
-import placeholder from 'assets/UPLB COSS.png';
+
+// Company logos
+import azeus from 'assets/Company Logos/Azeus.jpg';
+import broadridge from 'assets/Company Logos/BR_logo_rgb_blue.png'
+import exist from 'assets/Company Logos/exist-logo_high-res.png'
+import kusho from 'assets/Company Logos/KushoLogoWhite.png';
+import sxi from 'assets/Company Logos/SXI Logo 02 Horizontal.png';
+
+// Partner logos
+import cynthia from 'assets/Partner Logos/Cynthia.jpg';
+import tresto from 'assets/Partner Logos/Tresto.jpg';
 
 
 // placeholder for company logos
@@ -10,17 +20,37 @@ var logos = [
 	{
 		id: '1',
 		title: 'Company 1',
-		image: `${placeholder}`,
+		image: `${azeus}`,
 	},
 	{
 		id: '2',
 		title: 'Company 2',
-		image: `${placeholder}`,
+		image: `${broadridge}`,
 	},
 	{
 		id: '3',
 		title: 'Company 3',
-		image: `${placeholder}`,
+		image: `${exist}`,
+	},
+	{
+		id: '4',
+		title: 'Company 3',
+		image: `${kusho}`,
+	},
+	{
+		id: '5',
+		title: 'Company 3',
+		image: `${sxi}`,
+	},
+	{
+		id: '6',
+		title: 'Company 3',
+		image: `${cynthia}`,
+	},
+	{
+		id: '7',
+		title: 'Company 3',
+		image: `${tresto}`,
 	}
 ];
 

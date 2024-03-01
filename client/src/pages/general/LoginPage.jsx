@@ -192,6 +192,10 @@ const LoginPage = () => {
 								'& .MuiFormLabel-root': {
 									color: 'white.main',
 								},
+								// input label when focused
+								"& label.Mui-focused": {
+									color: 'white.main',
+								},
 								'& .MuiFilledInput-root': {
 									// White with reduced opacity
 									color: 'rgba(255, 255, 255, 0.8)',
@@ -262,6 +266,10 @@ const LoginPage = () => {
 								borderTopLeftRadius: '5px',
 								borderTopRightRadius: '5px',
 								'& .MuiFormLabel-root': {
+									color: 'white.main',
+								},
+								// input label when focused
+								"& label.Mui-focused": {
 									color: 'white.main',
 								},
 								'& .MuiFilledInput-root': {

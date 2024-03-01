@@ -1,5 +1,5 @@
 /* eslint-disable */ 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -13,8 +13,6 @@ import {
 import { useNavigate, createSearchParams, useOutletContext } from 'react-router-dom';
 
 import { Table } from 'components/';
-import { postFetch } from 'utils/apiRequest';
-import { baseURL } from 'utils/constants';
 import { columnsProblems } from 'utils/dummyData';
 
 
@@ -144,7 +142,7 @@ const ViewAllProblemsPage = ({ currRound }) => {
 
 				{/* Problem List Table for the round */}
 				<Table
-					rows={currQuestions} //rowsProblems
+					rows={currQuestions}
 					columns={columnsProblems}
 					hideFields={[]}
 					additionalStyles={additionalStyles}

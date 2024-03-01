@@ -19,6 +19,7 @@ import seal from 'assets/UPLB COSS.png';
 import {
 	CustomModal,
 	DropdownSelect,
+	LoadingOverlay,
 	Table,
 	TopBar
 } from 'components/';
@@ -32,7 +33,6 @@ import {
 
 import renderEval from './submission-entries/EvalViewInputCell';
 import EvalEditInputCell from './submission-entries/EvalEditInputCell';
-import Loading from 'components/widgets/screen-overlays/Loading';
 import { socketClient } from 'socket/socket';
 
 import { baseURL } from 'utils/constants';
@@ -561,7 +561,7 @@ const ViewSubmissionsPage = ({
 							}}
 						/>
 					</CustomModal>
-				</Box> : <Loading />
+				</Box> : <LoadingOverlay />
 			}
 		</>
 	);

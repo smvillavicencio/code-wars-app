@@ -13,6 +13,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import {
 	CustomModal,
+	LoadingOverlay,
 	ParticipantsLeaderboard,
 	SponsorCarousel,
 	RoundTimer,
@@ -24,7 +25,6 @@ import {
 } from 'utils/dummyData';
 
 import SubmitModal from './modals/SubmitModal';
-import Loading from 'components/widgets/screen-overlays/Loading';
 import { Bounce, toast } from 'react-toastify';
 import { socketClient } from 'socket/socket';
 import 'react-toastify/dist/ReactToastify.css';
@@ -424,7 +424,7 @@ const ViewSpecificProblemPage = ({
 			</>
 
 		</Stack>
-		: <Loading /> }
+		: <LoadingOverlay /> }
 		</>
 	);
 };

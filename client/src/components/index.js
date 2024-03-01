@@ -4,7 +4,7 @@ import CustomModal from "./ui/CustomModal";
 import DropdownSelect from "./ui/DropdownSelect";
 import ErrorWindow from "./ui/ErrorWindow";
 import FreezeOverlay from "./widgets/screen-overlays/FreezeOverlay";
-import LoadingOverlay from "./widgets/screen-overlays/Loading";
+import LoadingOverlay from "./widgets/screen-overlays/LoadingOverlay";
 import Sidebar from "./ui/Sidebar";
 import SuccessWindow from "./ui/SuccessWindow";
 import Table from "./ui/Table";

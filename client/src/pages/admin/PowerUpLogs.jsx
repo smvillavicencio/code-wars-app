@@ -1,10 +1,8 @@
 /* eslint-disable */ 
 import { useEffect, useState } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
-import { Sidebar, Table } from 'components/';
-import { columnsPowerUpLog, rowsPowerUpLog } from 'utils/dummyData';
-import Loading from 'components/widgets/screen-overlays/Loading';
-import { useNavigate } from 'react-router-dom';
+import { Table } from 'components/';
+import { columnsPowerUpLog } from 'utils/dummyData';
 import { baseURL } from 'utils/constants';
 import { getFetch } from 'utils/apiRequest';
 

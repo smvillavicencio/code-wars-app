@@ -17,6 +17,7 @@ import seal from 'assets/UPLB COSS.png';
 import {
 	BuyPowerUpsPopover,
 	ParticipantsLeaderboard,
+	LoadingOverlay,
 	SponsorCarousel,
 	Table,
 	RoundTimer,
@@ -28,7 +29,6 @@ import {
 	rowsLeaderboard,
 	rowsProblems
 } from 'utils/dummyData';
-import Loading from 'components/widgets/screen-overlays/Loading';
 
 import { baseURL } from 'utils/constants';
 import { postFetch } from 'utils/apiRequest';
@@ -464,7 +464,7 @@ const ViewAllProblemsPage = ({
 							/>
 						</Box>
 					</ClickAwayListener>
-				</> : <Loading />
+				</> : <LoadingOverlay />
 			}
 		</>
 	);

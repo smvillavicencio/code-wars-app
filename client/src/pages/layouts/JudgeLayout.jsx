@@ -129,7 +129,6 @@ const JudgeLayout = ({
 						{/* Overall Leaderboard Modal Window */}
 						<CustomModal isOpen={open} setOpen={setOpen} windowTitle="Leaderboard">
 							<Table
-								// editMode="row" 
 								rows={leaderboardRows}
 								columns={columnsLeaderboard}
 								hideFields={['id', 'totalSpent']}
@@ -138,6 +137,14 @@ const JudgeLayout = ({
 								pageSizeOptions={[5, 10]}
 								initialState={{
 									pagination: { paginationModel: { pageSize: 5 } },
+								}}
+								// if there are no entries yet
+								slots={{
+									noRowsOverlay: () => (
+										<Stack height="100%" alignItems="center" justifyContent="center">
+											<Typography><em>No records to display.</em></Typography>
+										</Stack>
+									)
 								}}
 							/>
 						</CustomModal>

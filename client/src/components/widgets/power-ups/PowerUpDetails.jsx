@@ -251,9 +251,12 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 					<Typography
 						sx={{
 							fontWeight: '60px',
-							fontSize: '12px',
 							color: 'rgba(255, 255, 255, 0.5)',
 							marginLeft: '5px',
+							fontSize: {
+								xs: '0.9rem',
+								lg: '0.95rem',
+							}
 						}}
 					>
 						Back
@@ -262,10 +265,13 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 
 				{/* Power-up name */}
 				<Typography
-					variant="h6"
-					component="h6"
 					sx={{
 						marginBottom: '10px',
+						fontSize: {
+							xs: '0.9rem',
+							lg: '0.95rem',
+						},
+						color: 'white.main'
 					}}
 				>
 					{powerUp.code === 'immune' ? powerUp.name + " " + Object.keys(powerUp.tier)[0] : powerUp.name}
@@ -274,7 +280,10 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 				{/* Power-up description */}
 				<Typography
 					sx={{
-						fontSize: '13px',
+						fontSize: {
+							xs: '0.85rem',
+							xl: '0.9rem'
+						},
 						color: 'rgba(255, 255, 255, 0.5)',
 						fontWeight: '20px',
 						marginBottom: '20px',
@@ -286,7 +295,10 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 				{/* Power-up cost */}
 				<Typography
 					sx={{
-						fontSize: '13px',
+						fontSize: {
+							xs: '0.85rem',
+							xl: '0.9rem'
+						},
 						color: 'rgba(255, 255, 255, 0.5)',
 						fontWeight: '20px',
 						marginBottom: '20px',
@@ -345,6 +357,9 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 								marginTop: '20px',
 								height: '40px',
 								fontSize: '14px',
+								'& disabled': {
+									bgcolor: 'primary.disabled'
+								}
 							}}
 							disabled={activeDebuffs[0] === 'No Active Debuffs'}
 						>
@@ -354,7 +369,11 @@ const PowerUpDetails = ({ type, handleReturn, powerUp }) => {
 					// Buffs only have the buy button					
 					<>
 						{/* Buy button */}
-						<Button variant="contained" onClick={() => handleBuy(powerUp)} sx={{ marginBottom: '20px' }} >
+						<Button
+							variant="contained"
+							onClick={() => handleBuy(powerUp)}
+							sx={{ marginBottom: '20px' }}
+						>
 							<ShoppingCartIcon sx={{ margin: '5px' }} />
 							BUY
 						</Button>

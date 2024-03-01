@@ -1,63 +1,43 @@
 /* eslint-disable */ 
 import {
-	useMemo,
 	useState,
 	useEffect,
 	useRef
 } from 'react';
 
-import ViewListIcon from '@mui/icons-material/ViewList';
 import {
 	Box,
 	MenuItem,
 	Stack,
 	Typography
 } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { cloneDeep } from 'lodash';
+import { Link } from 'react-router-dom';
 
-import seal from 'assets/UPLB COSS.png';
 import {
-	CustomModal,
 	DropdownSelect,
 	Table,
-	TopBar
 } from 'components/';
-
-import getLeaderboard from 'components/widgets/leaderboard/getLeaderboard';
-
+import { socketClient } from 'socket/socket';
+import { getFetch } from 'utils/apiRequest';
+import { baseURL } from 'utils/constants';
 import {
 	columnsSubmissions,
-	columnsLeaderboard,
 } from 'utils/dummyData';
 
-import renderEval from './submission-entries/EvalViewInputCell';
 import EvalEditInputCell from './submission-entries/EvalEditInputCell';
-import Loading from 'components/widgets/screen-overlays/Loading';
-import { socketClient } from 'socket/socket';
-
-import { baseURL } from 'utils/constants';
-import { getFetch } from 'utils/apiRequest';
-import { deepClone } from '@mui/x-data-grid/utils/utils';
-import { clone, cloneDeep } from 'lodash';
-// import { teamsList } from 'utils/dummyData';
+import renderEval from './submission-entries/EvalViewInputCell';
 
 
-// Styling for Leaderboard table
-const additionalStylesLeaderboard = {
-	// modify column header typography
-	'& .MuiDataGrid-columnHeader': {
-		bgcolor: "rgba(0, 0, 0, 0.1)",
-	},
-	bgcolor: 'transparent',
-	border: 'none',
-	padding: 2,
-}
 
-// Styling for Submissions table
+/**
+ * Additional Styling for Submissions table
+ */
 const additionalStylesSubmissions = {
 	backgroundColor: '#fff',
 	paddingX: 2,
-}
+};
+
 
 // temp; options for client-side filtering
 const teamsList = [];
@@ -66,15 +46,8 @@ const questionsList = [];
 
 /**
  * Purpose: Displays the View Submissions Page for judges.
- * Params: None
  */
-const ViewSubmissionsPage = ({
-	isLoggedIn,
-	setIsLoggedIn,
-	checkIfLoggedIn
-}) => {
-	// state handler for overall leaderboard modal
-	const [open, setOpen] = useState(false);
+const ViewSubmissionsPage = ({ isLoggedIn }) => {
 
 	//const [fetchAllPrevious, setFetchAllPrevious] = useState(false);
 	const fetchAllPrevious = useRef(false);
@@ -86,18 +59,43 @@ const ViewSubmissionsPage = ({
 		return <EvalEditInputCell props={params} submissionsList={submissionsList} setSubmissionsList={setSubmissionsList} subListRef={subListRef} />;
 	};
 
-	// state handler for rows of overall leaderboard
-	const [leaderboardRows, setLeaderboardRows] = useState([]);
-
-	// default values are given to make the component a controlled component
-	// state handler for team dropdown select
+	/**
+	 * State handler for team dropdown select
+	 */
 	const [selectedTeam, setSelectedTeam] = useState('');
-	// state handler for problem dropdown select
+	/**
+	 * State handler for problem title dropdown select
+	 */
 	const [selectedProblem, setSelectedProblem] = useState('');
-
-	// state handler for dropdown select options
+	/**
+	 * State handler for dropdown select options
+	 */
 	const [options, setOptions] = useState([]);
 
+
+	useEffect(()=>{
+		console.log(submissionsList);
+	}, [submissionsList]);
+
+
+	useEffect(()=>{
+		handleSocket();
+	}, [fetchAllPrevious]);
+
+
+	useEffect(()=>{
+		if (isLoggedIn) {
+			if (!fetchAllPrevious.current) {
+				fetchAllPrevious.current = true;
+				getSubmissions();
+			}
+		}
+	}, [isLoggedIn]);
+
+
+	/**
+	 * Handles on click event on submitted file for a particular submission entry.
+	 */
 	const handleDownload = (e, params) => {
 		e.preventDefault();
 		console.log(params);
@@ -105,7 +103,7 @@ const ViewSubmissionsPage = ({
 
 		params.row.hasFileDownloaded = true;
 
-		if (params.row.evaluation == "Pending") {
+		if (params.row.evaluation == 'Pending') {
 			console.log(cloneDeep(submissionsList));
 			params.row.isDisabled = false;
 
@@ -117,37 +115,32 @@ const ViewSubmissionsPage = ({
 		} else {
 			params.row.isDisabled = true;
 		}
-	}
+	};
 
-	useEffect(()=>{
-		console.log(submissionsList);
-	}, [submissionsList])
-
+	/**
+	 * Handles downloading of file.
+	 */
 	const downloadFile = (filename, data) => {
 		const blob = new Blob([data]);
-		// if(window.navigator.msSaveOrOpenBlob) {
-		// 	window.navigator.msSaveBlob(blob, filename);
-		// }
-		// else{
-			const elem = window.document.createElement('a');
-			elem.href = window.URL.createObjectURL(blob);
-			elem.download = filename;      
-			elem.style.display = 'none';  
-			document.body.appendChild(elem);
-			elem.click();        
-			document.body.removeChild(elem);
-			window.URL.revokeObjectURL(elem.href);
-		//}
-	}
+		const elem = window.document.createElement('a');
+		elem.href = window.URL.createObjectURL(blob);
+		elem.download = filename;      
+		elem.style.display = 'none';  
+		document.body.appendChild(elem);
+		elem.click();        
+		document.body.removeChild(elem);
+		window.URL.revokeObjectURL(elem.href);
+	};
 
-	// adding dropdown selects for evaluation column of submission table
+	/**
+	 * Rendering cells dropdown selects for uploaded file and evaluation column of submission table
+	 */
 	const modifiedSubmissionColumns = columnsSubmissions.map((obj) => {
 		if (obj.field === 'evaluation') {
 			return {
 				...obj,
 				renderEditCell: renderEvalEditInputCell,
 				renderCell: renderEval,
-				// console.log(params.row.uploadedFile)
 			};
 		}
 		if (obj.field === 'uploadedFile') {
@@ -158,7 +151,7 @@ const ViewSubmissionsPage = ({
 						<Link
 							target="_blank"
 							download
-							onClick={(e) => {handleDownload(e, params)}}
+							onClick={(e) => {handleDownload(e, params);}}
 						>
 							{params.value}
 						</Link>
@@ -166,34 +159,26 @@ const ViewSubmissionsPage = ({
 				}
 			};
 		}
-    return obj;
+		return obj;
 	});
 
 	/**
-	* Purpose: Handles opening of modal window for overall leaderboard.
-	*/
-	const handleButton = () => {
-		setOpen(true);
-	}
-
-	/**
-	* Purpose: Sets state of selectedTeam for filtering.
+	* Sets state of selectedTeam for filtering.
 	*/
 	const handleTeams = (e) => {
 		setSelectedTeam(e.target.value);
-	}
+	};
 
 	/**
-	* Purpose: Sets state of selectedProblem for filtering.
+	* Sets state of selectedProblem for filtering.
 	*/
 	const handleProblems = (e) => {
 		setSelectedProblem(e.target.value);
-	}
+	};
 	
 	
-
 	/**
-	* Purpose: Client-side filtering based on values from the dropdown selects.
+	* Client-side filtering based on values from the dropdown selects.
   * will be replaced if magkakaron ng server-side filtering
 	*/
 	const getFilteredRows = (rowsSubmissions) => {
@@ -211,9 +196,9 @@ const ViewSubmissionsPage = ({
 					// If matched row is not yet in temp, push to temp
 					if (!temp.find(obj => obj.id === row.id)) {
 						temp.push(row);
-					};
+					}
 				}
-			})
+			});
 		}
 		
 		if (selectedProblem != '') {
@@ -225,9 +210,9 @@ const ViewSubmissionsPage = ({
 						// If matched row is not yet in temp2, push to temp
 						if (!temp2.find(obj => obj.id === row.id)) {
 							temp2.push(row);
-						};
+						}
 					}
-				})
+				});
 				return temp2;
 			
 			// if there is no selected team
@@ -238,22 +223,22 @@ const ViewSubmissionsPage = ({
 						// If matched row is not yet in temp2, push to temp
 						if (!temp.find(obj => obj.id === row.id)) {
 							temp.push(row);
-						};
+						}
 					}
-				})
+				});
 				return temp;
 			}
 		}
 		return temp;
-	}
+	};
 
-	// used for client-side routing to other pages
-	const navigate = useNavigate();
-
+	/**
+	 * Real-time updating of submission entries.
+	 */
 	const handleSocket = () => {
 		
 		if (!socketClient) {
-			console.log("There is a problem with the socketClient")
+			console.log('There is a problem with the socketClient');
 			return;
 		} else {
 			//console.log("socketClient is present")
@@ -261,11 +246,9 @@ const ViewSubmissionsPage = ({
 
 		socketClient.on('newupload', (arg)=>{
 			//console.log(subListRef.current);
-			
 
 			if (!presentDbIds.current.includes(arg._id)) {
 				presentDbIds.current.push(arg._id);
-
 
 				let newsubmission = {};
 				newsubmission.id = arg.display_id;
@@ -284,7 +267,6 @@ const ViewSubmissionsPage = ({
 
 				let newSubmissionsList = [];
 				let present = false;
-
 				
 				subListRef.current?.map((submission)=>{
 					//console.log(submission.dbId,"==",newsubmission.dbId);
@@ -308,7 +290,7 @@ const ViewSubmissionsPage = ({
 		});
 
 		socketClient.on('evalupdate', (arg)=>{
-			var judgeId = JSON.parse(localStorage?.getItem("user"))?._id;
+			var judgeId = JSON.parse(localStorage?.getItem('user'))?._id;
 			
 			if (judgeId != arg.judge_id) {
 				//console.log("evalupdate", arg);
@@ -333,7 +315,7 @@ const ViewSubmissionsPage = ({
 						submission.possible_points = arg.possible_points;
 						submission.dbId = arg._id;
 						submission.totalCases = arg.total_test_cases;
-						submission.isDisabled = true
+						submission.isDisabled = true;
 					}
 					newSubmissionsList.push(submission);
 				});
@@ -351,12 +333,15 @@ const ViewSubmissionsPage = ({
 			socketClient.off('evalupdate');
 		};
 
-    }; 
+	}; 
 
+	/**
+	 * Fetching submissions on page mount.
+	 */
 	const getSubmissions = async () => {
 		const submissions = await getFetch(`${baseURL}/getallsubmissions`,);
 
-		let submissionEntries = []
+		let submissionEntries = [];
 
 		if (submissions.results.length > 0) {
 			// map out the entries returned by fetch
@@ -379,18 +364,18 @@ const ViewSubmissionsPage = ({
 
 				// add team name to teamsList
 				if (!teamsList.includes(entry.team_name)) {
-					teamsList.push(entry.team_name)
+					teamsList.push(entry.team_name);
 				}
 				// add problem title to questionsList
 				if (!questionsList.includes(entry.problem_title)) {
-					questionsList.push(entry.problem_title)
+					questionsList.push(entry.problem_title);
 				}
 				
 				presentDbIds.current.push(entry._id);
 
 				// set options for dropdown select filtering
-				setOptions([teamsList, questionsList])
-			})
+				setOptions([teamsList, questionsList]);
+			});
 
 			// setting UI table state
 			setSubmissionsList([...submissionEntries]);
@@ -406,164 +391,78 @@ const ViewSubmissionsPage = ({
 		//setFetchAllPrevious(true);
 		
 		//handleSocket();
-	}
-
-	// console.log(options)
-
-	useEffect(() => { 
-		let usertype = JSON.parse(localStorage?.getItem("user"))?.usertype;
-		if (usertype == "participant") {
-			navigate('/participant/view-all-problems');
-		}
-		else if (usertype == "admin") {
-			navigate('/admin/general');
-		}
-		else if (usertype == "judge") {
-			checkIfLoggedIn();
-		}
-		else {
-			setIsLoggedIn(false);
-		}
-
-		// console.log("teamsList", teamsList)
-		// console.log("submissionsList", submissionsList)
-		// console.log("questionsList", questionsList)
-
-
-		/**
-	   * Fetch overall leaderboard data
-	   */
-		async function fetchData() {
-			let currLeaderboard = await getLeaderboard()
-			setLeaderboardRows(currLeaderboard);
-		}
-
-		fetchData()
-		
-	}, []);
-
-	useEffect(()=>{
-		//console.log("fetchAllPrevious", fetchAllPrevious);
-		handleSocket();
-	}, [fetchAllPrevious]);
-
-	useEffect(()=>{
-		if (isLoggedIn) {
-			if (!fetchAllPrevious.current) {
-				fetchAllPrevious.current = true;
-				getSubmissions();
-			};
-		};
-	}, [isLoggedIn]);
+	};
+	
 	
 	return (
-		<>
-			{ isLoggedIn ?
-				<Box
-					sx={{
-						'& .timeColumn': {
-							fontFamily: 'monospace'
-						}
-					}}
+		<Stack spacing={5} sx={{ mt: 5, mx: 15 }} >
+			
+			{/* Dropdown selects for team name and problem title */}
+			<Box sx={{
+				display: 'flex',
+				flexDirection: 'row',
+				gap: 5,
+			}}>
+				<DropdownSelect
+					isDisabled={false}
+					label="Team Name"
+					minWidth="20%"
+					variant="filled"
+					options={teamsList}
+					handleChange={handleTeams}
+					value={selectedTeam}
 				>
-					<TopBar
-						isImg={true}
-						icon={seal}
-						title="Code Wars"
-						subtitle="UPLB Computer Science Society"
-						buttonText="VIEW LEADERBOARD"
-						startIcon={<ViewListIcon />}
-						handleButton={handleButton}
-					/>
-					
-					<Stack spacing={5} sx={{ mt: 5, mx: 15 }} >
-						
-						{/* Dropdown selects for team name and problem title */}
-						<Box sx={{
-							display: 'flex',
-							flexDirection: 'row',
-							gap: 5,
-						}}>
-							<DropdownSelect
-								isDisabled={false}
-								label="Team Name"
-								minWidth="20%"
-								variant="filled"
-								// options={options[0]}
-								options={teamsList}
-								handleChange={handleTeams}
-								value={selectedTeam}
-							>
-								{/* Empty Value */}
-								<MenuItem value="">
-									<em>All</em>
-								</MenuItem>
-							</DropdownSelect>
-							<DropdownSelect
-								isDisabled={false}
-								minWidth="35%"
-								variant="filled"
-								label="Problem Title"
-								// options={options[1]}
-								options={questionsList}
-								handleChange={handleProblems}
-								value={selectedProblem}
-							>
-								{/* Empty Value */}
-								<MenuItem value="">
-									<em>All</em>
-								</MenuItem>
-							</DropdownSelect>
-						</Box>
+					{/* Empty Value */}
+					<MenuItem value="">
+						<em>All</em>
+					</MenuItem>
+				</DropdownSelect>
 
-						{/* Submission Entry Table */}
-						<Table
-							rows={getFilteredRows(submissionsList)}// useMemo(() => {return getFilteredRows(rowsSubmissions)}, [selectedTeam, selectedProblem] ) // Replaced original for now due to error happening when # of hooks used change between renders
-							columns={modifiedSubmissionColumns}// useMemo(() => {return modifiedSubmissionColumns}, [] )
-							hideFields={[]}
-							additionalStyles={additionalStylesSubmissions}
-							density={"comfortable"}
-							columnHeaderHeight={45}
-							pageSizeOptions={[5, 8]}
-							autoHeight
-							initialState={{
-								pagination: { paginationModel: { pageSize: 8 } },
-							}}
-							getCellClassName={(params) => {
-								if (params.field === 'submittedAt') {
-									return 'timeColumn'
-								}
-							}}
+				<DropdownSelect
+					isDisabled={false}
+					minWidth="35%"
+					variant="filled"
+					label="Problem Title"
+					options={questionsList}
+					handleChange={handleProblems}
+					value={selectedProblem}
+				>
+					{/* Empty Value */}
+					<MenuItem value="">
+						<em>All</em>
+					</MenuItem>
+				</DropdownSelect>
+			</Box>
 
-							// if there are no submission entries yet
-							slots={{
-								noRowsOverlay: () => (
-									<Stack height="100%" alignItems="center" justifyContent="center">
-										<Typography><em>No records to display.</em></Typography>
-									</Stack>
-								)
-							}}
-						/>
-					</Stack>
+			{/* Submission Entry Table */}
+			<Table
+				rows={getFilteredRows(submissionsList)}// useMemo(() => {return getFilteredRows(rowsSubmissions)}, [selectedTeam, selectedProblem] ) // Replaced original for now due to error happening when # of hooks used change between renders
+				columns={modifiedSubmissionColumns}// useMemo(() => {return modifiedSubmissionColumns}, [] )
+				hideFields={[]}
+				additionalStyles={additionalStylesSubmissions}
+				density={'comfortable'}
+				columnHeaderHeight={45}
+				pageSizeOptions={[5, 8]}
+				autoHeight
+				initialState={{
+					pagination: { paginationModel: { pageSize: 8 } },
+				}}
+				getCellClassName={(params) => {
+					if (params.field === 'submittedAt') {
+						return 'timeColumn';
+					}
+				}}
 
-					{/* Overall Leaderboard Modal Window */}
-					<CustomModal isOpen={open} setOpen={setOpen} windowTitle="Leaderboard">
-						<Table
-							editMode="row" 
-							rows={leaderboardRows}
-							columns={columnsLeaderboard}
-							hideFields={['id', 'totalSpent']}
-							additionalStyles={additionalStylesLeaderboard}
-							pageSize={5}
-							pageSizeOptions={[5, 10]}
-							initialState={{
-								pagination: { paginationModel: { pageSize: 5 } },
-							}}
-						/>
-					</CustomModal>
-				</Box> : <Loading />
-			}
-		</>
+				// if there are no submission entries yet
+				slots={{
+					noRowsOverlay: () => (
+						<Stack height="100%" alignItems="center" justifyContent="center">
+							<Typography><em>No records to display.</em></Typography>
+						</Stack>
+					)
+				}}
+			/>
+		</Stack>
 	);
 };
 

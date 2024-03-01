@@ -9,19 +9,21 @@ import { useNavigate } from 'react-router-dom';
 import {
 	SuccessWindow
 } from 'components';
-
-import { socketClient } from 'socket/socket';
-import { baseURL } from 'utils/constants';
-import { postFetch } from 'utils/apiRequest';
 import { ErrorWindow } from 'components';
+import { postFetch } from 'utils/apiRequest';
+import { baseURL } from 'utils/constants';
 
+
+/**
+ * Modal window for file submission.
+ */
 const  SubmitModal = ({ 
 	setOpen,
 	problemId,
 	problemTitle,
 	possiblePoints,
 	totalCases
- }) => {
+}) => {
 	/**
    * State handler for the team's uploaded file.
    */
@@ -34,8 +36,7 @@ const  SubmitModal = ({
 	const navigate = useNavigate();
 
 	/**
-   * Purpose: Allows the file to be dropped in the designated area. Set the current file to the drop file  
-   * Params: <Event> event - current event
+   * Allows the file to be dropped in the designated area. Set the current file to the drop file  
    */
 	const handleDrop = (event) => {
 		event.preventDefault();
@@ -44,8 +45,7 @@ const  SubmitModal = ({
 	};
 
 	/**
-   * Purpose: Called when the BROWSE BUTTON is clicked. Set the uploaded file
-   * Params: <Event> event - current event
+   * Called when the BROWSE BUTTON is clicked. Set the uploaded file
    */
 	const handleFileInputChange = (event) => {
 		const selectedFile = event.target.files[0];
@@ -60,65 +60,50 @@ const  SubmitModal = ({
 	};
 
 	/**
-   * Purpose: Allows the file to be dragged on designated area. Prvent the browser from opening the file 
-   * Params: <Event> event - current event
+   * Allows the file to be dragged on designated area. Prvent the browser from opening the file 
    */
 	const handleDragOver = (event) => {
 		event.preventDefault();
 	};
 
 	/**
-   * Purpose: Handles submission of uploaded file.
-   * Params: <Event> event - current event
+   * Handles submission of uploaded file.
    */
 	const handleSubmit = async () => { 
 		// close submit button modal window
 		setOpen(false);
 
-		// add post request to db here
-		// socketClient.emit("newupload",{
-		// 	filename,
-		// 	content,
-		// 	problemId,
-		// 	problemTitle,
-		// 	possiblePoints,
-		// 	"teamId": JSON.parse(localStorage.getItem("user"))._id,
-		// 	"teamName": JSON.parse(localStorage.getItem("user")).username,
-		// 	totalCases
-		// });
-		//console.log(JSON.parse(localStorage.getItem("user")));
-
 		if (!alreadySubmitted.current) {
-		alreadySubmitted.current = true;
-		let uResponse = await postFetch(`${baseURL}/uploadsubmission`, {
-			filename,
-			content,
-			problemId,
-			problemTitle,
-			possiblePoints,
-			"teamId": JSON.parse(localStorage.getItem("user"))._id,
-			"teamName": JSON.parse(localStorage.getItem("user")).username,
-			totalCases
-		})
-    
-		if (uResponse.success) {
-			// fire success window
-			SuccessWindow.fire({
-				text: 'Successfully submitted file!',
-				html:
-				'<p>You may submit a new file for this problem once the previous file has been graded.</p>'
+			alreadySubmitted.current = true;
+			let uResponse = await postFetch(`${baseURL}/uploadsubmission`, {
+				filename,
+				content,
+				problemId,
+				problemTitle,
+				possiblePoints,
+				'teamId': JSON.parse(localStorage.getItem('user'))._id,
+				'teamName': JSON.parse(localStorage.getItem('user')).username,
+				totalCases
 			});
-		} else {
+    
+			if (uResponse.success) {
+			// fire success window
+				SuccessWindow.fire({
+					text: 'Successfully submitted file!',
+					html:
+				'<p>You may submit a new file for this problem once the previous file has been graded.</p>'
+				});
+			} else {
 			// fire error window
-			ErrorWindow.fire({
-				title: 'Error!',
-				text: 'Upload submission has failed. Please try and submit the file again.'
-			})
-		}
+				ErrorWindow.fire({
+					title: 'Error!',
+					text: 'Upload submission has failed. Please try and submit the file again.'
+				});
+			}
 
 		// navigate to view all problems page
 		// pwede to tanggalin once na maimplement na yung sa websockets ng checking submission
-		navigate('/participant/view-all-problems');
+		// navigate('/participant/view-all-problems');
 		}
 	};
 

@@ -11,25 +11,24 @@ import { socketClient } from 'socket/socket';
 const RoundTimer = ({
 }) => {
 
-	const [seconds, setSec] = useState("00:00");
+	/**
+	 * State handler for the round timer.
+	 */
+	const [seconds, setSec] = useState('00:00');
 
-	// useEffect(()=>{
-	// 	setSec(new Date(seconds * 1000).toISOString().slice(11, 19));
-	// },[])
-
-	// console.log(seconds);
 	useEffect(()=>{
-		socketClient.on("update",(arg)=>{
+		socketClient.on('update',(arg)=>{
 			var formattedSec = new Date(arg.remainingTime * 1000).toISOString().slice(14, 19);
 
 			setSec(formattedSec);
-		})
+		});
 
 		return () => {
-			socketClient.off("update");
-		}
+			socketClient.off('update');
+		};
 	  },[]);
 
+	
 	return (
 		<Box
 			sx={{

@@ -1,5 +1,5 @@
 /* eslint-disable */ 
-import { Box } from "@mui/material";
+import { Box } from '@mui/material';
 
 
 /**
@@ -34,7 +34,7 @@ const Overlay = ({ icon, text }) => {
 			</Box>
 		</Box>
 
-	)
-}
+	);
+};
 
 export default Overlay;

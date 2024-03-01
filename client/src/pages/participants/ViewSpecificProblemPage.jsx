@@ -45,7 +45,7 @@ const ViewSpecificProblemPage = () => {
 			<Stack
 				spacing={5}
 				sx={{
-					mt: { xs: 3, md: 4, lg: 6 },
+					// mt: { xs: 3, md: 4, lg: 6 },
 					mr: { xl: 7 },
 					justifySelf: 'center',
 					height: '100%',

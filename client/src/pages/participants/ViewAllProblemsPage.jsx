@@ -14,6 +14,7 @@ import { useNavigate, createSearchParams, useOutletContext } from 'react-router-
 
 import { Table } from 'components/';
 import { columnsProblems } from 'utils/dummyData';
+import { rowsProblems } from 'utils/dummyData';
 
 
 /**
@@ -70,6 +71,13 @@ const ViewAllProblemsPage = ({ currRound }) => {
 		});
 	};
 
+	/**
+	 * Fetch leaderboard data
+	 */
+		async function fetchData() {
+			let currLeaderboard = await getLeaderboard();
+			setLeaderboardRows(currLeaderboard);
+		}
 
 	return (
 		<Box
@@ -94,7 +102,8 @@ const ViewAllProblemsPage = ({ currRound }) => {
 				sx={{
 					px: { xs: 8, xl: 0 },
 					mx: { xs: 5, xl: 0},
-					mt: { xs: 3, md: 4, lg: 6 },
+					// mt: { xs: 3, md: 4, lg: 6 },
+					mt: { xs: 0, xl: 6},
 					pr: { xl: 7 },
 					height: '100%',
 					width: { xs: '100%'},
@@ -102,7 +111,25 @@ const ViewAllProblemsPage = ({ currRound }) => {
 			>
 				
 				{/* Container for round buttons and team name + score */}
-				<Box sx={{ display: 'flex', px: { xs: '3em', xl: '0' }, justifyContent: 'space-between' }}>
+				<Box
+					sx={{
+						px: {
+							xs: '3em',
+							xl: '0'
+						},
+						display: 'flex',
+						flexDirection: {
+							xs: 'column',
+							md: 'row'
+						},
+						justifyContent: {
+							sx: 'initial',
+							md: 'space-between',
+						},
+						gap: 4
+					}}
+				>
+					{/* Round buttons */}
 					<Box sx={{ display: 'flex', gap: 3, height: '70%', alignSelf: 'center' }}>
 						{rounds.map((round, idx) => 
 							<Button
@@ -134,13 +161,29 @@ const ViewAllProblemsPage = ({ currRound }) => {
 
 					{/* Team Name and Team Score */}
 					<Typography
-						variant="body1"
 						sx={{
-							gap: 1,
+							gap: {
+								xs: 10,
+								md: 1
+							},
 							color: '#fff',
-							alignItems: 'end',
 							display: 'flex',
-							flexDirection: 'column',
+							fontSize: {
+								xs: '1rem',
+								lg: '1.15rem'
+							},
+							flexDirection: {
+								xs: 'row',
+								md: 'column'
+							},
+							alignItems: {
+								xs: 'center',
+								md: 'end',
+							},
+							justifyContent: {
+								xs: 'center',
+								md: 'initial'
+							},
 						}}
 					>
 						<Box sx={{ display:'flex', gap: 2 }}>
@@ -157,15 +200,16 @@ const ViewAllProblemsPage = ({ currRound }) => {
 				{/* Problem List Table for the round */}
 				<Table
 					rows={currQuestions}
+					// rows={rowsProblems}
 					columns={columnsProblems}
 					hideFields={[]}
 					additionalStyles={additionalStyles}
 					onRowClick={handleRowClick}
-					pageSizeOptions={[5, 10]}
+					pageSizeOptions={[3, 6]}
 					autoHeight={true}
-					pageSize={10}
+					pageSize={6}
 					initialState={{
-						pagination: { paginationModel: { pageSize: 10 } },
+						pagination: { paginationModel: { pageSize: 6 } },
 					}}
 				/>
 			</Stack>

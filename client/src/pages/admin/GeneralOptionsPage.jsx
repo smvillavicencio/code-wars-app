@@ -319,6 +319,14 @@ const GeneralOptionsPage = ({
 							initialState={{
 								pagination: { paginationModel: { pageSize: 5 } },
 							}}
+							// if there are no entries yet
+							slots={{
+								noRowsOverlay: () => (
+									<Stack height="100%" alignItems="center" justifyContent="center">
+										<Typography><em>No records to display.</em></Typography>
+									</Stack>
+								)
+							}}
 						/>
 					</Box>
 				</Box>

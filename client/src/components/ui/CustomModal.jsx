@@ -63,7 +63,7 @@ const CustomModal = ({
 
 						padding: 4,
 						minWidth: '25%',
-						maxWidth: '75%', // para sa if empty leaderboard
+						maxWidth: '75%', 		// for empty leaderboard
 						borderRadius: '10px',
 						bgcolor: 'rgba(255, 255, 255)',
 					}}
@@ -81,6 +81,7 @@ const CustomModal = ({
 							variant="h5"
 							sx={{
 								fontFamily: 'Inter',
+								fontWeight: '600',
 								color: 'general.main'
 							}}
 						>

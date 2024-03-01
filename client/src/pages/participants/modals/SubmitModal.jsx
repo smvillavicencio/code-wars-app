@@ -142,16 +142,23 @@ const  SubmitModal = ({
 					id: user._id
 				});
 	
-				if (difficulty.toLowerCase() == 'easy' && tResponse.easy_set == problemSet) {
+				if (difficulty.toLowerCase() == 'easy' && (
+					tResponse.easy_set == problemSet ||
+					tResponse.easy_set == 'c'
+				)) {
 					console.log("easy legitimate");
 					setCanSubmit(true);
 				}
-				if (difficulty.toLowerCase() == 'medium' && tResponse.medium_set == problemSet) {
+				if (difficulty.toLowerCase() == 'medium' && (
+					tResponse.medium_set == problemSet ||
+					tResponse.medium_set == 'c'
+				)) {
 					console.log("medium legitimate");
 					setCanSubmit(true);
 				}
 
-				console.log(file? !canSubmit : true);
+				//console.log(difficulty, tResponse, problemSet);
+				//console.log(file? !canSubmit : true);
 			}
 		}
 		checkLegitimacy();

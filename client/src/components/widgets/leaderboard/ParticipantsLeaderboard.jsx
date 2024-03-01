@@ -13,6 +13,7 @@ import { CustomModal, Table } from 'components';
 import { columnsLeaderboard } from 'utils/dummyData';
 
 import getLeaderboard from './getLeaderboard';
+import { socketClient } from 'socket/socket';
 
 
 /**
@@ -47,13 +48,33 @@ const ParticipantsLeaderboard = () => {
 	 * Fetch overall leaderboard data
 	 */
 	useEffect(() => { 
-		async function fetchData() {
-			let currLeaderboard = await getLeaderboard();
-			setLeaderboardRows(currLeaderboard);
-		}
-
 		fetchData();
 	}, []);
+	
+	/**
+	 * Web sockets for real time update
+	 */
+	useEffect(() => { 
+		if(!socketClient) return;
+
+		socketClient.on('evalupdate', () => {
+			fetchData();
+		});
+
+		socketClient.on('updateScoreOnBuyDebuff', () => {
+			fetchData();
+		});
+		
+		socketClient.on('newBuff', () => {
+			fetchData();
+		})
+
+		return () => {
+			socketClient.off('evalupdate');
+			socketClient.off('updateScoreOnBuyDebuff');
+			socketClient.off('newBuff');
+		};
+	});
 
 	/**
 	* Handles opening of modal window for overall leaderboard.
@@ -62,6 +83,13 @@ const ParticipantsLeaderboard = () => {
 		setOpen(true);
 	};
 
+	/**
+	 * Fetch leaderboard data
+	 */
+	async function fetchData() {
+		let currLeaderboard = await getLeaderboard();
+		setLeaderboardRows(currLeaderboard);
+	}
 
 	return (
 		<Box

@@ -25,7 +25,8 @@ const  SubmitModal = ({
 	totalCases,
 	problemSet,
 	difficulty,
-	currRound
+	currRound,
+	setEvaluation
 }) => {
 	/**
    * State handler for the team's uploaded file.
@@ -113,6 +114,7 @@ const  SubmitModal = ({
 			}
     
 			if (uResponse.success) {
+				setEvaluation("Pending");
 			// fire success window
 				SuccessWindow.fire({
 					text: 'Successfully submitted file!',
@@ -154,6 +156,9 @@ const  SubmitModal = ({
 					tResponse.medium_set == 'c'
 				)) {
 					console.log("medium legitimate");
+					setCanSubmit(true);
+				}
+				if (['wager','hard'].includes(difficulty.toLowerCase())) {
 					setCanSubmit(true);
 				}
 

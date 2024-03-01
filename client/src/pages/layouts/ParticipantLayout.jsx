@@ -21,7 +21,7 @@ import {
 	TopBar
 } from 'components';
 import { socketClient } from 'socket/socket';
-import { getFetch } from 'utils/apiRequest';
+import { getFetch, postFetch } from 'utils/apiRequest';
 import { baseURL } from 'utils/constants';
 import { columnsLeaderboard, rowsLeaderboard } from 'utils/dummyData';
 
@@ -47,6 +47,15 @@ const ParticipantLayout = ({
    * State handler for the opening and closing of submit modal window 
    */
 	const [openModal, setOpenModal] = useState(false);
+	/**
+	 * State handler for team details
+	 * -- need na andito para sa buy power-ups
+	 */
+	const [teamDetails, setTeamDetails] = useState({
+		teamName: '',
+		score: 0
+	});
+
 
 	// used for client-side routing from view all problems page
 	const location = useLocation();
@@ -56,7 +65,6 @@ const ParticipantLayout = ({
 	// used to retrieve values of datagrid row
 	let params = new URLSearchParams(location.search);
   
-
 	// array for round where buy power-ups button should be disabled
 	const roundsDisablePowerUps = ['start', 'easy', 'wager'];
 
@@ -65,11 +73,15 @@ const ParticipantLayout = ({
 	const [seeDetails, setSeeDetails] = useState(false);
 	const [selectedPowerUp, setSelectedPowerUp] = useState(null);
   
-	const [problem, setProblem] = useState();
-
+	// states to be passed to view specific problem page
 	const [evaluation, setEvaluation] = useState();
+	const [problem, setProblem] = useState();
+	const [problemDescription, setProblemDescription] = useState();
+	const [samples, setSampleInputOutput] = useState();
 
+	
 
+	
 	// page values
 	const problemTitle = params.get('problemTitle');
 	// dummy values
@@ -92,7 +104,20 @@ const ParticipantLayout = ({
 			setIsLoggedIn(false);
 		}
     
+
+		// fetch and set team details
+		// team score is updated when:
+				// a submission entry of the team is checked
+				// points are used to buy power-ups
+				// for wager round
+
+		// sample team details
+		setTeamDetails({
+			teamName: 'Team One',
+			score: 10
+		})
 	}, []);
+
 
 	useEffect(() => {
 		setSeeDetails(false);
@@ -234,6 +259,26 @@ const ParticipantLayout = ({
 		};
 	});
   
+	/**
+	 * Fetching problem description.
+	 */
+	const getQuestionContent = async () => {
+		console.log(params.get('id'))
+		const qResponse = await postFetch(`${baseURL}/viewquestioncontent`, {
+			problemId: params.get('id'),
+			teamId: JSON.parse(localStorage?.getItem('user'))._id
+		});
+
+		console.log("qResponse")
+		console.log(qResponse);
+
+		setProblem(qResponse.question);
+		setProblemDescription(qResponse.question.body);
+		setEvaluation(qResponse.evaluation);
+		// setSampleInput(qResponse.question.sample_input);
+		// setSampleOutput(qResponse.question.sample_output);
+		setSampleInputOutput(qResponse.question.samples);
+	};
 
 	/**
 	 * Handles opening of power-up popover.
@@ -266,6 +311,7 @@ const ParticipantLayout = ({
    */ 
 	const handleButton = () => {
 		setOpenModal(true);
+		console.log(openModal)
 	};
   
 
@@ -360,7 +406,17 @@ const ParticipantLayout = ({
 								</Stack>
 
 								{/* Other components */}
-								<Outlet context={[problem, setProblem]} />
+								<Outlet
+									context={{
+										teamInfo: teamDetails,
+										setTeamInfo: setTeamDetails,
+										problemDesc: problemDescription,
+										setProblemDesc: setProblemDescription,
+										samp: samples,
+										setSamples: setSampleInputOutput,
+										fetchContent: getQuestionContent
+									}}	
+								/>
 							</Box>
 						</Stack>
 
@@ -386,13 +442,13 @@ const ParticipantLayout = ({
 						{/* Submit Modal Window */}
 						{ location.pathname === '/participant/view-specific-problem' ?
 							<>
-								{ problem ?
+								{problem ?
 									<CustomModal isOpen={openModal} setOpen={setOpenModal} windowTitle="Upload your answer">
-										<SubmitModal 
-											setOpen={setOpenModal} 
-											problemId={problem._id} 
-											problemTitle={problem.title} 
-											possiblePoints={problem.points} 
+										<SubmitModal
+											setOpen={setOpenModal}
+											problemId={problem._id}
+											problemTitle={problem.title}
+											possiblePoints={problem.points}
 											totalCases={problem.total_cases}
 										/>
 									</CustomModal>

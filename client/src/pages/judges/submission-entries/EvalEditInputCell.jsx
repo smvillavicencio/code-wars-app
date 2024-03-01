@@ -16,7 +16,11 @@ import EvaluationModal from '../modals/EvaluationModal';
 /**
  * Purpose: Displays dropdown select on evaluation column for submissions table when a row is in edit mode.
  */
-export default function EvalEditInputCell({props, submissionsList, setSubmissionsList, subListRef}) {
+export default function EvalEditInputCell({ props, submissionsList, setSubmissionsList, subListRef }) {
+	// console.log(props)
+	// get values from props
+	const { id, value, field, hasFocus, row } = props;
+
 	/**
 	 * Initial state should be the same as the value held by view state.
 	 */
@@ -45,10 +49,6 @@ export default function EvalEditInputCell({props, submissionsList, setSubmission
 	const apiRef = useGridApiContext();
 	const ref = useRef();
 
-	// console.log(props)
-
-	// get values from props
-	const { id, value, field, hasFocus, row } = props;
 
 
 	/**
@@ -99,7 +99,7 @@ export default function EvalEditInputCell({props, submissionsList, setSubmission
 
 				// ask for confirmation of action
 				ConfirmWindow.fire({
-					text: 'Are you sure you want to choose ' + `${currVal}` + ' as the evaluation?',
+					html: 'Are you sure you want to choose ' + `${currVal}` + ' as the evaluation?<br /><br />Submitted evaluations are final and irreversible.',
 				
 				}).then((res) => {
 					let judgeID = JSON.parse(localStorage?.getItem('user'))?._id;

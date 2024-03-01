@@ -10,7 +10,7 @@ import {
 	Tooltip,
 	Typography,
 } from '@mui/material';
-import { useNavigate, createSearchParams } from 'react-router-dom';
+import { useNavigate, createSearchParams, useOutletContext } from 'react-router-dom';
 
 import { Table } from 'components/';
 import { postFetch } from 'utils/apiRequest';
@@ -38,12 +38,9 @@ const ViewAllProblemsPage = ({ currRound }) => {
 	/**
 	 * State handler for team details.
 	 */
-	const [teamDetails, setTeamDetails] = useState({
-		teamName: 'Team 1',
-		score: 0
-	});
-	
+	const { teamInfo, setTeamInfo } = useOutletContext();
 
+	
 	// options for round labels
 	const rounds = ['EASY', 'MEDIUM', 'WAGER', 'HARD'];
 	// used for client-side routing to other pages
@@ -55,11 +52,6 @@ const ViewAllProblemsPage = ({ currRound }) => {
 	}, [currRound]);
 
 
-	useEffect(() => {
-		// get relevant team details here
-	}, [])
-
-	
 	/**
 	 * Fetching questions for the current round
 	 */
@@ -190,11 +182,11 @@ const ViewAllProblemsPage = ({ currRound }) => {
 					>
 						<Box sx={{ display:'flex', gap: 2 }}>
 							<span style={{ fontWeight: '500' }}>Team Name:</span>
-							<span style={{ fontWeight: '300' }}>{teamDetails.teamName}</span>
+							<span style={{ fontWeight: '300' }}>{teamInfo.teamName}</span>
 						</Box>
 						<Box sx={{ display:'flex', gap: 2 }}>
 							<span style={{ fontWeight: '500' }}>Current Score:</span>
-							<span style={{ fontWeight: '300' }}>{teamDetails.score}</span>
+							<span style={{ fontWeight: '300' }}>{teamInfo.score}</span>
 						</Box>
 					</Typography>
 				</Box>

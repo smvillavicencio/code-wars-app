@@ -1,15 +1,12 @@
 /* eslint-disable */ 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import {
 	Box,
 	Stack,
 	Typography,
 } from '@mui/material';
-import { useLocation } from 'react-router-dom';
-
-import { postFetch } from 'utils/apiRequest';
-import { baseURL } from 'utils/constants';
+import { useOutletContext } from 'react-router-dom';
 
 
 /**
@@ -17,45 +14,18 @@ import { baseURL } from 'utils/constants';
  */
 const ViewSpecificProblemPage = () => {
 
-	// used for client-side routing from view all problems page
-	const location = useLocation();
-	
-	// used to retrieve values of datagrid row
-	let params = new URLSearchParams(location.search);
+	const {
+		problemDesc,
+		setProblemDesc,
+		samples,
+		setSamples, 
+		fetchContent
+	} = useOutletContext();
 
-	
-	const [problem, setProblem] = useState();
-	const [problemDescription, setProblemDescription] = useState();
-	const [sampleInput, setSampleInput] = useState('');
-	const [sampleOutput, setSampleOutput] = useState('');
 
-	const [evaluation, setEvaluation] = useState();
-	const [samples, setSampleInputOutput] = useState();
-	
-	
 	useEffect(() => {
-		getQuestionContent();
+		fetchContent();
 	}, []);
-
-
-	/**
-	 * Fetching problem description.
-	 */
-	const getQuestionContent = async () => {
-		const qResponse = await postFetch(`${baseURL}/viewquestioncontent`, {
-			problemId: params.get('id'),
-			teamId: JSON.parse(localStorage?.getItem('user'))._id
-		});
-
-		setProblem(qResponse.question);
-		setProblemDescription(qResponse.question.body);
-		setEvaluation(qResponse.evaluation);
-		// setSampleInput(qResponse.question.sample_input);
-		// setSampleOutput(qResponse.question.sample_output);
-		setSampleInputOutput(qResponse.question.samples);
-
-		console.log(qResponse);
-	};
 
 
 	return (
@@ -80,7 +50,7 @@ const ViewSpecificProblemPage = () => {
 						// width: '100%'
 					}}
 				>
-					<Typography paragraph>{problemDescription}</Typography>
+					<Typography paragraph>{problemDesc}</Typography>
 					<a href={samples} target="_blank" rel="noopener noreferrer">
 							Click here for sample inputs and outputs
 					</a>

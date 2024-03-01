@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { useState, useEffect } from "react";
 
-import { Box, ClickAwayListener } from "@mui/material";
+import { Box } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import ViewListIcon from '@mui/icons-material/ViewList';
 
@@ -82,10 +82,6 @@ const JudgeLayout = ({
 	*/
 	const handleButton = () => {
 		setOpen(true);
-  }
-  
-  const handleClickAway = () => {
-    setOpen(false);
   }
   
   return (

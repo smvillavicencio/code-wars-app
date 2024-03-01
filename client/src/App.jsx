@@ -9,6 +9,7 @@ import GeneralBackground from 'assets/GeneralBackground.png';
 import { FreezeOverlay, ToastContainerConfig } from 'components';
 import {
 	AdminLayout,
+	JudgeLayout,
 	LoginPage,
 	GeneralOptionsPage,
 	PowerUpLogs,
@@ -191,8 +192,21 @@ function App() {
 								//seconds={sec}
 									/>} />
 						<Route path="participant/view-specific-problem" element={<ViewSpecificProblemPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
-						<Route path="judge/submissions" element={<ViewSubmissionsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
 
+						{/* Judge Pages */}
+						<Route
+							element={
+								<JudgeLayout
+									freezeOverlay={freezeOverlay}
+									isLoggedIn={isLoggedIn}
+									setIsLoggedIn={setIsLoggedIn} 
+									checkIfLoggedIn={checkIfLoggedIn} 
+								/>
+							}
+						>
+							<Route path="judge/submissions" element={<ViewSubmissionsPage isLoggedIn={isLoggedIn} />} />
+						</Route>
+						
 						{/* Admin Pages */}
 						<Route element={
 							<AdminLayout

@@ -99,7 +99,7 @@ export default function EvalEditInputCell({ props, submissionsList, setSubmissio
 
 				// ask for confirmation of action
 				ConfirmWindow.fire({
-					text: 'Are you sure you want to choose ' + `${currVal}` + ' as the evaluation?',
+					html: 'Are you sure you want to choose ' + `${currVal}` + ' as the evaluation?<br /><br />Submitted evaluations are final and irreversible.',
 				
 				}).then((res) => {
 					let judgeID = JSON.parse(localStorage?.getItem('user'))?._id;

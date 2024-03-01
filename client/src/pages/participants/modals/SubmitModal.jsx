@@ -103,7 +103,7 @@ const  SubmitModal = ({
 
 		// navigate to view all problems page
 		// pwede to tanggalin once na maimplement na yung sa websockets ng checking submission
-		// navigate('/participant/view-all-problems');
+		navigate('/participant/view-all-problems');
 		}
 	};
 

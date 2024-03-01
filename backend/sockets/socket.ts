@@ -67,7 +67,7 @@ io.on("connection", (socket: any) => {
       // check if buff is existing to prevent stacking of buffs
       if(team.active_buffs.some((buff: any) => buff._id == powerUp._id)) {
         socket.emit("scenarioCheckerBuff", 'existing');
-      } else if ((powerUp.code === 'immune' && tier_no == '4' && team.score < 1.1*team.score + powerUp.tier[tier_no].cost)){ // check if it affords immunity tier 4
+      } else if ((powerUp.code === 'immune' && tier_no == '4' && team.score < 0.1*team.score + powerUp.tier[tier_no].cost)){ // check if it affords immunity tier 4
         socket.emit("scenarioCheckerBuff", 'insufficient_funds');
       } else if (team.score < powerUp.tier[tier_no].cost) { // check if it affords other buffs
         socket.emit("scenarioCheckerBuff", 'insufficient_funds');
@@ -126,7 +126,7 @@ io.on("connection", (socket: any) => {
           if (powerUp.code === 'immune'){
             // cost of immunity tier 4
             if(tier_no === '4'){
-              cost = 1.1*team.score + powerUp.tier[tier_no].cost;
+              cost = 0.1*team.score + powerUp.tier[tier_no].cost;
             }
           
             const info: PowerupInfo = {

@@ -473,8 +473,6 @@ const ParticipantLayout = ({
 									}
 								/>
 							}
-
-							{/* Desktop View -- container for components on the left */}
 							<Box
 								gap={7}
 								sx={{
@@ -485,9 +483,7 @@ const ParticipantLayout = ({
 									},
 								}}
 							>
-                
-								{/* Desktop view */}
-								{/* Timer, Participants Leaderboard and Sponsor's Carousel */}
+								{/* Desktop View -- container for components on the left */}
 								<Stack
 									spacing={3}
 									sx={{

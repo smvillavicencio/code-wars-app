@@ -92,8 +92,8 @@ const ViewAllProblemsPage = ({ currRound }) => {
 			<Stack
 				spacing={5}
 				sx={{
-					px: { xs: 8, md: 5, xl: 0 },
-					mx: { lg: 5, xl: 0},
+					px: { xs: 8, xl: 0 },
+					mx: { xs: 5, xl: 0},
 					mt: { xs: 3, md: 4, lg: 6 },
 					pr: { xl: 7 },
 					height: '100%',
@@ -102,7 +102,7 @@ const ViewAllProblemsPage = ({ currRound }) => {
 			>
 				
 				{/* Container for round buttons and team name + score */}
-				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+				<Box sx={{ display: 'flex', px: { xs: '3em', xl: '0' }, justifyContent: 'space-between' }}>
 					<Box sx={{ display: 'flex', gap: 3, height: '70%', alignSelf: 'center' }}>
 						{rounds.map((round, idx) => 
 							<Button

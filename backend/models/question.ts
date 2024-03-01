@@ -7,7 +7,8 @@ const QuestionSchema = new mongoose.Schema({
     difficulty: { type: String, required: true },
     total_cases: { type: Number, required: true },
     display_id: { type: Number, required: true },
-    samples: {type: String, required: true}
+    samples: {type: String, required: true},
+    set: {type: String, required: true}
     // sample_input: { type: Array, required: true },
     // sample_output: { type: Array, required: true }
 });

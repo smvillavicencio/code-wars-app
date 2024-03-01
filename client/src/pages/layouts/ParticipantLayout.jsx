@@ -304,7 +304,7 @@ const ParticipantLayout = ({
 		await Promise.all(
 			qResponse.questions?.map( async (question)=>{
 				let formattedQuestion = {};
-				formattedQuestion.problemTitle = question.title;
+				formattedQuestion.problemTitle = `(SET ${question.set.toUpperCase()}) ${question.title}`;
 				formattedQuestion.id = question.display_id;
 				counter += 1;
 				formattedQuestion.dbId = question._id;

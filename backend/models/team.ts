@@ -12,6 +12,9 @@ export interface Team extends Document {
   active_buffs: PowerupInfo[];
   activated_powerups: PowerupInfo[];
   debuffs_received: PowerupInfo[];
+
+  easy_set: string;
+  medium_set: string;
 }
 
 const TeamSchema = new mongoose.Schema<Team>({
@@ -24,6 +27,9 @@ const TeamSchema = new mongoose.Schema<Team>({
   active_buffs: { type: [Object], required: true },
   activated_powerups: {type: [Object], required: true},
   debuffs_received: { type: [Object], required: true },
+
+  easy_set: { type: String, required: true },
+  medium_set: { type: String, required: true },
 });
 
 /*

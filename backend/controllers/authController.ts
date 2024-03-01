@@ -57,6 +57,9 @@ const signup = async (req: Request, res: Response) => {
       // available_powerups: [],
       debuffs_received: [],
       // debuffs_from: []
+
+      easy_set: "c",
+      medium_set: "c"
     });
   }
   else if (intendedUserType == "judge") {

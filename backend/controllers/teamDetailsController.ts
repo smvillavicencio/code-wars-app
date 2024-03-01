@@ -46,4 +46,23 @@ const getTeamDetailsById = async (req: Request, res: Response) => {
     }
 }
 
-export { getAllTeams, getTeamDetailsById };
+const getTeamSets = async (req: Request, res: Response) => {
+
+    try {
+        const results = await Team.findById(req.body.id);
+
+
+        return res.send({
+            success: true,
+            easy_set: results.easy_set,
+            medium_set: results.medium_set
+        }); 
+    } catch (error) {
+        return res.send({
+            success: false,
+            message: error
+        });
+    }
+}
+
+export { getAllTeams, getTeamDetailsById, getTeamSets };

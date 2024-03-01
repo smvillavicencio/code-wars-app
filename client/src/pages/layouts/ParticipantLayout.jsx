@@ -42,8 +42,12 @@ const ParticipantLayout = ({
   /**
 	 * State handler for viewing buy power-up popover
 	 */
-  const [open, setOpen] = useState(false);
-  
+  const [openPopover, setOpenPopover] = useState(false);
+  /**
+   * State handler for the opening and closing of submit modal window 
+   */
+	const [openModal, setOpenModal] = useState(false);
+
   // used for client-side routing from view all problems page
   const location = useLocation();
   // for navigation
@@ -83,12 +87,12 @@ const ParticipantLayout = ({
 		else if (usertype == "admin") {
 			navigate('/admin/general');
 		}
-    else if (usertype == "team") {
+    else if (usertype == "team" || usertype == "participant") {
       console.log("hereee");
       checkIfLoggedIn();	
       // console.log(checkIfLoggedIn());
-		}
-		else {
+    }
+    else {
 			setIsLoggedIn(false);
     }
     
@@ -102,141 +106,145 @@ const ParticipantLayout = ({
 	}, [currRound]);
 
 
-	// websocket listener for power-ups toast notifs
-	useEffect(() => {
-		if (!socketClient) return;
+  // websocket listener for power-ups toast notifs
+  useEffect(() => {
+    if (!socketClient) return;
 
-		const user = JSON.parse(localStorage?.getItem("user"));
-		socketClient.emit("join", user);
-		socketClient.emit("getActivePowerups");
+    const user = JSON.parse(localStorage?.getItem("user"));
+    socketClient.emit("join", user);
+    socketClient.emit("getActivePowerups");
 
-		socketClient.on("startRound", () => {
-			socketClient.emit("activateImmunity", user._id);
-		});
-
-		socketClient.on("fetchActivePowerups", async() => {
-			const res = await getFetch(`${baseURL}/teams/${user._id}`);
-			
-			const active_buffs = res.team.active_buffs;
-			const active_debuffs = res.team.debuffs_received;
-
-			active_buffs.map((buff) => {
-				const startTime = new Date(buff.startTime);
-				const endTime = new Date(buff.endTime);
-
-				if(new Date(startTime.getTime() + buff.duration).getTime() == endTime.getTime()){
-					const duration = new Date(buff.endTime) - new Date();
-					
-					toast.info('🚀 New buff ' + buff.name + ' applied on your team!', {
-						toastId: buff._id,
-						position: "bottom-right",
-						autoClose: duration,
-						hideProgressBar: false,
-						closeOnClick: false,
-						pauseOnHover: false,
-						draggable: false,
-						progress: undefined,
-						theme: "dark",
-						transition: Bounce,
-					});
-				}
-			});
-			
-			active_debuffs.map((debuff) => {
-				if(debuff.endTime){
-					const duration = new Date(debuff.endTime) - new Date();
-
-					toast.warn('New debuff ' + debuff.name + ' has been applied to your team!', {
-						toastId: debuff._id,
-						position: "bottom-right",
-						autoClose: duration,
-						hideProgressBar: false,
-						closeOnClick: false,
-						pauseOnHover: false,
-						draggable: false,
-						progress: undefined,
-						theme: "dark",
-						transition: Bounce,
-					});
-				}
-			});
-		});
-
-		// listener for buffs
-		socketClient.on("newBuff", (powerUp) => {
-			let duration = powerUp.duration;
-			const powerUpName = powerUp.name;
-			
-			if(duration === undefined){
-				const tierKey = Object.keys(powerUp.tier)[0];
-				duration = powerUp.tier[tierKey].duration;
-			}
-
-			toast.info('🚀 New buff ' + powerUpName + ' applied on your team!', {
-				toastId: powerUp._id,
-				position: "bottom-right",
-				autoClose: duration,
-				hideProgressBar: false,
-				closeOnClick: false,
-				pauseOnHover: false,
-				draggable: false,
-				progress: undefined,
-				theme: "dark",
-				transition: Bounce,
-			});
-		});
-
-		// listener for debuffs
-		socketClient.on("newDebuff", (powerUp) => {
-			const tierKey = Object.keys(powerUp.tier)[0];
-			const duration = powerUp.tier[tierKey].duration;
-			const powerUpName = powerUp.name;
-
-			toast.warn('New debuff ' + powerUpName + ' has been applied to your team!', {
-				toastId: powerUp._id,
-				position: "bottom-right",
-				autoClose: duration,
-				hideProgressBar: false,
-				closeOnClick: false,
-				pauseOnHover: false,
-				draggable: false,
-				progress: undefined,
-				theme: "dark",
-				transition: Bounce,
-			});
-		});
-
-		socketClient.on("dismissToasts", () => {
-			console.log("dismiss")
-			toast.dismiss();
+    socketClient.on("startRound", () => {
+      socketClient.emit("activateImmunity", user._id);
     });
-    
-		socketClient.on('evalupdate', (arg)=>{
-			var teamId = JSON.parse(localStorage?.getItem("user"))?._id;
-			
-			if (teamId == arg.team_id) {
-				getRoundQuestions();
-			}
-		});
+
+    socketClient.on("fetchActivePowerups", async() => {
+      const res = await getFetch(`${baseURL}/teams/${user._id}`);
+      
+      const active_buffs = res.team.active_buffs;
+      const active_debuffs = res.team.debuffs_received;
+
+      active_buffs.map((buff) => {
+        const startTime = new Date(buff.startTime);
+        const endTime = new Date(buff.endTime);
+
+        if(new Date(startTime.getTime() + buff.duration).getTime() == endTime.getTime()){
+          const duration = new Date(buff.endTime) - new Date();
+          
+          toast.info('🚀 New buff ' + buff.name + ' applied on your team!', {
+            toastId: buff.name,
+            position: "bottom-right",
+            autoClose: duration,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+          });
+        }
+      });
+      
+      active_debuffs.map((debuff) => {
+        if(debuff.endTime){
+          const duration = new Date(debuff.endTime) - new Date();
+
+          toast.warn('New debuff ' + debuff.name + ' has been applied to your team!', {
+            toastId: debuff.name,
+            position: "bottom-right",
+            autoClose: duration,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+          });
+        }
+      });
+    });
+
+    // listener for buffs
+    socketClient.on("newBuff", (arr) => {
+      const powerUp = arr[0];
+      let duration = powerUp.duration;
+      const powerUpName = powerUp.name;
+      
+      if(duration === undefined){
+        const tierKey = Object.keys(powerUp.tier)[0];
+        duration = powerUp.tier[tierKey].duration;
+      }
+
+      if(arr.length > 1){
+        toast.dismiss(arr[1]);
+      }
+
+      toast.info('🚀 New buff ' + powerUpName + ' applied on your team!', {
+        toastId: powerUp.name,
+        position: "bottom-right",
+        autoClose: duration,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+    });
+
+    // listener for debuffs
+    socketClient.on("newDebuff", (powerUp) => {
+      const tierKey = Object.keys(powerUp.tier)[0];
+      const duration = powerUp.tier[tierKey].duration;
+      const powerUpName = powerUp.name;
+
+      toast.warn('New debuff ' + powerUpName + ' has been applied to your team!', {
+        toastId: powerUp.name,
+        position: "bottom-right",
+        autoClose: duration,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "dark",
+        transition: Bounce,
+      });
+    });
+
+    socketClient.on("dismissToasts", () => {
+      console.log("dismiss")
+      toast.dismiss();
+    });
+    socketClient.on('evalupdate', (arg)=>{
+      var teamId = JSON.parse(localStorage?.getItem("user"))?._id;
+      
+      if (teamId == arg.team_id) {
+        getRoundQuestions();
+      }
+    });
 
 
-		return () => {
-			socketClient.off("newBuff");
-			socketClient.off("newDebuff");
-			socketClient.off("dismissToasts");
-			socketClient.off("fetchActivePowerups");
-			socketClient.off("startRound");
-			socketClient.off("evalupdate");
-		};
+    return () => {
+      socketClient.off("newBuff");
+      socketClient.off("newDebuff");
+      socketClient.off("dismissToasts");
+      socketClient.off("fetchActivePowerups");
+      socketClient.off("startRound");
+      socketClient.off("evalupdate");
+    };
   });
   
 
 	/**
-	 * Purpose: Handles opening of power-up popover.
+	 * Handles opening of power-up popover.
 	 */
 	const handleViewPowerUps = (e) => {
 		e.stopPropagation();
-		setOpen(!open);
+		setOpenPopover(!openPopover);
   };
   
   /**
@@ -247,21 +255,21 @@ const ParticipantLayout = ({
 		setShowBuffs(false);
 		setShowDebuffs(false);
 		setSelectedPowerUp(null);
-		setOpen(false);
+		setOpenPopover(false);
   };
 
   /**
-   * Handles on click event of return button and navigates to View All Problems Page
+   * Handles on click event of return button and navigates to View All Problems Page.
    */ 
 	const handleReturn = () => {
 		navigate('/participant/view-all-problems');
   };
 
 	/**
-   * Handles opening of the submit modal window
+   * Handles opening of the submit modal window.
    */ 
 	const handleButton = () => {
-		setOpen(true);
+		setOpenModal(true);
 	};
   
 
@@ -325,6 +333,7 @@ const ParticipantLayout = ({
                 />
               }
 
+              {/* Desktop View -- container for components on the left */}
               <Box
                 gap={7}
                 sx={{
@@ -335,34 +344,6 @@ const ParticipantLayout = ({
                   },
                 }}
               >
-                {/* Mobile view for left column */}
-                {/* <Box
-                  gap={10}
-                  sx={{
-                    mt: '3rem',
-                    mx: {
-                      xl: 8
-                    },
-                    width: '100%',
-                    display: {
-                      xs: "none", md: "flex", xl: "none"
-                    },
-                    justifyContent: "center"
-                  }}
-                >
-                  <ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
-                  <Box
-                    gap={7}
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: "center",
-                    }}
-                  >
-                    <RoundTimer />
-                    <SponsorCarousel />
-                  </Box>
-                </Box> */}
                 
                 {/* Desktop view */}
                 {/* Timer, Participants Leaderboard and Sponsor's Carousel */}
@@ -394,8 +375,8 @@ const ParticipantLayout = ({
                 {/* Wrapping button and popover in Box for clickaway ref */}
                 <Box>
                   <BuyPowerUpsPopover
-                    isOpen={open}
-                    setOpen={setOpen}
+                    isOpen={openPopover}
+                    setOpen={setOpenPopover}
                     isBuyImmunityChecked={isBuyImmunityChecked}
                     buffsState={[showBuffs, setShowBuffs]}
                     debuffsState={[showDebuffs, setShowDebuffs]}
@@ -411,9 +392,9 @@ const ParticipantLayout = ({
             { location.pathname === '/participant/view-specific-problem' ?
               <>
                 { problem ?
-                  <CustomModal isOpen={open} setOpen={setOpen} windowTitle="Upload your answer">
+                  <CustomModal isOpen={openModal} setOpen={setOpenModal} windowTitle="Upload your answer">
                     <SubmitModal 
-                      setOpen={setOpen} 
+                      setOpen={setOpenModal} 
                       problemId={problem._id} 
                       problemTitle={problem.title} 
                       possiblePoints={problem.points} 

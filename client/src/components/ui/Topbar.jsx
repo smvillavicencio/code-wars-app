@@ -79,7 +79,7 @@ const TopBar = ({
 						}}
 					>
 						{/* Displays either an image or an icon */}
-						{image ? (
+						{isImg ? (
 							<img
 								src={icon}
 								style={{

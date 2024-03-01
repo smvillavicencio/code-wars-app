@@ -1,5 +1,6 @@
 import AdminLayout from './layouts/AdminLayout';
 import JudgeLayout from './layouts/JudgeLayout';
+import ParticipantLayout from './layouts/ParticipantLayout';
 import GeneralOptionsPage from './admin/GeneralOptionsPage';
 import PowerUpLogs from './admin/PowerUpLogs';
 import TopTeamsPage from './admin/TopTeamsPage';
@@ -12,6 +13,7 @@ import ViewSpecificProblemPage from './participants/ViewSpecificProblemPage';
 export {
 	AdminLayout,
 	JudgeLayout,
+	ParticipantLayout,
 	LoginPage,
 	GeneralOptionsPage,
 	PowerUpLogs,

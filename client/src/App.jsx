@@ -2,16 +2,15 @@
 /* eslint-disable */ 
 import { useState, useEffect, useRef, useContext } from 'react';
 import { ThemeProvider } from '@emotion/react';
-import { Box } from '@mui/material';
-import { Outlet, BrowserRouter as Router, Routes, Route, useFetcher } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import GeneralBackground from 'assets/GeneralBackground.png';
 import { FreezeOverlay, ToastContainerConfig } from 'components';
 import {
 	AdminLayout,
 	JudgeLayout,
 	LoginPage,
 	GeneralOptionsPage,
+	ParticipantLayout,
 	PowerUpLogs,
 	TopTeamsPage,
 	ViewAllProblemsPage,
@@ -32,9 +31,6 @@ var immortalHTML = '<div class="MuiBox-root css-1ato3wx"><div class="MuiBox-root
 
 
 function App() {
-
-
-
 	const [freezeOverlay, setFreezeOverlay] = useState(false);
 	const overlayFreezeLoad = useRef(false);
 
@@ -61,27 +57,6 @@ function App() {
 			setIsLoggedIn(response.isLoggedIn);
 			//console.log(response);
 		//}, 1000);
-	}
-
-	/**
-	 * This will set the common background for all pages (except login page)
-	 */
-	function Layout() {
-		return (
-			<Box
-				style={{
-					backgroundImage: `url(${GeneralBackground})`,
-					backgroundSize: 'cover',
-					height: '100vh',
-					overflow: 'hidden',
-				}}
-				id="commonBox"
-			>
-				{/* Children will be displayed through outlet */}
-				{freezeOverlay ? <div className='fOverlayScreen' style={{zIndex: "10000"}}><FreezeOverlay /></div> : null}
-				<Outlet />
-			</Box>
-		);
 	}
 
 	// state for context API
@@ -179,58 +154,62 @@ function App() {
 					{/* Login page */}
 					<Route index element={<LoginPage />} />
 
-					{/* Pages with same backgrounds */}
-					<Route path="/" element={<Layout />}>
-						<Route path="participant/view-all-problems" 
-							element={<ViewAllProblemsPage 
+					{/* Participant Pages */}
+					<Route
+						element={
+							<ParticipantLayout
+								freezeOverlay={freezeOverlay}
 								isLoggedIn={isLoggedIn} 
 								setIsLoggedIn={setIsLoggedIn} 
 								checkIfLoggedIn={checkIfLoggedIn}
 								currRound={currRound}
-								setCurrRound={setCurrRound}
 								isBuyImmunityChecked={buyImmunityChecked}
-								//seconds={sec}
-									/>} />
-						<Route path="participant/view-specific-problem" element={<ViewSpecificProblemPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
+							/>
+						}
+					>
+						<Route path="participant/view-all-problems" element={<ViewAllProblemsPage currRound={currRound} />} />
+						<Route path="participant/view-specific-problem" element={<ViewSpecificProblemPage />} />
+					</Route>
 
-						{/* Judge Pages */}
-						<Route
-							element={
-								<JudgeLayout
-									freezeOverlay={freezeOverlay}
-									isLoggedIn={isLoggedIn}
-									setIsLoggedIn={setIsLoggedIn} 
-									checkIfLoggedIn={checkIfLoggedIn} 
-								/>
-							}
-						>
-							<Route path="judge/submissions" element={<ViewSubmissionsPage isLoggedIn={isLoggedIn} />} />
-						</Route>
-						
-						{/* Admin Pages */}
-						<Route element={
+					{/* Judge Pages */}
+					<Route
+						element={
+							<JudgeLayout
+								freezeOverlay={freezeOverlay}
+								isLoggedIn={isLoggedIn}
+								setIsLoggedIn={setIsLoggedIn} 
+								checkIfLoggedIn={checkIfLoggedIn} 
+							/>
+						}
+					>
+						<Route path="judge/submissions" element={<ViewSubmissionsPage isLoggedIn={isLoggedIn} />} />
+					</Route>
+					
+					{/* Admin Pages */}
+					<Route
+						element={
 							<AdminLayout
 								freezeOverlay={freezeOverlay}
 								isLoggedIn={isLoggedIn}
 								setIsLoggedIn={setIsLoggedIn} 
 								checkIfLoggedIn={checkIfLoggedIn} 
 							/>
-						}>
-							<Route path="admin/general" 
-								element={
-									<GeneralOptionsPage 
-										setCurrRound={setCurrRound}
-										roundRef={roundRef}
-										freezeRef={freezeRef}
-										immunityRef={immunityRef}
-										setFreezeChecked={setFreezeChecked}
-										setBuyImmunityChecked={setBuyImmunityChecked}
-									/>
-								}
-							/>
-							<Route path="admin/logs" element={ <PowerUpLogs /> } />
-							<Route path="admin/podium" element={<TopTeamsPage />} />
-						</Route>
+						}
+					>
+						<Route path="admin/general" 
+							element={
+								<GeneralOptionsPage 
+									setCurrRound={setCurrRound}
+									roundRef={roundRef}
+									freezeRef={freezeRef}
+									immunityRef={immunityRef}
+									setFreezeChecked={setFreezeChecked}
+									setBuyImmunityChecked={setBuyImmunityChecked}
+								/>
+							}
+						/>
+						<Route path="admin/logs" element={ <PowerUpLogs /> } />
+						<Route path="admin/podium" element={<TopTeamsPage />} />
 					</Route>
 				</Routes>
 				<ToastContainerConfig />

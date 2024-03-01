@@ -8,13 +8,12 @@ import {
 } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 
-import { baseURL } from 'utils/constants';
 import { postFetch } from 'utils/apiRequest';
+import { baseURL } from 'utils/constants';
 
 
-/*
+/**
  * Purpose: Displays the Specific Problem Page for participants.
- * Params: None
  */
 const ViewSpecificProblemPage = () => {
 
@@ -27,19 +26,26 @@ const ViewSpecificProblemPage = () => {
 	
 	const [problem, setProblem] = useState();
 	const [problemDescription, setProblemDescription] = useState();
-	const [sampleInput, setSampleInput] = useState("");
-	const [sampleOutput, setSampleOutput] = useState("");
+	const [sampleInput, setSampleInput] = useState('');
+	const [sampleOutput, setSampleOutput] = useState('');
 
 	const [evaluation, setEvaluation] = useState();
 	const [samples, setSampleInputOutput] = useState();
 	
+	
+	useEffect(() => {
+		getQuestionContent();
+	}, []);
 
+
+	/**
+	 * Fetching problem description.
+	 */
 	const getQuestionContent = async () => {
 		const qResponse = await postFetch(`${baseURL}/viewquestioncontent`, {
-			problemId: params.get("id"),
-			teamId: JSON.parse(localStorage?.getItem("user"))._id
+			problemId: params.get('id'),
+			teamId: JSON.parse(localStorage?.getItem('user'))._id
 		});
-		//console.log(qResponse.question);
 
 		setProblem(qResponse.question);
 		setProblemDescription(qResponse.question.body);
@@ -47,11 +53,8 @@ const ViewSpecificProblemPage = () => {
 		// setSampleInput(qResponse.question.sample_input);
 		// setSampleOutput(qResponse.question.sample_output);
 		setSampleInputOutput(qResponse.question.samples);
-	}
+	};
 
-	useEffect(() => {
-		getQuestionContent();
-	}, []);
 
 	return (
 		<>
@@ -63,7 +66,7 @@ const ViewSpecificProblemPage = () => {
 					px: { xs: 7 },
 					height: '100%',
 					width: '100%',
-					display: "flex"
+					display: 'flex'
 				}}
 			>
 				{/* Problem Description */}
@@ -90,7 +93,7 @@ const ViewSpecificProblemPage = () => {
 						borderRadius: 4,
 					}}
 				> */}
-					{/* <Box sx={{ width: '50%', borderRight: 2,}}>
+				{/* <Box sx={{ width: '50%', borderRight: 2,}}>
 						<Typography
 							color="primary.contrastText"
 							sx={{
@@ -105,14 +108,14 @@ const ViewSpecificProblemPage = () => {
 							Sample Inputs
 						</Typography> */}
 
-						{/* Sample inputs here */}
-						{/* <div style={{padding: "10px"}}>
+				{/* Sample inputs here */}
+				{/* <div style={{padding: "10px"}}>
 							{sampleInput}
 						</div> */}
-					{/* </Box> */}
+				{/* </Box> */}
 
-					{/* <Box sx={{ width: '50%' }}> */}
-						{/* <Typography
+				{/* <Box sx={{ width: '50%' }}> */}
+				{/* <Typography
 							color="primary.contrastText"
 							sx={{
 								borderTopRightRadius: 10,
@@ -126,11 +129,11 @@ const ViewSpecificProblemPage = () => {
 							Sample Outputs
 						</Typography> */}
 
-						{/* Sample outputs here */}
-						{/* <div style={{padding: "10px"}}>
+				{/* Sample outputs here */}
+				{/* <div style={{padding: "10px"}}>
 							{sampleOutput}
 						</div> */}
-					{/* </Box> */}
+				{/* </Box> */}
 				{/* </Box> */}
 			</Stack>
 		</>

@@ -1,23 +1,30 @@
 /* eslint-disable */ 
 import { useEffect, useState } from 'react';
+
 import { Box, Stack, Typography } from '@mui/material';
+
 import { Table } from 'components/';
-import { columnsPowerUpLog } from 'utils/dummyData';
-import { baseURL } from 'utils/constants';
 import { getFetch } from 'utils/apiRequest';
+import { baseURL } from 'utils/constants';
+import { columnsPowerUpLog } from 'utils/dummyData';
 
 
-
+/**
+ * Additional styling for power-up logs table.
+ */
 const additionalStyles = {
 	backgroundColor: '#fff',
 };
 
 
-/*
+/**
  * Purpose: Displays the page power-up logs for admin.
  */
 const PowerUpLogs = () => {
 
+	/**
+	 * State handler for contents of the table.
+	 */
 	const [powerupLogRow, setPowerupLogRow] = useState([]);
 
 	useEffect(() => { 
@@ -29,7 +36,7 @@ const PowerUpLogs = () => {
 
 		if(res.success){
 			let rowLog = [];
-			let count = 0
+			let count = 0;
 
 			res.teams.forEach((team) => {
 				team.activated_powerups.forEach((powerup) => {
@@ -50,7 +57,7 @@ const PowerUpLogs = () => {
 						timestamp: `${month} ${day} - ${hours}:${minutes}:${seconds}.${milliseconds}`,
 						recipient: powerup.type == 0 ? powerup.target : team.team_name,
 						time: new Date(powerup.startTime).getTime(), // for sorting
-					} 
+					}; 
 
 					rowLog.push(log);
 				});
@@ -65,7 +72,7 @@ const PowerUpLogs = () => {
 			setPowerupLogRow(rowLog);
 		}
 
-	}
+	};
 
 	return (
 		<Stack spacing={7} sx={{ margin:'4em', width:'100%', height: 'auto'}}>

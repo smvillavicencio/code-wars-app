@@ -1,11 +1,8 @@
 /* eslint-disable */ 
-import { useContext } from 'react';
-
 import BoltIcon from '@mui/icons-material/Bolt';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import SettingsIcon from '@mui/icons-material/Settings';
-
 import {
 	Box,
 	Button,
@@ -23,7 +20,7 @@ import { handleLogout } from 'utils/commonFunctions';
 
 const DRAWER_WIDTH = 250;
 
-/*
+/**
  * Purpose: Sidebar navigation for admin user.
  * Params: None
  */
@@ -97,27 +94,27 @@ const Sidebar = () => {
 
 					{/* Podium Page */}
 					<Button
-							variant="contained"
-							color="major"
-							size="large"
-							onClick={() => { navigate('/admin/podium'); }}
-							startIcon={<MilitaryTechIcon />}
-							sx={{
-								marginTop: '2em',
-								width: '85%',
-								'&:hover': {
-									bgcolor: 'major.light',
-									color: 'general.main',
-								}
-							}}
-						>
+						variant="contained"
+						color="major"
+						size="large"
+						onClick={() => { navigate('/admin/podium'); }}
+						startIcon={<MilitaryTechIcon />}
+						sx={{
+							marginTop: '2em',
+							width: '85%',
+							'&:hover': {
+								bgcolor: 'major.light',
+								color: 'general.main',
+							}
+						}}
+					>
 							Podium
-						</Button>
-					</Box>
+					</Button>
+				</Box>
 
 				{/* Logout Button */}
 				<List
-					onClick={()=>{handleLogout(navigate)}}
+					onClick={()=>{handleLogout(navigate);}}
 					sx={{
 						position: 'absolute',
 						bottom: '0',

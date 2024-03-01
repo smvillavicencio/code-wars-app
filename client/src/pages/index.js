@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import AdminLayout from './layouts/AdminLayout';
 import JudgeLayout from './layouts/JudgeLayout';
 import ParticipantLayout from './layouts/ParticipantLayout';

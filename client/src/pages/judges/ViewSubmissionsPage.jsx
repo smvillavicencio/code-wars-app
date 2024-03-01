@@ -1,6 +1,5 @@
 /* eslint-disable */ 
 import {
-	useMemo,
 	useState,
 	useEffect,
 	useRef
@@ -12,33 +11,33 @@ import {
 	Stack,
 	Typography
 } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { cloneDeep } from 'lodash';
+import { Link } from 'react-router-dom';
 
 import {
 	DropdownSelect,
 	Table,
 } from 'components/';
-
+import { socketClient } from 'socket/socket';
+import { getFetch } from 'utils/apiRequest';
+import { baseURL } from 'utils/constants';
 import {
 	columnsSubmissions,
 } from 'utils/dummyData';
 
-import renderEval from './submission-entries/EvalViewInputCell';
 import EvalEditInputCell from './submission-entries/EvalEditInputCell';
-import { socketClient } from 'socket/socket';
-
-import { baseURL } from 'utils/constants';
-import { getFetch } from 'utils/apiRequest';
-import { cloneDeep } from 'lodash';
-// import { teamsList } from 'utils/dummyData';
+import renderEval from './submission-entries/EvalViewInputCell';
 
 
 
-// Styling for Submissions table
+/**
+ * Additional Styling for Submissions table
+ */
 const additionalStylesSubmissions = {
 	backgroundColor: '#fff',
 	paddingX: 2,
-}
+};
+
 
 // temp; options for client-side filtering
 const teamsList = [];
@@ -47,7 +46,6 @@ const questionsList = [];
 
 /**
  * Purpose: Displays the View Submissions Page for judges.
- * Params: None
  */
 const ViewSubmissionsPage = ({ isLoggedIn }) => {
 
@@ -61,15 +59,43 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 		return <EvalEditInputCell props={params} submissionsList={submissionsList} setSubmissionsList={setSubmissionsList} subListRef={subListRef} />;
 	};
 
-	// default values are given to make the component a controlled component
-	// state handler for team dropdown select
+	/**
+	 * State handler for team dropdown select
+	 */
 	const [selectedTeam, setSelectedTeam] = useState('');
-	// state handler for problem dropdown select
+	/**
+	 * State handler for problem title dropdown select
+	 */
 	const [selectedProblem, setSelectedProblem] = useState('');
-
-	// state handler for dropdown select options
+	/**
+	 * State handler for dropdown select options
+	 */
 	const [options, setOptions] = useState([]);
 
+
+	useEffect(()=>{
+		console.log(submissionsList);
+	}, [submissionsList]);
+
+
+	useEffect(()=>{
+		handleSocket();
+	}, [fetchAllPrevious]);
+
+
+	useEffect(()=>{
+		if (isLoggedIn) {
+			if (!fetchAllPrevious.current) {
+				fetchAllPrevious.current = true;
+				getSubmissions();
+			}
+		}
+	}, [isLoggedIn]);
+
+
+	/**
+	 * Handles on click event on submitted file for a particular submission entry.
+	 */
 	const handleDownload = (e, params) => {
 		e.preventDefault();
 		console.log(params);
@@ -77,7 +103,7 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 
 		params.row.hasFileDownloaded = true;
 
-		if (params.row.evaluation == "Pending") {
+		if (params.row.evaluation == 'Pending') {
 			console.log(cloneDeep(submissionsList));
 			params.row.isDisabled = false;
 
@@ -89,37 +115,32 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 		} else {
 			params.row.isDisabled = true;
 		}
-	}
+	};
 
-	useEffect(()=>{
-		console.log(submissionsList);
-	}, [submissionsList])
-
+	/**
+	 * Handles downloading of file.
+	 */
 	const downloadFile = (filename, data) => {
 		const blob = new Blob([data]);
-		// if(window.navigator.msSaveOrOpenBlob) {
-		// 	window.navigator.msSaveBlob(blob, filename);
-		// }
-		// else{
-			const elem = window.document.createElement('a');
-			elem.href = window.URL.createObjectURL(blob);
-			elem.download = filename;      
-			elem.style.display = 'none';  
-			document.body.appendChild(elem);
-			elem.click();        
-			document.body.removeChild(elem);
-			window.URL.revokeObjectURL(elem.href);
-		//}
-	}
+		const elem = window.document.createElement('a');
+		elem.href = window.URL.createObjectURL(blob);
+		elem.download = filename;      
+		elem.style.display = 'none';  
+		document.body.appendChild(elem);
+		elem.click();        
+		document.body.removeChild(elem);
+		window.URL.revokeObjectURL(elem.href);
+	};
 
-	// adding dropdown selects for evaluation column of submission table
+	/**
+	 * Rendering cells dropdown selects for uploaded file and evaluation column of submission table
+	 */
 	const modifiedSubmissionColumns = columnsSubmissions.map((obj) => {
 		if (obj.field === 'evaluation') {
 			return {
 				...obj,
 				renderEditCell: renderEvalEditInputCell,
 				renderCell: renderEval,
-				// console.log(params.row.uploadedFile)
 			};
 		}
 		if (obj.field === 'uploadedFile') {
@@ -130,7 +151,7 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 						<Link
 							target="_blank"
 							download
-							onClick={(e) => {handleDownload(e, params)}}
+							onClick={(e) => {handleDownload(e, params);}}
 						>
 							{params.value}
 						</Link>
@@ -138,27 +159,26 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 				}
 			};
 		}
-    return obj;
+		return obj;
 	});
 
 	/**
-	* Purpose: Sets state of selectedTeam for filtering.
+	* Sets state of selectedTeam for filtering.
 	*/
 	const handleTeams = (e) => {
 		setSelectedTeam(e.target.value);
-	}
+	};
 
 	/**
-	* Purpose: Sets state of selectedProblem for filtering.
+	* Sets state of selectedProblem for filtering.
 	*/
 	const handleProblems = (e) => {
 		setSelectedProblem(e.target.value);
-	}
+	};
 	
 	
-
 	/**
-	* Purpose: Client-side filtering based on values from the dropdown selects.
+	* Client-side filtering based on values from the dropdown selects.
   * will be replaced if magkakaron ng server-side filtering
 	*/
 	const getFilteredRows = (rowsSubmissions) => {
@@ -176,9 +196,9 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 					// If matched row is not yet in temp, push to temp
 					if (!temp.find(obj => obj.id === row.id)) {
 						temp.push(row);
-					};
+					}
 				}
-			})
+			});
 		}
 		
 		if (selectedProblem != '') {
@@ -190,9 +210,9 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 						// If matched row is not yet in temp2, push to temp
 						if (!temp2.find(obj => obj.id === row.id)) {
 							temp2.push(row);
-						};
+						}
 					}
-				})
+				});
 				return temp2;
 			
 			// if there is no selected team
@@ -203,22 +223,22 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 						// If matched row is not yet in temp2, push to temp
 						if (!temp.find(obj => obj.id === row.id)) {
 							temp.push(row);
-						};
+						}
 					}
-				})
+				});
 				return temp;
 			}
 		}
 		return temp;
-	}
+	};
 
-	// used for client-side routing to other pages
-	const navigate = useNavigate();
-
+	/**
+	 * Real-time updating of submission entries.
+	 */
 	const handleSocket = () => {
 		
 		if (!socketClient) {
-			console.log("There is a problem with the socketClient")
+			console.log('There is a problem with the socketClient');
 			return;
 		} else {
 			//console.log("socketClient is present")
@@ -226,11 +246,9 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 
 		socketClient.on('newupload', (arg)=>{
 			//console.log(subListRef.current);
-			
 
 			if (!presentDbIds.current.includes(arg._id)) {
 				presentDbIds.current.push(arg._id);
-
 
 				let newsubmission = {};
 				newsubmission.id = arg.display_id;
@@ -249,7 +267,6 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 
 				let newSubmissionsList = [];
 				let present = false;
-
 				
 				subListRef.current?.map((submission)=>{
 					//console.log(submission.dbId,"==",newsubmission.dbId);
@@ -273,7 +290,7 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 		});
 
 		socketClient.on('evalupdate', (arg)=>{
-			var judgeId = JSON.parse(localStorage?.getItem("user"))?._id;
+			var judgeId = JSON.parse(localStorage?.getItem('user'))?._id;
 			
 			if (judgeId != arg.judge_id) {
 				//console.log("evalupdate", arg);
@@ -298,7 +315,7 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 						submission.possible_points = arg.possible_points;
 						submission.dbId = arg._id;
 						submission.totalCases = arg.total_test_cases;
-						submission.isDisabled = true
+						submission.isDisabled = true;
 					}
 					newSubmissionsList.push(submission);
 				});
@@ -316,12 +333,15 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 			socketClient.off('evalupdate');
 		};
 
-    }; 
+	}; 
 
+	/**
+	 * Fetching submissions on page mount.
+	 */
 	const getSubmissions = async () => {
 		const submissions = await getFetch(`${baseURL}/getallsubmissions`,);
 
-		let submissionEntries = []
+		let submissionEntries = [];
 
 		if (submissions.results.length > 0) {
 			// map out the entries returned by fetch
@@ -344,18 +364,18 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 
 				// add team name to teamsList
 				if (!teamsList.includes(entry.team_name)) {
-					teamsList.push(entry.team_name)
+					teamsList.push(entry.team_name);
 				}
 				// add problem title to questionsList
 				if (!questionsList.includes(entry.problem_title)) {
-					questionsList.push(entry.problem_title)
+					questionsList.push(entry.problem_title);
 				}
 				
 				presentDbIds.current.push(entry._id);
 
 				// set options for dropdown select filtering
-				setOptions([teamsList, questionsList])
-			})
+				setOptions([teamsList, questionsList]);
+			});
 
 			// setting UI table state
 			setSubmissionsList([...submissionEntries]);
@@ -371,23 +391,8 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 		//setFetchAllPrevious(true);
 		
 		//handleSocket();
-	}
-
-	// console.log(options)
-
-	useEffect(()=>{
-		//console.log("fetchAllPrevious", fetchAllPrevious);
-		handleSocket();
-	}, [fetchAllPrevious]);
-
-	useEffect(()=>{
-		if (isLoggedIn) {
-			if (!fetchAllPrevious.current) {
-				fetchAllPrevious.current = true;
-				getSubmissions();
-			};
-		};
-	}, [isLoggedIn]);
+	};
+	
 	
 	return (
 		<Stack spacing={5} sx={{ mt: 5, mx: 15 }} >
@@ -403,7 +408,6 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 					label="Team Name"
 					minWidth="20%"
 					variant="filled"
-					// options={options[0]}
 					options={teamsList}
 					handleChange={handleTeams}
 					value={selectedTeam}
@@ -413,12 +417,12 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 						<em>All</em>
 					</MenuItem>
 				</DropdownSelect>
+
 				<DropdownSelect
 					isDisabled={false}
 					minWidth="35%"
 					variant="filled"
 					label="Problem Title"
-					// options={options[1]}
 					options={questionsList}
 					handleChange={handleProblems}
 					value={selectedProblem}
@@ -436,7 +440,7 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 				columns={modifiedSubmissionColumns}// useMemo(() => {return modifiedSubmissionColumns}, [] )
 				hideFields={[]}
 				additionalStyles={additionalStylesSubmissions}
-				density={"comfortable"}
+				density={'comfortable'}
 				columnHeaderHeight={45}
 				pageSizeOptions={[5, 8]}
 				autoHeight
@@ -445,7 +449,7 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 				}}
 				getCellClassName={(params) => {
 					if (params.field === 'submittedAt') {
-						return 'timeColumn'
+						return 'timeColumn';
 					}
 				}}
 

@@ -1,6 +1,7 @@
 /* eslint-disable */ 
-import Overlay from "./Overlay";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress, Typography } from '@mui/material';
+
+import Overlay from './Overlay';
 
 
 /**
@@ -27,7 +28,7 @@ const LoadingOverlay =() =>{
 				}
 			/> 
 		</Box>
-	)
-}
+	);
+};
 
 export default LoadingOverlay;

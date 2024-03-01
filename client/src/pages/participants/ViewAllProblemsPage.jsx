@@ -1,5 +1,5 @@
 /* eslint-disable */ 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -12,42 +12,62 @@ import {
 import { useNavigate, createSearchParams } from 'react-router-dom';
 
 import { Table } from 'components/';
+import { postFetch } from 'utils/apiRequest';
+import { baseURL } from 'utils/constants';
 import { columnsProblems } from 'utils/dummyData';
 
-import { baseURL } from 'utils/constants';
-import { postFetch } from 'utils/apiRequest';
+
+/**
+ * Additional styling for the problem list table
+ */
+const additionalStyles = {
+	backgroundColor: '#fff',
+	overflow: 'auto',
+};
 
 
-/*
+/**
  * Purpose: Displays the View All Problems Page for participants.
- * Params: None
  */
 const ViewAllProblemsPage = ({ currRound }) => {
-	
+	/**
+	 * State handler for currrent round.
+	 */
 	const [currQuestions, setCurrQuestions] = useState([]);
 	
 	// options for round labels
 	const rounds = ['EASY', 'MEDIUM', 'WAGER', 'HARD'];
+	// used for client-side routing to other pages
+	const navigate = useNavigate();
 
+
+	useEffect(() => {
+		getRoundQuestions();
+	}, [currRound]);
+
+
+	/**
+	 * Fetching questions for the current round
+	 */
 	const getRoundQuestions = async () => {
 		const qResponse = await postFetch(`${baseURL}/viewquestionsdiff`, {
 			difficulty: currRound.toLowerCase()
 		});
 
-		let counter = 0
-		let questionsList = []
+		let counter = 0;
+		let questionsList = [];
 
 		await Promise.all(
 			qResponse.questions?.map( async (question)=>{
 				let formattedQuestion = {};
 				formattedQuestion.problemTitle = question.title;
-				formattedQuestion.id = question.display_id;;
+				formattedQuestion.id = question.display_id;
 				counter += 1;
 				formattedQuestion.dbId = question._id;
 	
 				const qeResponse = await postFetch(`${baseURL}/getlastsubmissionbyteam`, {
 					problemId: question._id,
-					teamId: JSON.parse(localStorage?.getItem("user"))._id
+					teamId: JSON.parse(localStorage?.getItem('user'))._id
 				});
 	
 				formattedQuestion.status = qeResponse.evaluation;
@@ -61,34 +81,21 @@ const ViewAllProblemsPage = ({ currRound }) => {
 		const sortedList = [...questionsList].sort((a, b) => a.id - b.id);
 
 		setCurrQuestions(sortedList);
-	}
-
-	useEffect(() => {
-		getRoundQuestions();
-	}, [currRound]);
-
-	// Styling for the problem list table
-	const additionalStyles = {
-		backgroundColor: '#fff',
-		overflow: 'auto',
 	};
 
-	// used for client-side routing to other pages
-	const navigate = useNavigate();
-
+	
 	/**
    * Purpose: Handles opening of leaderboard modal window upon clicking the ellipsis button.
    * Params: <Object> receives information of selected problem in the Problem List Table.
    */
 	const handleRowClick = (params) => {
-		//console.log(params);
 		let customParams = {
 			checkedBy: params.row.checkedBy,
 			id: params.row.dbId,
 			problemTitle: params.row.problemTitle,
 			score: params.row.score,
 			status: params.row.status
-		}
+		};
 
 		navigate({
 			pathname: '/participant/view-specific-problem',
@@ -108,7 +115,7 @@ const ViewAllProblemsPage = ({ currRound }) => {
 					mx: { xs: 5, xl: 0},
 					width: {xl: '68%'},
 					height: '100%',
-					display: "flex"
+					display: 'flex'
 				}}
 			>
 				

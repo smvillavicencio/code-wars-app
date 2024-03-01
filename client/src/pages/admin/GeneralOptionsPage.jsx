@@ -15,17 +15,16 @@ import {
 	SuccessWindow,
 	Table
 } from 'components/';
+import getLeaderboard from 'components/widgets/leaderboard/getLeaderboard';
+import { socketClient } from 'socket/socket';
+import { postFetch } from 'utils/apiRequest';
+import { baseURL } from 'utils/constants';
 import {
 	optionsRounds,
 	columnsLeaderboard,
 } from 'utils/dummyData';
 import { enterAdminPassword } from 'utils/enterAdminPassword';
 
-import { baseURL } from 'utils/constants';
-import { postFetch } from 'utils/apiRequest';
-import getLeaderboard from 'components/widgets/leaderboard/getLeaderboard';
-
-import { socketClient } from 'socket/socket';
 
 
 
@@ -37,7 +36,6 @@ const additionalStyles = {
 
 /**
  * Purpose: Displays general options page for admin.
- * Params: None
  */
 const GeneralOptionsPage = ({
 	setCurrRound,
@@ -48,19 +46,21 @@ const GeneralOptionsPage = ({
 	setBuyImmunityChecked,
 }) => {
 
+	/**
+	 * State handler for rows in leaderboard modal.
+	 */
 	const [leaderboardRows, setLeaderboardRows] = useState([]);
 
 	/**
 	 * Fetch overall leaderboard data
 	 */
 	async function fetchData() {
-		let currLeaderboard = await getLeaderboard()
+		let currLeaderboard = await getLeaderboard();
 		setLeaderboardRows(currLeaderboard);
 	}
 
 	useEffect(() => { 
-		// fetch leaderboard data
-		fetchData()
+		fetchData();
 	}, []);
 
 	/**
@@ -75,7 +75,7 @@ const GeneralOptionsPage = ({
 					// proceed to request for freeze all screens
 					if (res == true) {
 						const fResponse = await postFetch(`${baseURL}/setcommand`, {
-							command: "freeze",
+							command: 'freeze',
 							round: roundRef.current.toLowerCase()
 						});
 
@@ -103,7 +103,7 @@ const GeneralOptionsPage = ({
 					// temp confirmation windows
 					if (res == true) {
 						const uResponse = await postFetch(`${baseURL}/setcommand`, {
-							command: "normal",
+							command: 'normal',
 							round: roundRef.current.toLowerCase()
 						});
 
@@ -121,8 +121,8 @@ const GeneralOptionsPage = ({
 						});
 					}
 				});
-		};
-	}
+		}
+	};
 
 	/**
 	 * Handler for toggle switch button. This will allow teams to buy immunity
@@ -136,7 +136,7 @@ const GeneralOptionsPage = ({
 					
 					if (res == true) {
 						const fResponse = await postFetch(`${baseURL}/set-buy-immunity`, {
-							value: "enabled",
+							value: 'enabled',
 						});
 
 						SuccessWindow.fire({
@@ -161,7 +161,7 @@ const GeneralOptionsPage = ({
 
 					if (res == true) {
 						const uResponse = await postFetch(`${baseURL}/set-buy-immunity`, {
-							value: "disabled",
+							value: 'disabled',
 						});
 
 						SuccessWindow.fire({
@@ -178,8 +178,8 @@ const GeneralOptionsPage = ({
 						});
 					}
 				});
-		};
-	}
+		}
+	};
 
 	/**
 	 * Handler for the apply button. This will terminate all active sessions.
@@ -191,11 +191,11 @@ const GeneralOptionsPage = ({
 				// proceed to request for logout all active sessions
 				if (res == true) {
 					const lResponse = await postFetch(`${baseURL}/setcommand`, {
-						command: "logout",
+						command: 'logout',
 						round: roundRef.current.toLowerCase()
 					});
 
-					socketClient.emit("logout");
+					socketClient.emit('logout');
 
 					SuccessWindow.fire({
 						text: 'Successfully logged out all active sessions!'
@@ -219,7 +219,7 @@ const GeneralOptionsPage = ({
 
 				if (res == true) {
 					const cResponse = await postFetch(`${baseURL}/setcommand`, {
-						command: freezeRef.current ? "freeze" : "normal",
+						command: freezeRef.current ? 'freeze' : 'normal',
 						round: selected
 					});
 					
@@ -230,7 +230,7 @@ const GeneralOptionsPage = ({
 					roundRef.current = selected;
 					setCurrRound(selected);
 
-					socketClient.emit("moveRound");
+					socketClient.emit('moveRound');
 
 				} else if (res == false) {
 					ErrorWindow.fire({

@@ -1,4 +1,6 @@
 /* eslint-disable */ 
+import { useEffect, useState } from 'react';
+
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import ElectricBoltIcon from '@mui/icons-material/ElectricBolt';
 import LaptopChromebookIcon from '@mui/icons-material/LaptopChromebook';
@@ -10,13 +12,12 @@ import NoEncryptionIcon from '@mui/icons-material/NoEncryption';
 import PanToolIcon from '@mui/icons-material/PanTool';
 import { Box } from '@mui/material';
 
-// import { buffs, debuffs } from 'utils/dummyData';
+
+import { getFetch } from 'utils/apiRequest';
+import { baseURL } from 'utils/constants';
 
 import PowerUpDetails from './PowerUpDetails';
 import PowerUpItem from './PowerUpItem';
-import { useEffect, useRef, useState } from 'react';
-import { getFetch } from 'utils/apiRequest';
-import { baseURL } from 'utils/constants';
 
 
   
@@ -37,11 +38,17 @@ const PowerUpList = ({
 	selectedPowerUp,
 	isBuyImmunityChecked
 }) => {
-	// State handler for buffs and debuffs
+	/**
+	 * State handlers for list of buffs and debuffs
+	 */
 	const [buffs, setBuffs] = useState([]);
 	const [debuffs, setDebuffs] = useState([]);
 
-	/*
+	useEffect(() => {
+		getAllPowerups();
+	}, []);
+
+	/**
 	 * Fetches all powerups from the database then separates it by type. 
 	 */
 	const getAllPowerups = async () => {
@@ -92,12 +99,8 @@ const PowerUpList = ({
 			console.log(message);
 			return [];
 		}
-	}
-
-	useEffect(() => {
-		getAllPowerups();
-	}, []);
-
+	};
+	
 	/**
    * Displays the icons for each power-up
    */
@@ -176,6 +179,7 @@ const PowerUpList = ({
 			/>;
 		}
 	};
+
 
 	return (
 		<Box

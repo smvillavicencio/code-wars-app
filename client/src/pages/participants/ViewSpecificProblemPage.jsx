@@ -17,7 +17,7 @@ const ViewSpecificProblemPage = () => {
 	const {
 		problemDesc,
 		setProblemDesc,
-		samples,
+		samp,
 		setSamples, 
 		fetchContent
 	} = useOutletContext();
@@ -51,7 +51,7 @@ const ViewSpecificProblemPage = () => {
 					}}
 				>
 					<Typography paragraph>{problemDesc}</Typography>
-					<a href={samples} target="_blank" rel="noopener noreferrer">
+					<a href={samp} target="_blank" rel="noopener noreferrer">
 							Click here for sample inputs and outputs
 					</a>
 				</Box>

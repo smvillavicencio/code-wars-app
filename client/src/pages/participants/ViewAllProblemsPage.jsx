@@ -38,9 +38,9 @@ const ViewAllProblemsPage = ({ currRound }) => {
 	/**
 	 * State handler for team details.
 	 */
-	const [teamDetails, setTeamDetails] = useOutletContext();
+	const { teamInfo, setTeamInfo } = useOutletContext();
 
-
+	
 	// options for round labels
 	const rounds = ['EASY', 'MEDIUM', 'WAGER', 'HARD'];
 	// used for client-side routing to other pages
@@ -170,11 +170,11 @@ const ViewAllProblemsPage = ({ currRound }) => {
 					>
 						<Box sx={{ display:'flex', gap: 2 }}>
 							<span style={{ fontWeight: '500' }}>Team Name:</span>
-							<span style={{ fontWeight: '300' }}>{teamDetails.teamName}</span>
+							<span style={{ fontWeight: '300' }}>{teamInfo.teamName}</span>
 						</Box>
 						<Box sx={{ display:'flex', gap: 2 }}>
 							<span style={{ fontWeight: '500' }}>Current Score:</span>
-							<span style={{ fontWeight: '300' }}>{teamDetails.score}</span>
+							<span style={{ fontWeight: '300' }}>{teamInfo.score}</span>
 						</Box>
 					</Typography>
 				</Box>

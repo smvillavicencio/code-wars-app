@@ -13,12 +13,12 @@ import { useOutletContext } from 'react-router-dom';
  * Purpose: Displays the Specific Problem Page for participants.
  */
 const ViewSpecificProblemPage = () => {
-
+	/**
+	 * Consuming context needed for the page
+	 */
 	const {
 		problemDesc,
-		setProblemDesc,
-		samples,
-		setSamples, 
+		samp,
 		fetchContent
 	} = useOutletContext();
 
@@ -51,7 +51,7 @@ const ViewSpecificProblemPage = () => {
 					}}
 				>
 					<Typography paragraph>{problemDesc}</Typography>
-					<a href={samples} target="_blank" rel="noopener noreferrer">
+					<a href={samp} target="_blank" rel="noopener noreferrer">
 							Click here for sample inputs and outputs
 					</a>
 				</Box>

@@ -32,13 +32,14 @@ const additionalStyles = {
  */
 const ViewAllProblemsPage = ({ currRound }) => {
 	/**
-	 * State handler for currrent round.
+	 * Consuming context needed for the page
 	 */
-	const [currQuestions, setCurrQuestions] = useState([]);
-	/**
-	 * State handler for team details.
-	 */
-	const { teamInfo, setTeamInfo } = useOutletContext();
+	const {
+		teamInfo,
+		setTeamInfo,
+		currQuestions,
+		getRoundQuestions
+	} = useOutletContext();
 
 	
 	// options for round labels
@@ -52,56 +53,6 @@ const ViewAllProblemsPage = ({ currRound }) => {
 	}, [currRound]);
 
 
-	/**
-	 * Fetching questions for the current round
-	 */
-	const getRoundQuestions = async () => {
-		const qResponse = await postFetch(`${baseURL}/viewquestionsdiff`, {
-			difficulty: currRound.toLowerCase()
-		});
-		//console.log(qResponse.questions);
-
-		let counter = 0;
-		let questionsList = [];
-
-		let set = 'c';
-		if (currRound.toLowerCase() == 'easy') {
-			set = JSON.parse(localStorage?.getItem('user')).easy_set;
-		}
-		else if (currRound.toLowerCase() == 'medium') {
-			set = JSON.parse(localStorage?.getItem('user')).medium_set;
-		}
-
-		await Promise.all(
-			qResponse.questions?.map( async (question)=>{
-				let formattedQuestion = {};
-				formattedQuestion.problemTitle = question.title;
-				formattedQuestion.id = question.display_id;
-				counter += 1;
-				formattedQuestion.dbId = question._id;
-	
-				const qeResponse = await postFetch(`${baseURL}/getlastsubmissionbyteam`, {
-					problemId: question._id,
-					teamId: JSON.parse(localStorage?.getItem('user'))._id
-				});
-	
-				formattedQuestion.status = qeResponse.evaluation;
-				formattedQuestion.score = qeResponse.score;
-				formattedQuestion.checkedBy = qeResponse.checkedby;
-				
-				//console.log(set, question.set);
-				if (set == 'c' || set == question.set) {
-					questionsList.push(formattedQuestion);
-				}
-				
-			})
-		);
-		const sortedList = [...questionsList].sort((a, b) => a.id - b.id);
-
-		setCurrQuestions(sortedList);
-	};
-
-	
 	/**
    * Purpose: Handles opening of leaderboard modal window upon clicking the ellipsis button.
    * Params: <Object> receives information of selected problem in the Problem List Table.

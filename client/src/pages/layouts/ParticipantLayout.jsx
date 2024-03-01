@@ -55,7 +55,10 @@ const ParticipantLayout = ({
 		teamName: '',
 		score: 0
 	});
-
+	/**
+	 * State handler for currrent round.
+	 */
+	const [currQuestions, setCurrQuestions] = useState([]);
 
 	// used for client-side routing from view all problems page
 	const location = useLocation();
@@ -77,7 +80,7 @@ const ParticipantLayout = ({
 	const [evaluation, setEvaluation] = useState();
 	const [problem, setProblem] = useState();
 	const [problemDescription, setProblemDescription] = useState();
-	const [samples, setSampleInputOutput] = useState();
+	const [samplesInputOutput, setSampleInputOutput] = useState();
 
 	
 
@@ -260,6 +263,43 @@ const ParticipantLayout = ({
 	});
   
 	/**
+	 * Fetching questions for the current round
+	 */
+	const getRoundQuestions = async () => {
+		const qResponse = await postFetch(`${baseURL}/viewquestionsdiff`, {
+			difficulty: currRound.toLowerCase()
+		});
+
+		let counter = 0;
+		let questionsList = [];
+
+		await Promise.all(
+			qResponse.questions?.map( async (question)=>{
+				let formattedQuestion = {};
+				formattedQuestion.problemTitle = question.title;
+				formattedQuestion.id = question.display_id;
+				counter += 1;
+				formattedQuestion.dbId = question._id;
+	
+				const qeResponse = await postFetch(`${baseURL}/getlastsubmissionbyteam`, {
+					problemId: question._id,
+					teamId: JSON.parse(localStorage?.getItem('user'))._id
+				});
+	
+				formattedQuestion.status = qeResponse.evaluation;
+				formattedQuestion.score = qeResponse.score;
+				formattedQuestion.checkedBy = qeResponse.checkedby;
+	
+				questionsList.push(formattedQuestion);
+			})
+		);
+		//console.log(questionsList);
+		const sortedList = [...questionsList].sort((a, b) => a.id - b.id);
+
+		setCurrQuestions(sortedList);
+	};
+
+	/**
 	 * Fetching problem description.
 	 */
 	const getQuestionContent = async () => {
@@ -411,10 +451,11 @@ const ParticipantLayout = ({
 										teamInfo: teamDetails,
 										setTeamInfo: setTeamDetails,
 										problemDesc: problemDescription,
-										setProblemDesc: setProblemDescription,
-										samp: samples,
-										setSamples: setSampleInputOutput,
-										fetchContent: getQuestionContent
+										samp: samplesInputOutput,
+										fetchContent: getQuestionContent,
+										currQuestions: currQuestions,
+										setCurrQuestions: setCurrQuestions,
+										getRoundQuestions: getRoundQuestions,
 									}}	
 								/>
 							</Box>

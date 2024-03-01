@@ -86,7 +86,9 @@ const CustomModal = ({
 						>
 							{windowTitle}
 						</Typography>
-						<CloseIcon
+						{
+							windowTitle != "Test Case Evaluation" ?
+							<CloseIcon
 							sx={{
 								width: '30px',
 								height: '30px',
@@ -97,7 +99,8 @@ const CustomModal = ({
 								}
 							}}
 							onClick={handleClose}
-						/>
+							/> : null
+						}
 					</Box>
 					
 					{/* Modal Body */}

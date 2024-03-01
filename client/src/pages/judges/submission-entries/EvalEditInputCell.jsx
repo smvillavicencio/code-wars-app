@@ -8,7 +8,7 @@ import { DropdownSelect } from 'components';
 import { ConfirmWindow, SuccessWindow, ErrorWindow } from 'components';
 import { postFetch } from 'utils/apiRequest';
 import { baseURL } from 'utils/constants';
-import { optionsEval } from 'utils/dummyData';
+import { optionsEval, optionsEvalWager } from 'utils/dummyData';
 
 import EvaluationModal from '../modals/EvaluationModal';
 
@@ -20,6 +20,7 @@ export default function EvalEditInputCell({ props, submissionsList, setSubmissio
 	// console.log(props)
 	// get values from props
 	const { id, value, field, hasFocus, row } = props;
+	const wagerTitle = "Seek the Mid";
 
 	/**
 	 * Initial state should be the same as the value held by view state.
@@ -168,7 +169,7 @@ export default function EvalEditInputCell({ props, submissionsList, setSubmissio
 				variant="standard"
 				isDisabled={row.isDisabled}
 				minWidth="100%"
-				options={optionsEval}
+				options={row.problemTitle != wagerTitle ? optionsEval : optionsEvalWager}
 				handleChange={handleChange}
 				value={currVal}
 			/>

@@ -260,7 +260,11 @@ const ParticipantLayout = ({
 			var teamId = JSON.parse(localStorage?.getItem('user'))?._id;
       
 			if (teamId == arg.team_id) {
-				getRoundQuestions();
+				getRoundQuestions();//
+
+				if (location.pathname === '/participant/view-specific-problem') {
+					getQuestionContent();
+				}
 			}
 			getTeamScore();
 		});
@@ -382,7 +386,7 @@ const ParticipantLayout = ({
    */ 
 	const handleButton = () => {
 		setOpenModal(true);
-		console.log(openModal)
+		//console.log(openModal)
 	};
 
 	/**

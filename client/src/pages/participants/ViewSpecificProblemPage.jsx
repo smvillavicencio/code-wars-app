@@ -29,33 +29,54 @@ const ViewSpecificProblemPage = () => {
 
 
 	return (
-		<>
+		<Box
+			sx={{
+				display: 'flex',
+				alignContent: {
+					xs: 'center',
+					lg: 'none'
+				},
+				justifyContent: {
+					xs: 'center',
+					lg: 'none'
+				}
+		}}>
 			{/* Problem description and sample inputs/outputs */}
 			<Stack
 				spacing={5}
 				sx={{
-					mt: { xl: 8 },
-					px: { xs: 7 },
+					mt: { xs: 3, md: 4, lg: 6 },
+					mr: { xl: 7 },
+					justifySelf: 'center',
 					height: '100%',
-					width: '100%',
+					width: { xs: '90%', xl: '100%'},
 					display: 'flex'
 				}}
 			>
 				{/* Problem Description */}
+				<Typography variant="h5" color="white.main" sx={{ fontFamily: 'Inter' }}> Description </Typography>
 				<Box
 					sx={{
-						backgroundColor: '#fff',
 						padding: 3,
 						borderRadius: 4,
-						// width: '100%'
+						backgroundColor: '#fff',
 					}}
 				>
-					<Typography paragraph>{problemDesc}</Typography>
+					<Typography variant="body1" paragraph>{problemDesc}</Typography>
+				</Box>
+				
+				<Typography variant="h5" color="white.main" sx={{ fontFamily: 'Inter' }}> Sample Inputs and Outputs </Typography>
+				<Box
+					sx={{
+						padding: 3,
+						borderRadius: 4,
+						backgroundColor: '#fff',
+					}}
+				>
 					<a href={samp} target="_blank" rel="noopener noreferrer">
 							Click here for sample inputs and outputs
 					</a>
 				</Box>
-				
 				{/* Sample Inputs and Outputs */}
 				{/* <Box
 					sx={{
@@ -108,7 +129,7 @@ const ViewSpecificProblemPage = () => {
 				{/* </Box> */}
 				{/* </Box> */}
 			</Stack>
-		</>
+		</Box>
 	);
 };
 

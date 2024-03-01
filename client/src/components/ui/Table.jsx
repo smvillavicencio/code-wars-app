@@ -43,7 +43,10 @@ const Table = ({
     '.MuiDataGrid-cell': {
       // variant: "body1 !important",
       fontFamily: 'Inter',
-      fontSize: '1rem',
+      fontSize: {
+        xs: '0.93rem',
+        xl: '0.98rem'
+      },
       fontWeight: '400',
       borderLeft: 'none',
       borderRight: 'none', 
@@ -71,7 +74,10 @@ const Table = ({
       fontWeight: '700',
       fontFamily: 'Poppins',
       color: '#707070',
-      fontSize: '1rem'
+      fontSize: {
+        xs: '.93rem',
+        xl: '.98rem'
+      }
     },
 
     // truncate values if longer than column maxWidth

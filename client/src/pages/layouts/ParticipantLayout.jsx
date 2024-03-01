@@ -266,12 +266,25 @@ const ParticipantLayout = ({
 	 * Fetching questions for the current round
 	 */
 	const getRoundQuestions = async () => {
+		let user = JSON.parse(localStorage?.getItem('user'));
+
 		const qResponse = await postFetch(`${baseURL}/viewquestionsdiff`, {
 			difficulty: currRound.toLowerCase()
 		});
 
+		const tResponse = await postFetch(`${baseURL}/teamsets`, {
+			id: user._id
+		});
+
 		let counter = 0;
 		let questionsList = [];
+		let set = 'c';
+		if (currRound.toLowerCase() == 'easy') {
+			set = tResponse.easy_set;
+		}
+		else if (currRound.toLowerCase() == 'medium') {
+			set = tResponse.medium_set;
+		}
 
 		await Promise.all(
 			qResponse.questions?.map( async (question)=>{
@@ -283,14 +296,17 @@ const ParticipantLayout = ({
 	
 				const qeResponse = await postFetch(`${baseURL}/getlastsubmissionbyteam`, {
 					problemId: question._id,
-					teamId: JSON.parse(localStorage?.getItem('user'))._id
+					teamId: user._id
 				});
 	
 				formattedQuestion.status = qeResponse.evaluation;
 				formattedQuestion.score = qeResponse.score;
 				formattedQuestion.checkedBy = qeResponse.checkedby;
 	
-				questionsList.push(formattedQuestion);
+				console.log(set, question.set);
+				if (set == 'c' || set == question.set) {
+					questionsList.push(formattedQuestion);
+				}
 			})
 		);
 		//console.log(questionsList);
@@ -456,6 +472,7 @@ const ParticipantLayout = ({
 										currQuestions: currQuestions,
 										setCurrQuestions: setCurrQuestions,
 										getRoundQuestions: getRoundQuestions,
+										problem: problem
 									}}	
 								/>
 							</Box>
@@ -491,6 +508,9 @@ const ParticipantLayout = ({
 											problemTitle={problem.title}
 											possiblePoints={problem.points}
 											totalCases={problem.total_cases}
+											problemSet={problem.set}
+											difficulty={problem.difficulty}
+											currRound={currRound}
 										/>
 									</CustomModal>
 									: null

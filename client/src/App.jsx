@@ -77,28 +77,28 @@ function App() {
 						overlayFreezeLoad.current = true;
 					}
 
-					// checks if present yung elements na may fOverlay
-					let checker = document.getElementsByClassName('fOverlay').length;
+					// // checks if present yung elements na may fOverlay
+					// let checker = document.getElementsByClassName('fOverlay').length;
 
-					setTimeout(() => {
-						// if hindi pa naka-display yung component pero naka-true na yung overlay, i-display na
-						if (checker < 2 && overlayFreezeLoad.current == true) {
+					// setTimeout(() => {
+					// 	// if hindi pa naka-display yung component pero naka-true na yung overlay, i-display na
+					// 	if (checker < 2 && overlayFreezeLoad.current == true) {
 
-							try {
-								document.getElementsByClassName('fOverlayScreen')[0].remove();
-							} catch (error) {
+					// 		try {
+					// 			document.getElementsByClassName('fOverlayScreen')[0].remove();
+					// 		} catch (error) {
 								
-							}
+					// 		}
 							
-							const immortalDiv = document.createElement('div');
-							immortalDiv.className = 'fOverlayScreen';
-							immortalDiv.style.zIndex = '10000';
-							immortalDiv.innerHTML = immortalHTML;
+					// 		const immortalDiv = document.createElement('div');
+					// 		immortalDiv.className = 'fOverlayScreen';
+					// 		immortalDiv.style.zIndex = '10000';
+					// 		immortalDiv.innerHTML = immortalHTML;
 
-							let commonBox = document.getElementById('commonBox');
-							commonBox.insertBefore(immortalDiv, commonBox.firstChild);
-						}
-					}, 1000);
+					// 		let commonBox = document.getElementById('commonBox');
+					// 		commonBox.insertBefore(immortalDiv, commonBox.firstChild);
+					// 	}
+					// }, 1000);
 				} 
 				else if (adminMessage.command == 'logout') {
 					console.log('Should log out');

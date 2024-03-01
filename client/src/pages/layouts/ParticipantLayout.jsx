@@ -260,7 +260,11 @@ const ParticipantLayout = ({
 			var teamId = JSON.parse(localStorage?.getItem('user'))?._id;
       
 			if (teamId == arg.team_id) {
-				getRoundQuestions();
+				getRoundQuestions();//
+
+				if (location.pathname === '/participant/view-specific-problem') {
+					getQuestionContent();
+				}
 			}
 			getTeamScore();
 		});
@@ -304,7 +308,7 @@ const ParticipantLayout = ({
 		await Promise.all(
 			qResponse.questions?.map( async (question)=>{
 				let formattedQuestion = {};
-				formattedQuestion.problemTitle = question.title;
+				formattedQuestion.problemTitle = `(SET ${question.set.toUpperCase()}) ${question.title}`;
 				formattedQuestion.id = question.display_id;
 				counter += 1;
 				formattedQuestion.dbId = question._id;
@@ -382,7 +386,7 @@ const ParticipantLayout = ({
    */ 
 	const handleButton = () => {
 		setOpenModal(true);
-		console.log(openModal)
+		//console.log(openModal)
 	};
 
 	/**
@@ -462,7 +466,11 @@ const ParticipantLayout = ({
 									buttonText="UPLOAD SUBMISSION"
 									startIcon={<FileUploadIcon />}
 									handleButton={handleButton}
-									disabledState={['Pending', 'Correct'].includes(evaluation)}
+									disabledState={
+										currRound.toLowerCase() == 'wager' ?
+										evaluation != 'No Submission' :
+										['Pending', 'Correct'].includes(evaluation)
+									}
 								/>
 							}
 
@@ -546,6 +554,7 @@ const ParticipantLayout = ({
 											problemSet={problem.set}
 											difficulty={problem.difficulty}
 											currRound={currRound}
+											setEvaluation={setEvaluation}
 										/>
 									</CustomModal>
 									: null

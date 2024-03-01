@@ -25,7 +25,8 @@ const  SubmitModal = ({
 	totalCases,
 	problemSet,
 	difficulty,
-	currRound
+	currRound,
+	setEvaluation
 }) => {
 	/**
    * State handler for the team's uploaded file.
@@ -113,6 +114,7 @@ const  SubmitModal = ({
 			}
     
 			if (uResponse.success) {
+				setEvaluation("Pending");
 			// fire success window
 				SuccessWindow.fire({
 					text: 'Successfully submitted file!',
@@ -129,7 +131,7 @@ const  SubmitModal = ({
 
 		// navigate to view all problems page
 		// pwede to tanggalin once na maimplement na yung sa websockets ng checking submission
-		navigate('/participant/view-all-problems');
+		// navigate('/participant/view-all-problems');
 		}
 	};
 
@@ -142,12 +144,26 @@ const  SubmitModal = ({
 					id: user._id
 				});
 	
-				if (difficulty.toLowerCase() == 'easy' && tResponse.easy_set == problemSet) {
+				if (difficulty.toLowerCase() == 'easy' && (
+					tResponse.easy_set == problemSet ||
+					tResponse.easy_set == 'c'
+				)) {
+					console.log("easy legitimate");
 					setCanSubmit(true);
 				}
-				if (difficulty.toLowerCase() == 'medium' && tResponse.medium_set == problemSet) {
+				if (difficulty.toLowerCase() == 'medium' && (
+					tResponse.medium_set == problemSet ||
+					tResponse.medium_set == 'c'
+				)) {
+					console.log("medium legitimate");
 					setCanSubmit(true);
 				}
+				if (['wager','hard'].includes(difficulty.toLowerCase())) {
+					setCanSubmit(true);
+				}
+
+				//console.log(difficulty, tResponse, problemSet);
+				//console.log(file? !canSubmit : true);
 			}
 		}
 		checkLegitimacy();
@@ -308,7 +324,7 @@ const  SubmitModal = ({
 				<Button 
 					type="submit"
 					variant="contained" 
-					disabled={file? canSubmit : true}
+					disabled={file? !canSubmit : true}
 					onClick={handleSubmit}
 					sx={{
 						width: '200px',

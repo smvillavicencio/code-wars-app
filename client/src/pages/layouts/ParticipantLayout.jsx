@@ -273,6 +273,7 @@ const ParticipantLayout = ({
 			socketClient.off('fetchActivePowerups');
 			socketClient.off('startRound');
 			socketClient.off('evalupdate');
+			socketClient.off('updateScoreOnBuyDebuff');
 		};
 	});
   

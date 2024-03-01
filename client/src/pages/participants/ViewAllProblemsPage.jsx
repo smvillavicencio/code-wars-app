@@ -1,5 +1,5 @@
 /* eslint-disable */ 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -13,8 +13,6 @@ import {
 import { useNavigate, createSearchParams, useOutletContext } from 'react-router-dom';
 
 import { Table } from 'components/';
-import { postFetch } from 'utils/apiRequest';
-import { baseURL } from 'utils/constants';
 import { columnsProblems } from 'utils/dummyData';
 
 
@@ -84,6 +82,7 @@ const ViewAllProblemsPage = ({ currRound }) => {
 					mx: { xs: 5, xl: 0},
 					width: {xl: '68%'},
 					height: '100%',
+					marginTop: '5vh',
 					display: 'flex'
 				}}
 			>
@@ -121,14 +120,13 @@ const ViewAllProblemsPage = ({ currRound }) => {
 
 					{/* Team Name and Team Score */}
 					<Typography
+						variant="body1"
 						sx={{
 							gap: 1,
+							color: '#fff',
+							alignItems: 'end',
 							display: 'flex',
 							flexDirection: 'column',
-							fontFamily: 'Inter',
-							fontSize: '1.25rem',
-							color: '#fff',
-							alignItems: 'end'
 						}}
 					>
 						<Box sx={{ display:'flex', gap: 2 }}>
@@ -144,7 +142,7 @@ const ViewAllProblemsPage = ({ currRound }) => {
 
 				{/* Problem List Table for the round */}
 				<Table
-					rows={currQuestions} //rowsProblems
+					rows={currQuestions}
 					columns={columnsProblems}
 					hideFields={[]}
 					additionalStyles={additionalStyles}

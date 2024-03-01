@@ -8,6 +8,7 @@ import {
 	Box,
 	Stack,
 	Tooltip,
+	Typography,
 } from '@mui/material';
 import { useNavigate, createSearchParams } from 'react-router-dom';
 
@@ -34,7 +35,15 @@ const ViewAllProblemsPage = ({ currRound }) => {
 	 * State handler for currrent round.
 	 */
 	const [currQuestions, setCurrQuestions] = useState([]);
+	/**
+	 * State handler for team details.
+	 */
+	const [teamDetails, setTeamDetails] = useState({
+		teamName: 'Team 1',
+		score: 0
+	});
 	
+
 	// options for round labels
 	const rounds = ['EASY', 'MEDIUM', 'WAGER', 'HARD'];
 	// used for client-side routing to other pages
@@ -46,6 +55,11 @@ const ViewAllProblemsPage = ({ currRound }) => {
 	}, [currRound]);
 
 
+	useEffect(() => {
+		// get relevant team details here
+	}, [])
+
+	
 	/**
 	 * Fetching questions for the current round
 	 */
@@ -120,33 +134,57 @@ const ViewAllProblemsPage = ({ currRound }) => {
 			>
 				
 				{/* Container for round buttons */}
-				<Box sx={{ display: 'flex', gap: 3, justifyContent: {xs: 'center', xl: 'initial'} }}>
-					{rounds.map((round, idx) => 
-						<Button
-							key={idx}
-							variant="contained"
-							startIcon={currRound === round ? <LockOpenIcon/> : <LockIcon />}
-							disabled={currRound === round ? false : true}
-							size="large"
-							sx={{
-								fontFamily: 'Poppins',
-								fontWeight: '600',
-								minWidth: 125,
-								gap: 0.5,
-								bgcolor: 'major.main',
-								'&:hover': {
-									bgcolor: 'major.light',
-									color: 'general.main',
-								},
-								'&:disabled': {
-									bgcolor: 'major.light',
-									color: '#fff'
-								}
-							}}
-						>
-							{round}
-						</Button>
-					)}
+				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+					<Box sx={{ display: 'flex', gap: 3, height: '70%', alignSelf: 'center' }}>
+						{rounds.map((round, idx) => 
+							<Button
+								key={idx}
+								variant="contained"
+								startIcon={currRound === round ? <LockOpenIcon/> : <LockIcon />}
+								disabled={currRound === round ? false : true}
+								size="large"
+								sx={{
+									fontFamily: 'Poppins',
+									fontWeight: '600',
+									minWidth: 125,
+									gap: 0.5,
+									bgcolor: 'major.main',
+									'&:hover': {
+										bgcolor: 'major.light',
+										color: 'general.main',
+									},
+									'&:disabled': {
+										bgcolor: 'major.light',
+										color: '#fff'
+									}
+								}}
+							>
+								{round}
+							</Button>
+						)}
+					</Box>
+
+					{/* Team Name and Team Score */}
+					<Typography
+						sx={{
+							gap: 1,
+							display: 'flex',
+							flexDirection: 'column',
+							fontFamily: 'Inter',
+							fontSize: '1.25rem',
+							color: '#fff',
+							alignItems: 'end'
+						}}
+					>
+						<Box sx={{ display:'flex', gap: 2 }}>
+							<span style={{ fontWeight: '500' }}>Team Name:</span>
+							<span style={{ fontWeight: '300' }}>{teamDetails.teamName}</span>
+						</Box>
+						<Box sx={{ display:'flex', gap: 2 }}>
+							<span style={{ fontWeight: '500' }}>Current Score:</span>
+							<span style={{ fontWeight: '300' }}>{teamDetails.score}</span>
+						</Box>
+					</Typography>
 				</Box>
 
 				{/* Problem List Table for the round */}

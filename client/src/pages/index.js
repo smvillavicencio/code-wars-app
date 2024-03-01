@@ -1,3 +1,4 @@
+import AdminLayout from './layouts/AdminLayout';
 import GeneralOptionsPage from './admin/GeneralOptionsPage';
 import PowerUpLogs from './admin/PowerUpLogs';
 import TopTeamsPage from './admin/TopTeamsPage';
@@ -8,6 +9,7 @@ import ViewSpecificProblemPage from './participants/ViewSpecificProblemPage';
 
 
 export {
+	AdminLayout,
 	LoginPage,
 	GeneralOptionsPage,
 	PowerUpLogs,

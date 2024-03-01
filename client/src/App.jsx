@@ -8,6 +8,7 @@ import { Outlet, BrowserRouter as Router, Routes, Route, useFetcher } from 'reac
 import GeneralBackground from 'assets/GeneralBackground.png';
 import { FreezeOverlay, ToastContainerConfig } from 'components';
 import {
+	AdminLayout,
 	LoginPage,
 	GeneralOptionsPage,
 	PowerUpLogs,
@@ -172,48 +173,54 @@ function App() {
 
 	return (
 		<ThemeProvider theme={theme}>
-				<Router>
-					<Routes>
-						{/* Login page */}
-						<Route index element={<LoginPage />} />
+			<Router>
+				<Routes>
+					{/* Login page */}
+					<Route index element={<LoginPage />} />
 
-						{/* Pages with same backgrounds */}
-						<Route path="/" element={<Layout />}>
-							<Route path="participant/view-all-problems" 
-								element={<ViewAllProblemsPage 
-									isLoggedIn={isLoggedIn} 
-									setIsLoggedIn={setIsLoggedIn} 
-									checkIfLoggedIn={checkIfLoggedIn}
-									currRound={currRound}
-									setCurrRound={setCurrRound}
-									isBuyImmunityChecked={buyImmunityChecked}
-									//seconds={sec}
-									 />} />
-							<Route path="participant/view-specific-problem" element={<ViewSpecificProblemPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
-							<Route path="judge/submissions" element={<ViewSubmissionsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
-
-							<Route path="admin/general" 
-								element={<GeneralOptionsPage 
-									isLoggedIn={isLoggedIn} 
-									setIsLoggedIn={setIsLoggedIn} 
-									checkIfLoggedIn={checkIfLoggedIn} 
-									currRound={currRound}
-									setCurrRound={setCurrRound}
-									roundRef={roundRef}
-									freezeRef={freezeRef}
-									immunityRef={immunityRef}
-									freezeChecked={freezeChecked}
-									buyImmunityChecked={buyImmunityChecked}
-									setFreezeChecked={setFreezeChecked}
-									setBuyImmunityChecked={setBuyImmunityChecked}
+					{/* Pages with same backgrounds */}
+					<Route path="/" element={<Layout />}>
+						<Route path="participant/view-all-problems" 
+							element={<ViewAllProblemsPage 
+								isLoggedIn={isLoggedIn} 
+								setIsLoggedIn={setIsLoggedIn} 
+								checkIfLoggedIn={checkIfLoggedIn}
+								currRound={currRound}
+								setCurrRound={setCurrRound}
+								isBuyImmunityChecked={buyImmunityChecked}
+								//seconds={sec}
 									/>} />
-							<Route path="admin/logs" element={<PowerUpLogs isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
-							<Route path="admin/podium" element={<TopTeamsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
+						<Route path="participant/view-specific-problem" element={<ViewSpecificProblemPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
+						<Route path="judge/submissions" element={<ViewSubmissionsPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} checkIfLoggedIn={checkIfLoggedIn} />} />
 
+						{/* Admin Pages */}
+						<Route element={
+							<AdminLayout
+								freezeOverlay={freezeOverlay}
+								isLoggedIn={isLoggedIn}
+								setIsLoggedIn={setIsLoggedIn} 
+								checkIfLoggedIn={checkIfLoggedIn} 
+							/>
+						}>
+							<Route path="admin/general" 
+								element={
+									<GeneralOptionsPage 
+										setCurrRound={setCurrRound}
+										roundRef={roundRef}
+										freezeRef={freezeRef}
+										immunityRef={immunityRef}
+										setFreezeChecked={setFreezeChecked}
+										setBuyImmunityChecked={setBuyImmunityChecked}
+									/>
+								}
+							/>
+							<Route path="admin/logs" element={ <PowerUpLogs /> } />
+							<Route path="admin/podium" element={<TopTeamsPage />} />
 						</Route>
-					</Routes>
-					<ToastContainerConfig />
-				</Router>
+					</Route>
+				</Routes>
+				<ToastContainerConfig />
+			</Router>
 		</ThemeProvider>
 	);
 }

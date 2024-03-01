@@ -3,15 +3,26 @@ import Looks3Icon from '@mui/icons-material/Looks3';
 import LooksOneIcon from '@mui/icons-material/LooksOne';
 import LooksTwoIcon from '@mui/icons-material/LooksTwo';
 import { Box } from '@mui/material';
+import getLeaderboard from 'components/widgets/leaderboard/getLeaderboard';
+import { useEffect, useState } from 'react';
 
 
 /**
  * @returns component for admin - podium page
  */
 const TopTeamsPage = () => {
-
+	const [leaderboard, setLeaderboard] = useState([]);
+	
 	// websocket.on for leaderboard update then get top 3 teams
-  
+  useEffect(() => {
+		fetchData();
+	}, [leaderboard]);
+
+	const fetchData = async () => {
+		let currLeaderboard = await getLeaderboard();
+
+		setLeaderboard(currLeaderboard);
+	}
 	return (
 		<Box
 			sx={{
@@ -41,9 +52,11 @@ const TopTeamsPage = () => {
 					left: '192px',
 					color: 'white',
 					fontFamily: 'Poppins, sans-serif',
+					width: 100,
+					textAlign:'center',
 				}}
 			>
-        Team Lorem.
+        {leaderboard[0] !== undefined ? leaderboard[0].team_name : ''}
 			</p>
 			<p //2nd
 				style={{
@@ -52,9 +65,11 @@ const TopTeamsPage = () => {
 					left: '83px',
 					color: 'white',
 					fontFamily: 'Poppins, sans-serif',
+					width: 100,
+					textAlign: 'center',
 				}}
 			>
-        Team Ipsum.
+        {leaderboard[1] !== undefined ? leaderboard[1].team_name : ''}
 			</p>
 			<p //3rd
 				style={{
@@ -63,9 +78,11 @@ const TopTeamsPage = () => {
 					left: '300px',
 					color: 'white',
 					fontFamily: 'Poppins, sans-serif',
+					width: 100,
+					textAlign:'center',
 				}}
 			>
-        Team Ipsum.
+        {leaderboard[2] !== undefined ? leaderboard[2].team_name : ''}
 			</p>
 			{/* BOXES */}
 

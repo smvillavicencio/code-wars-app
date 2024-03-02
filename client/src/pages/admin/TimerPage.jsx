@@ -6,6 +6,7 @@ import {
 	Button,
 	Stack,
 	Switch,
+	Toolbar,
 	Typography
 } from '@mui/material';
 
@@ -25,6 +26,7 @@ import {
 } from 'utils/dummyData';
 import { enterAdminPassword } from 'utils/enterAdminPassword';
 import { RoundTimer } from 'components';
+import { columnsLeaderboardAdmin } from 'utils/dummyData';
 
 
 
@@ -93,28 +95,36 @@ const TimerPage = () => {
 	}
 
 	return (
-		<Stack spacing={7} sx={{ margin:'4em', width:'100%' }}>
-
+		<Stack spacing={10} sx={{ margin:'4em', width:'100%' }}>
+			
 			{/* General Options */}
-			<Box>
+			<Box sx={{ paddingTop: '3em' }}>
 				<RoundTimer fontSize='3rem' minWidth='600px' sx={{ fontSize:'4rem' }}/>
 			</Box>
 
 			{/* Overall Leaderboard Table */}
-			
-			<Box sx={{ 
-				display: 'flex', 
-				justifyContent: 'center', 
-				flexDirection:'column', 
-				alignItems:'center', 
-				gap:7
-			}}
+			<Box
+				sx={{ 
+					display: 'flex', 
+					justifyContent: 'center', 
+					flexDirection:'column', 
+					alignItems: 'center', 
+				}}
 			>
-				<Typography sx={{fontSize:'3rem', fontWeight:600, fontFamily:'Poppins', color:'#fff'}}>LEADERBOARD</Typography>
-				<Box sx={{ width: '65%'}}>
+				<Typography
+					sx={{
+						fontSize: '2rem',
+						fontWeight: 600,
+						fontFamily: 'Poppins',
+						color: '#fff'
+					}}
+				>
+					CURRENT LEADERBOARD
+				</Typography>
+				<Box sx={{ width: '28%', marginTop: '1em' }}>
 					<Table
 						rows={leaderboardRows}
-						columns={columnsLeaderboard}
+						columns={columnsLeaderboardAdmin}
 						hideFields={['id', 'total_points_used', 'score']}
 						additionalStyles={additionalStyles}
 						pageSizeOptions={[5]}

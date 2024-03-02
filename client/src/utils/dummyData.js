@@ -329,6 +329,25 @@ export const columnsLeaderboard = [
 	},
 ];
 
+// only for admin - timer page
+export const columnsLeaderboardAdmin = [
+	{
+		field: 'rank',
+		headerName: 'Rank',
+		minWidth: 180,
+		headerAlign: 'center',
+		align: 'center',
+		// flex: 1,
+	},
+	{
+		field: 'team_name',
+		headerName: 'Team Name',
+		minWidth: 250,
+		// maxWidth: 300,
+		flex: 1,
+	},
+];
+
 // leaderboard rows
 // replaced with getLeaderboard.js
 export const rowsLeaderboard = [

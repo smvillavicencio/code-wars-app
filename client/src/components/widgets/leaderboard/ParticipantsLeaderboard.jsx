@@ -167,7 +167,7 @@ const ParticipantsLeaderboard = () => {
 				<Table
 					rows={leaderboardRows}
 					columns={columnsLeaderboard}
-					hideFields={['id', 'totalSpent', 'score']}
+					hideFields={['id', 'total_points_used', 'score']}
 					additionalStyles={additionalStyles}
 					pageSize={5}
 					pageSizeOptions={[5, 10]}

@@ -9,6 +9,9 @@ import { socketClient } from 'socket/socket';
  * Params: None
  */
 const RoundTimer = ({
+	fontSize,
+	minWidth,
+	...props
 }) => {
 
 	/**
@@ -34,7 +37,7 @@ const RoundTimer = ({
 			sx={{
 				display: 'flex',
 				flexDirection: 'column',
-				minWidth: '325px',
+				minWidth: {minWidth},
 				alignItems: 'center',
 			}}
 		>
@@ -44,7 +47,7 @@ const RoundTimer = ({
 				sx={{
 					fontFamily: 'Poppins',
 					fontWeight: 600,
-					fontSize: '1.4rem',
+					fontSize: {fontSize},
 					alignItems: 'center',
 					alignContent: 'center',
 					justifyContent: 'center',
@@ -53,7 +56,7 @@ const RoundTimer = ({
 				<span>ROUND TIMER</span>
 			</Typography>
 
-			<Typography noWrap variant="h3">
+			<Typography noWrap variant="h3" {...props}>
 				{seconds}
 			</Typography>
 		</Box>

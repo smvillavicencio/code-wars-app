@@ -589,7 +589,7 @@ const ParticipantLayout = ({
 											},
 										}}
 									>
-										<RoundTimer />
+										<RoundTimer fontSize='1.4rem' minWidth='325px'/>
 										<Button
 											variant="contained"
 											color="major"
@@ -629,7 +629,7 @@ const ParticipantLayout = ({
 										}
 									}}
 								>
-									<RoundTimer />
+									<RoundTimer fontSize='1.4rem' minWidth='325px'/>
 									<ParticipantsLeaderboard rows={rowsLeaderboard} columns={columnsLeaderboard} />
 									<SponsorCarousel />
 								</Stack>
@@ -675,7 +675,7 @@ const ParticipantLayout = ({
 							<Table
 								rows={leaderboardRows}
 								columns={columnsLeaderboard}
-								hideFields={['id', 'totalSpent']}
+								hideFields={['id', 'totalSpent', 'score']}
 								additionalStyles={additionalStyles}
 								pageSize={5}
 								pageSizeOptions={[5, 10]}

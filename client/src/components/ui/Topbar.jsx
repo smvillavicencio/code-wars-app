@@ -151,7 +151,7 @@ const TopBar = ({
 					</Button>
 
 					{/* Temporary Logout Button for participants */}
-					{/* <Button
+					<Button
 						variant="contained"
 						color="major"
 						size="large"
@@ -166,7 +166,7 @@ const TopBar = ({
 						}}
 					>
 						<LogoutIcon />
-					</Button> */}
+					</Button>
 				</div>
 			</Toolbar>
 		</AppBar>

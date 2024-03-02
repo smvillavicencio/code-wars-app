@@ -675,7 +675,7 @@ const ParticipantLayout = ({
 							<Table
 								rows={leaderboardRows}
 								columns={columnsLeaderboard}
-								hideFields={['id', 'total_points_used', 'score']}
+								hideFields={['id', 'total_points_used']}
 								additionalStyles={additionalStyles}
 								pageSize={5}
 								pageSizeOptions={[5, 10]}

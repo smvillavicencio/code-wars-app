@@ -15,16 +15,16 @@ const LoadingOverlay =() =>{
 				icon={
 					<CircularProgress color="white" />
 				}
-				text={
-					<Typography 
-						variant="body1"
-						sx={{
-							whiteSpace: 'pre-wrap',
-							textAlign: 'center'
-						}}
-					>
-						Loading...
-					</Typography>
+				text={null
+					// <Typography 
+					// 	variant="body1"
+					// 	sx={{
+					// 		whiteSpace: 'pre-wrap',
+					// 		textAlign: 'center'
+					// 	}}
+					// >
+					// 	Loading...
+					// </Typography>
 				}
 			/> 
 		</Box>

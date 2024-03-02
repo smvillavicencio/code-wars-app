@@ -270,7 +270,7 @@ export const columnsSubmissions = [
 	{
 		field: 'checkedBy',
 		headerName: 'Judge',
-		minWidth: 275,
+		minWidth: 265,
 		// maxWidth: 250,
 		// flex: 1,
 	},
@@ -334,16 +334,32 @@ export const columnsLeaderboardAdmin = [
 	{
 		field: 'rank',
 		headerName: 'Rank',
-		minWidth: 180,
+		minWidth: 130,
+		// maxWidth: 100,
 		headerAlign: 'center',
 		align: 'center',
-		// flex: 1,
+		flex: 1,
 	},
 	{
 		field: 'team_name',
 		headerName: 'Team Name',
 		minWidth: 250,
 		// maxWidth: 300,
+		flex: 1,
+	},
+	{
+		field: 'score',
+		headerName: 'Score',
+		minWidth: 180,
+		// maxWidth: 200,
+		flex: 1,
+	},
+	{
+		field: 'total_points_used',
+		headerName: 'Total Spent',
+		minWidth: 180,
+		headerAlign: 'left',
+		align: 'left',
 		flex: 1,
 	},
 ];

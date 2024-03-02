@@ -16,7 +16,7 @@ import {
 } from 'components';
 import getLeaderboard from 'components/widgets/leaderboard/getLeaderboard';
 import { columnsLeaderboard } from 'utils/dummyData';
-
+import { socketClient } from 'socket/socket';
 
 
 
@@ -51,6 +51,13 @@ const JudgeLayout = ({
    */
 	const [leaderboardRows, setLeaderboardRows] = useState([]);
 
+	/**
+	 * Fetch overall leaderboard data
+	 */
+	async function fetchData() {
+		let currLeaderboard = await getLeaderboard();
+		setLeaderboardRows(currLeaderboard);
+	}
 
   useEffect(() => { 
 		let usertype = JSON.parse(localStorage?.getItem('user'))?.usertype;
@@ -67,17 +74,36 @@ const JudgeLayout = ({
 			setIsLoggedIn(false);
 		}
 
-		/**
-	   * Fetch overall leaderboard data
-	   */
-		async function fetchData() {
-			let currLeaderboard = await getLeaderboard();
-			setLeaderboardRows(currLeaderboard);
-		}
+		
 
 		fetchData();
     
 	}, []);
+	
+	/**
+	 * Web sockets for real time update of leaderboard
+	 */
+	useEffect(() => { 
+		if(!socketClient) return;
+
+		socketClient.on('evalupdate', () => {
+			fetchData();
+		});
+
+		socketClient.on('updateScoreOnBuyDebuff', () => {
+			fetchData();
+		});
+		
+		socketClient.on('newBuff', () => {
+			fetchData();
+		})
+
+		return () => {
+			socketClient.off('evalupdate');
+			socketClient.off('updateScoreOnBuyDebuff');
+			socketClient.off('newBuff');
+		};
+	});
 
 	/**
 	* Handles opening of modal window for overall leaderboard.

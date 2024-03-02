@@ -121,11 +121,11 @@ const TimerPage = () => {
 				>
 					CURRENT LEADERBOARD
 				</Typography>
-				<Box sx={{ width: '28%', marginTop: '1em' }}>
+				<Box sx={{ width: '38%', marginTop: '1em' }}>
 					<Table
 						rows={leaderboardRows}
 						columns={columnsLeaderboardAdmin}
-						hideFields={['id', 'total_points_used', 'score']}
+						hideFields={['id', 'total_points_used']}
 						additionalStyles={additionalStyles}
 						pageSizeOptions={[5]}
 						pageSize={5}

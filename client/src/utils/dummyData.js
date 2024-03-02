@@ -209,6 +209,13 @@ export const optionsEval = [
 	'Pending'
 ];
 
+export const optionsEvalWager = [
+	'Correct',
+	'Incorrect Solution',
+	'Error',
+	'Pending'
+];
+
 
 
 // columns for submissions table

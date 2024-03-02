@@ -395,18 +395,26 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 	
 	
 	return (
-		<Stack spacing={5} sx={{ mt: 5, mx: 15 }} >
+		<Stack spacing={5} sx={{
+			mt: 5, mx: {
+				xs: 5,
+				md: 8,
+				lg: 15
+		}}} >
 			
 			{/* Dropdown selects for team name and problem title */}
 			<Box sx={{
 				display: 'flex',
-				flexDirection: 'row',
+				flexDirection: {
+					xs: 'column',
+					md: 'row'
+				},
 				gap: 5,
 			}}>
 				<DropdownSelect
 					isDisabled={false}
 					label="Team Name"
-					minWidth="20%"
+					minWidth="28%"
 					variant="filled"
 					options={teamsList}
 					handleChange={handleTeams}
@@ -420,7 +428,7 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 
 				<DropdownSelect
 					isDisabled={false}
-					minWidth="35%"
+					minWidth="38%"
 					variant="filled"
 					label="Problem Title"
 					options={questionsList}
@@ -442,10 +450,10 @@ const ViewSubmissionsPage = ({ isLoggedIn }) => {
 				additionalStyles={additionalStylesSubmissions}
 				density={'comfortable'}
 				columnHeaderHeight={45}
-				pageSizeOptions={[5, 8]}
+				pageSizeOptions={[5, 8, 10]}
 				autoHeight
 				initialState={{
-					pagination: { paginationModel: { pageSize: 8 } },
+					pagination: { paginationModel: { pageSize: 5 } },
 				}}
 				getCellClassName={(params) => {
 					if (params.field === 'submittedAt') {

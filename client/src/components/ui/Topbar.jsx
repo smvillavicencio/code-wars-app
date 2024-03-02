@@ -8,7 +8,9 @@ import {
 	Box,
 	Button,
 	Toolbar,
-	Typography
+	Typography,
+	useMediaQuery,
+	useTheme
 } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -51,6 +53,14 @@ const TopBar = ({
 	useEffect(() => {
 		setImage(isImg);
 	}, []);
+
+
+	const theme = useTheme();
+  const onlySmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const onlyMediumScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const onlyLargeScreen = useMediaQuery(theme.breakpoints.down("lg"));
+
+
 
 
 	return (
@@ -135,11 +145,13 @@ const TopBar = ({
 							}
 						}}
 					>
-						{buttonText}
+						{
+							onlySmallScreen ? null : <>{buttonText}</>
+						}
 					</Button>
 
 					{/* Temporary Logout Button for participants */}
-					<Button
+					{/* <Button
 						variant="contained"
 						color="major"
 						size="large"
@@ -154,7 +166,7 @@ const TopBar = ({
 						}}
 					>
 						<LogoutIcon />
-					</Button>
+					</Button> */}
 				</div>
 			</Toolbar>
 		</AppBar>

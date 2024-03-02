@@ -8,7 +8,7 @@ import { Box } from '@mui/material';
  * 	<Component>		icon - receives icon to be displayed
  * 	<String>			text - receives text to be displayed
  */
-const Overlay = ({ icon, text }) => {
+const Overlay = ({ icon, text, body }) => {
 	return(
 		<Box  
 			sx={{
@@ -31,6 +31,8 @@ const Overlay = ({ icon, text }) => {
 				{icon}
 				<br />
 				{text}
+				<br />
+				{body}
 			</Box>
 		</Box>
 

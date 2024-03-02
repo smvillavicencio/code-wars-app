@@ -3,6 +3,7 @@ import BoltIcon from '@mui/icons-material/Bolt';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import SettingsIcon from '@mui/icons-material/Settings';
+import TimerIcon from '@mui/icons-material/Timer';
 import {
 	Box,
 	Button,
@@ -110,6 +111,26 @@ const Sidebar = () => {
 					>
 							Podium
 					</Button>
+
+					{/* Podium Page */}
+					<Button
+						variant="contained"
+						color="major"
+						size="large"
+						onClick={() => { navigate('/admin/timer'); }}
+						startIcon={<TimerIcon/>}
+						sx={{
+							marginTop: '2em',
+							width: '85%',
+							'&:hover': {
+								bgcolor: 'major.light',
+								color: 'general.main',
+							}
+						}}
+					>
+							Round Timer
+					</Button>
+					
 				</Box>
 
 				{/* Logout Button */}

@@ -22,6 +22,7 @@ import {
 import { theme } from 'theme.js';
 import { postFetch } from 'utils/apiRequest';
 import { baseURL } from 'utils/constants';
+import TimerPage from 'pages/admin/TimerPage';
 
 
 
@@ -206,6 +207,7 @@ function App() {
 						/>
 						<Route path="admin/logs" element={ <PowerUpLogs /> } />
 						<Route path="admin/podium" element={<TopTeamsPage />} />
+						<Route path="admin/timer" element={<TimerPage />} />
 					</Route>
 				</Routes>
 				<ToastContainerConfig />

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import {
 	Box,
 	Button,
@@ -509,6 +510,7 @@ const ParticipantLayout = ({
 									icon={seal}
 									title="Code Wars"
 									subtitle="UPLB Computer Science Society"
+									startIcon={<ShoppingBasketIcon />}
 									buttonText="BUY POWER-UP"
 									disabledState={roundsDisablePowerUps.includes(currRound.toLowerCase()) && !isBuyImmunityChecked}
 									handleButton={handleViewPowerUps}
